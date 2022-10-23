@@ -1,0 +1,485 @@
+{{ 'section-testimonials.css' | asset_url | stylesheet_tag }}
+
+
+{% assign star_active = '<svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.5142 7.51048H12.7417L10.3409 0L7.93265 7.51048L0.160156 7.50287L6.45468 12.1493L4.0464 19.6522L10.3409 15.0133L16.6279 19.6522L14.2272 12.1493L20.5142 7.51048Z" fill="#FFD953"/></svg>' %}
+{% assign star_notactive = '<svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.5142 7.51048H12.7417L10.3409 0L7.93265 7.51048L0.160156 7.50287L6.45468 12.1493L4.0464 19.6522L10.3409 15.0133L16.6279 19.6522L14.2272 12.1493L20.5142 7.51048Z" fill="#E1E2E4"/></svg>' %}
+
+{% if section.blocks.size > 0 %}
+	{% for block in section.blocks %}
+		<style>
+			.section-style-{{ section.id }} .item-{{ block.id }} {
+				padding: {{ block.settings.inset_block }};
+				margin: {{ block.settings.offset_block }};
+				background-color: {{ block.settings.bg_block }};
+			}
+		</style>
+	{% endfor %}
+{% endif %}
+
+
+<div class="section-style-{{ section.id }} {% if settings.use_lg and section.settings.use_bg_grad2 %} bg_grad2{% endif %}">
+  	<style>
+  	    .section-style-{{ section.id }}{
+		  {% unless section.settings.bg_image != blank %}
+  	        padding: {{ section.settings.inset_section }};
+		  {% endunless %}
+			margin: {{ section.settings.offset_section }};
+  	        background:{{ section.settings.bg_section }};
+  	        position: relative;
+  	    }
+	
+  	     {% if section.settings.bg_image != blank %}
+  	    	.section-style-{{ section.id }} > div{
+  	    	    padding: {{ section.settings.inset_section }};
+  	    	    background-image: url({{ section.settings.bg_image | img_url: '1170x600' }});
+  	    	    background-repeat: no-repeat;
+  	    	    background-size: cover;
+  	    	    background-position: 60% center;
+  	    	}
+
+        	@media (min-width: 992px) {
+                .section-style-{{ section.id }} > div {
+                    background-position: 100% center;
+                }
+        	}
+		  {% endif %}
+		{% if section.settings.quote_img != blank %}
+		
+		{% assign img_url = section.settings.quote_img | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+        .index_section_testimonials blockquote::before {
+            content: url({{ section.settings.quote_img | img_url }});
+            margin: {{ section.settings.offset_quote_img }};
+        }
+		{% endif %}
+
+        .index_section_testimonials .testimonials_item__text {
+            color: {{ section.settings.quote_color }};
+        }
+  	</style>
+	<div class="{{ section.settings.container_width }}">
+	  <div {% if section.settings.container_width == 'full-width' %} class="container" {% endif %}>
+		<div class="testimonials_caption text-center">
+		{% if section.settings.title.size > 0 %}
+			<h2 class="h3 section_heading">{{ section.settings.title }}</h2>
+		{% endif %}
+		{% if section.settings.header_logo %}
+			<img loading="lazy" src="{{ section.settings.header_logo | img_url: '185x45', crop: 'center' }}" alt="{{ section.settings.header_logo.alt }}">
+		{% endif %}
+		{% if section.settings.caption_text.size > 0 %}
+			<p class="testimonials_caption__text text">{{ section.settings.caption_text }}</p>
+		{% endif %}
+	</div>
+	  {% unless section.settings.style == 'type_2' %}
+	  <div class="testimonials_slider swiper-container zmz-swiper-container swiper-nav-wrapper" id="zmz-carousel-{{ section.id }}"
+		   data-options='{
+			  "observer": true,
+			  "observeParents": true,
+			   "pagination": {"el": "#pagination_{{ section.id }}", "clickable": true },
+			   "navigation": {"nextEl": "#next_{{ section.id }}", "prevEl": "#prev_{{ section.id }}"},
+			  "spaceBetween": 0,
+			  "slidesPerView": 1
+			}'>
+		  <div class="swiper-wrapper">
+			  {% endunless %}
+		{% unless section.settings.style == 'type_1' %}
+			<div class="row">
+			{% endunless %}
+			{% for block in section.blocks %}
+				{% unless section.settings.style == 'type_2' %}
+				<div class="swiper-slide">
+					{% endunless %}
+					<div class="testimonial_slide__item item-{{ block.id }} style_{{ section.settings.style }} {% unless section.settings.style == 'type_1' %} col-12 {{ block.settings.item_width }}{% endunless %}">
+						<div class="testimonial_slide__item_wrapper text-{{ section.settings.text_align }} {% if block.settings.inverted %} inverted{% endif %}">
+						
+						{% if block.settings.star != 'none' %}
+							<div class="testimonials_item__stars">
+								{% for i in (1..5) %}
+									<span class="star_item">
+										{% assign star_setting = block.settings.star | abs %}
+										{% if i <= star_setting %}
+												{{ star_active }}
+										{% else %}
+												{{ star_notactive }}
+										{% endif %}
+									</span>
+								{% endfor %}
+							</div>
+						{% endif %}
+						<blockquote class="testimonials_item">
+						  
+						    {% if block.settings.quote.size > 0 %}
+								<p class="testimonials_item__text text-size--{{ section.settings.quote_size }}">{{ block.settings.quote }}</p>
+							{% endif %}
+							
+							{% if block.settings.author_img.size > 0 or block.settings.author.size > 0 %}
+								<div class="testimonial_author d-inline-flex align-items-center">
+									{% if block.settings.author_img.size > 0 %}
+										<div class="testimonial_image__author">
+											<img loading="lazy" class="blur-up lazyload"
+												 src="{{ block.settings.author_img | img_url: '70x70', crop: 'center' }}"
+												 alt="{{ block.settings.author_img.alt }}"
+											>
+										</div>
+									{% endif %}
+									{% if block.settings.author.size > 0 %}
+										<div class="ml-2 text-left">
+											<cite class="testimonials_item__author">{{ block.settings.author | escape }}</cite>
+											{% if block.settings.author_info.size > 0 %}
+												<span class="testimonials_item__author">{{ block.settings.author_info | escape }}</span>
+											{% endif %}
+										</div>
+									{% endif %}
+								</div>
+							{% endif %}
+							
+						</blockquote>
+						</div>
+					</div>
+					{% unless section.settings.style == 'type_2' %}
+				</div>
+				{% endunless %}
+			{% endfor %}
+				{% unless section.settings.style == 'type_1' %}
+				</div>
+			{% endunless %}
+			{% unless section.settings.style == 'type_2' %}
+		</div>
+		
+		{% unless section.settings.off_carousel_pag %}
+			<div id="pagination_{{ section.id }}" class="swiper-pagination pag-align--{{ section.settings.pag_align }}"></div>
+		{% endunless %}
+		{% unless section.settings.off_carousel_nav %}
+			<div id="prev_{{ section.id }}" class="swiper-button-prev"></div>
+			<div id="next_{{ section.id }}" class="swiper-button-next"></div>
+		{% endunless %}
+	</div>
+	{% endunless %}
+	  </div>
+	</div>
+</div>
+
+{% schema %}
+{
+	"name": "Testimonials",
+	"class": "section section_homepage index_section_testimonials",
+	"max_blocks": 9,
+	"settings": [
+		{
+			"type":      "select",
+			"id":        "container_width",
+			"label":     "Container width",
+			"options": [
+				{
+					"value": "container",
+					"label": "Box"
+				},
+				{
+					"value": "container-fluid",
+					"label": "Container Fluid"
+				},
+				{
+					"value": "full-width",
+					"label": "Full"
+				}
+			],
+			"default":   "container"
+		},
+		{
+			"type": "text",
+			"id": "inset_section",
+			"label": "Inset Section",
+			"default": "0px 0px 0px 0px",
+			"info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+		},
+		
+		{
+			"type": "text",
+			"id": "offset_section",
+			"label": "Offset Section",
+			"default": "0px 0px 0px 0px",
+			"info": "offset: Top Right Bottom Left"
+		},
+  
+		{
+			"type": "color",
+			"id": "bg_section",
+			"label": "Background Section",
+			"default": "#ffffff"
+		},
+	  
+  		{
+  			"type": "image_picker",
+  			"id": "bg_image",
+  			"label": "Background image"
+  		},
+	
+		{
+			"type": "text",
+			"id": "title",
+			"label": "Heading",
+			"default": "Testimonials"
+		},
+	
+		{
+			"type": "select",
+			"id": "style",
+			"label": "Testimonials Style",
+			"default": "type_1",
+			"options": [
+				{
+					"value": "type_1",
+					"label": "Type #1"
+				},
+				{
+					"value": "type_2",
+					"label": "Type #2"
+				}
+			]
+		},
+  		{
+  			"type": "select",
+  			"id": "quote_size",
+  			"label": "Testimonials text size",
+  			"default": "medium",
+  			"options": [
+  				{
+  					"value": "small",
+  					"label": "Small size"
+  				},
+  				{
+  					"value": "medium",
+  					"label": "Medium size"
+  				},
+  				{
+  					"value": "large",
+  					"label": "Large size"
+  				}
+  			]
+  		},
+  
+  		{
+  			"type": "color",
+  			"id": "quote_color",
+  			"label": "Testimonials text color",
+  			"default": "#121212"
+  		},
+  
+		{
+			"type": "text",
+			"id": "caption_text",
+			"label": "Caption Text",
+			"default": "Reviews from:"
+		},
+		{
+			"type": "select",
+			"id": "text_align",
+			"label": "Text align",
+			"default": "center",
+			"options": [
+				{
+					"label": "Center",
+					"value": "center"
+				},
+				{
+					"label": "Right",
+					"value": "right"
+				},
+				{
+					"label": "Left",
+					"value": "left"
+				}
+			]
+		},
+		{
+			"type": "image_picker",
+			"id": "header_logo",
+			"label": "Header logo image (185x45px)"
+		},
+  		{
+  			"type": "image_picker",
+  			"id": "quote_img",
+  			"label": "Quote image"
+  		},
+  		{
+  			"type": "text",
+  			"id": "offset_quote_img",
+  			"label": "Offset quote image",
+  			"default": "0px 0px 0px 0px",
+  			"info": "offset: Top Right Bottom Left"
+  		},
+  
+  		{
+  			"type": "checkbox",
+  			"id": "off_carousel_nav",
+  			"label": "Disable carousel navigation",
+  			"default":  false
+  		},
+  		{
+  			"type": "checkbox",
+  			"id": "off_carousel_pag",
+  			"label": "Disable carousel pagination",
+  			"default":  false
+  		},
+  
+  		{
+  			"type": "select",
+  			"id": "pag_align",
+  			"label": "Pagination align",
+  			"default": "center",
+  			"options": [
+  				{
+  					"value": "left",
+  					"label": "Left"
+  				},
+  				{
+  					"value": "center",
+  					"label": "Center"
+  				},
+  				{
+  					"value": "right",
+  					"label": "Right"
+  				}
+  			]
+  		}
+	],
+	"blocks": [
+		{
+			"type": "quote",
+			"name": "Quote",
+			"settings": [
+			{
+			"type": "select",
+			"id": "item_width",
+			"label": "Width of Items(not apply to carousel)",
+			"options": [
+					{
+						"value": "col-lg-2-5",
+						"label": "width 20%"
+					},
+					{
+						"value": "col-lg-3 col-sm-6",
+						"label": "width 25%"
+					},
+					{
+						"value": "col-lg-4",
+						"label": "width 33.3333%"
+					},
+					{
+						"value": "col-lg-6 col-sm-6",
+						"label": "width 50%"
+					},
+					{
+						"value": "col-lg-12",
+						"label": "width 100%"
+					}
+				],
+				"default": "col-lg-4"
+			},
+				{
+					"type": "text",
+					"id": "inset_block",
+					"label": "Inset Block",
+					"default": "0px 0px 0px 0px",
+					"info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+				},
+				
+				{
+					"type": "text",
+					"id": "offset_block",
+					"label": "Offset Block",
+					"default": "0px 0px 0px 0px",
+					"info": "offset: Top Right Bottom Left"
+				},
+				
+				{
+					"type": "color",
+					"id": "bg_block",
+					"label": "Background Block",
+					"default": "#ffffff"
+				},
+				{
+					"type": "select",
+					"id": "star",
+					"label": "Review Stars",
+					"default": "none",
+					"options": [
+						{
+							"value": "none",
+							"label": "None"
+						},
+						{
+							"value": "1",
+							"label": "1"
+						},
+						{
+							"value": "2",
+							"label": "2"
+						},
+						{
+							"value": "3",
+							"label": "3"
+						},
+						{
+							"value": "4",
+							"label": "4"
+						},
+						{
+							"value": "5",
+							"label": "5"
+						}
+					]
+				},
+  
+				{
+					"type": "textarea",
+					"id": "quote",
+					"label": "Quote Text",
+					"default": "Add customer reviews and testimonials to showcase your store’s happy customers."
+				},
+				{
+					"type": "image_picker",
+					"id": "author_img",
+					"label": "Author image"
+				},
+				{
+					"type": "text",
+					"id": "author",
+					"label": "Quote Author",
+					"default": "Author's name"
+				},
+				{
+					"type": "text",
+					"id": "author_info",
+					"label": "Author Info",
+					"default": "Author's info"
+				},
+				{
+					"type": "checkbox",
+					"id": "inverted",
+					"label": "Inverted",
+					"default": false
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "Testimonials",
+			"category": "Text",
+			"blocks": [
+				{
+					"type": "quote"
+				},
+				{
+					"type": "quote"
+				},
+				{
+					"type": "quote"
+				}
+			]
+		}
+	]
+}
+{% endschema %}

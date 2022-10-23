@@ -1,0 +1,182 @@
+{{ 'section-custom-links.css' | asset_url | stylesheet_tag }}
+
+
+<div class="section-style-{{ section.id }}">
+ 	 {%- include 'section-style' -%}
+ 	 <div class="{{ section.settings.container_width }}">
+		<div class="custom_listing_links">
+		  <div class="row">
+			<div class="col-12">
+			  {% if section.settings.item_heading != blank %}
+				<h2 class="section_heading mb-2 text-center" style="color: {{ section.settings.heading_color }}">
+				  {{ section.settings.item_heading }}
+				</h2>
+			  {% endif %}
+				<div class="text-center">
+				  {%- assign list = section.settings.links -%}
+			
+				  {% for link in list.links limit: 3 %}
+					<div class="d-inline-block link--wrapper">
+					  <a class="{% if section.settings.use_button %}btn {{ section.settings.btn_style }} {{ section.settings.btn_size }}{% else %}link link-primary {% endif %}" href="{{ link.url }}">
+						<span>{{ link.title }}</span>
+					  </a>
+					</div>
+				  {% endfor %}
+				  
+				  {% if section.settings.links.size > 3 %}
+					<details class="details_more_less" id="Details-{{ section.id }}">
+					  <summary class="link link-dark">
+						<span class="more_text">{{ 'layout.pagination.more_button' | t }}</span>
+						<span class="less_text">{{ 'layout.accessibility.show_less' | t }}</span>
+					  </summary>
+					  <div class="motion-reduce" role="list" tabindex="-1">
+						{% for link in list.links offset: 3 %}
+						  <div class="d-inline-block link--wrapper">
+							<a class="{% if section.settings.use_button %}btn {{ section.settings.btn_style }} {{ section.settings.btn_size }}{% else %}link h3 link-primary {% endif %}" href="{{ link.url }}">
+							  <span>{{ link.title }}</span>
+							</a>
+						  </div>
+						{% endfor %}
+					  </div>
+					</details>
+				  {% endif %}
+				</div>
+			</div>
+		  </div>
+		</div>
+	 </div>
+</div>
+
+{% schema %}
+{
+	"name": "Custom links",
+	"class": "section section_homepage section_custom-links",
+	"settings": [
+ 		{
+ 			"type":      "select",
+ 			"id":        "container_width",
+ 			"label":     "Container width",
+ 			"options": [
+ 				{
+ 					"value": "container",
+ 					"label": "Box"
+ 				},
+ 				{
+ 					"value": "container-fluid",
+ 					"label": "Container Fluid"
+ 				},
+ 				{
+ 					"value": "full-width",
+ 					"label": "Full"
+ 				}
+ 			],
+ 			"default":   "container"
+ 		},
+ 		
+	  
+ 		{
+ 			"type": "text",
+ 			"id": "inset_section",
+ 			"label": "Inset Section",
+ 			"default": "0px 0px 0px 0px",
+ 			"info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+ 		},
+ 		
+ 		{
+ 			"type": "text",
+ 			"id": "offset_section",
+ 			"label": "Offset Section",
+ 			"default": "0px 0px 0px 0px",
+ 			"info": "offset: Top Right Bottom Left"
+ 		},
+ 		
+ 		{
+ 			"type": "color",
+ 			"id": "bg_section",
+ 			"label": "Background Section",
+ 			"default": "#ffffff"
+ 		},
+	  
+		
+
+		{
+			"type": "richtext",
+			"id": "item_heading",
+			"label": "Collections heading",
+			"default": "<p>Collections heading</p>"
+		},
+	  
+	  {
+		"type": "color",
+		"id": "heading_color",
+		"label": "Heading color",
+		"default": "#67686A"
+	  },
+	  
+	  {
+		"type": "link_list",
+		"id": "links",
+		"label": "Linklist"
+	  },
+	  {
+		"type": "checkbox",
+		"id": "use_button",
+		"label": "Use type button",
+		"default": true
+	  },
+	  {
+		"type": "radio",
+		"id": "btn_style",
+		"label": "Button style",
+		"default": "btn-primary",
+		"options": [
+		  {
+			"value": "btn-default",
+			"label": "Default"
+		  },
+		  {
+			"value": "btn-primary",
+			"label": "Primary"
+		  },
+		  {
+			"value": "btn-secondary",
+			"label": "Secondary"
+		  },
+		  {
+			"value": "btn-alternate",
+			"label": "Alternate"
+		  },
+		  {
+			"value": "btn-gradient",
+			"label": "Gradient 1"
+		  }
+		]
+	  },
+	  {
+		"type": "radio",
+		"id": "btn_size",
+		"label": "Button size",
+		"default": "btn-lg",
+		"options": [
+		  {
+			"value": "btn-sm",
+			"label": "Small"
+		  },
+		  {
+			"value": "btn-md",
+			"label": "Medium"
+		  },
+		  {
+			"value": "btn-lg",
+			"label": "Large"
+		  }
+		]
+	  }
+	],
+  "presets": [
+	{
+	  "name": "Custom list links"
+	}
+  ]
+}
+{% endschema %}

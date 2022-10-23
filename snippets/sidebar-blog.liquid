@@ -1,0 +1,136 @@
+{%- for block in section.blocks -%}
+{%- assign bl_set = block.settings -%}
+
+<div class="sidebar blog-sidebar">
+	
+		{% case block.type %}
+			{% when 'blog_search' %}
+				<div class="h6 widget_header">{{ bl_set.search_title | escape }}</div>
+				{% render 'widget-sidebar-search' %}
+			{% when 'link-list' %}
+				<div class="sidebar_widget sidebar_blog sidebar_widget__link-list">
+					<div class="h6 widget_header">{{ bl_set.block_title | escape }}</div>
+					{%- assign links = bl_set.links -%}
+
+					<div class="widget_content">
+						{% if links.size > 0 %}
+							<ul class="sidebar_menu link_list">
+								{% for link in linklists[links].links %}
+									<li class="sidebar_menu_item">
+										<a class="sidebar_menu_links" href="{{ link.url }}">{{ link.title }}</a>
+									</li>
+								{% endfor %}
+							</ul>
+						{% endif %}
+					</div>
+				</div>
+
+			{% when 'resent_articles' %}
+				<div class="sidebar_widget sidebar_blog sidebar_widget__articles">
+					<div class="h6 widget_header">{{ bl_set.title | escape }}</div>
+
+					<div class="widget_content">
+						<ul class="list_articles">
+							{% for article in blog.articles limit: 3 %}
+								<li>
+									<div class="article_content {% if article.image %}article_content__img{% endif %}">
+										<div class="article_info">
+									
+											<span class="d-flex align-items-center">
+                    							<time class="article_time" datetime="{{ article.published_at | date: '%Y-%m-%dT%H:%M' }}">
+                    							  {{ article.published_at | date: '%b %d, %Y' }}
+                    							</time>
+												<span class="divider">&#124;</span>
+                 							</span>
+											{%- if blog.comments_enabled? -%}
+												<span class="post-comments">
+			    									<span class="comments_count">{{ article.comments_count }} {{ 'blog.articles.comments' | t }}</span>
+               		  						 	</span>
+											{%- endif -%} 
+										</div>  
+										
+										<h2 class="article_title h6">
+											<a class="block-title" href="{{ article.url }}">{{ article.title | truncatewords: 7 }}</a>
+										</h2>
+									
+										<div class="clearfix"></div>
+									</div>
+								</li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+
+			{% when 'blog_tags' %}
+				<div class="sidebar_widget sidebar_blog sidebar_widget__tags">
+					<div class="h6 widget_header">{{ bl_set.title | escape }}</div>
+
+					<div class="widget_content">
+						{% if blog.all_tags.size == 0 %}
+							<p class="alert alert-warning">{{ 'blog.articles.no_tags' | t }}</p>
+						{% else %}
+							<ul class="blog_tags">
+								{% for tag in blog.all_tags %}
+									<li>
+										<a {% if current_tags contains tag %} class="tag_active"{% endif %} href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>
+									</li>
+								{% endfor %}
+							</ul>
+						{% endif %}
+					</div>
+				</div>
+	
+			{% when 'widget_banner' %}
+
+			<div class="sidebar_widget no-border sidebar_blog sidebar_widget__banner w-100">
+					<div class="sidebar_banner_wrapper">
+						{% if bl_set.image != blank %}
+								{% if bl_set.link.size > 0 %}
+									<a class="image-item-container" href="{{ bl_set.link }}">
+								{% else %}	
+							 		<div class="image-item-container">
+								{% endif %}
+									<div class="image-item-wrapper" style="padding-top:{{ 1 | divided_by: bl_set.image.aspect_ratio | times: 100 }}%;">
+										{% assign img_url = bl_set.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+										<img loading="lazy" class="image-content__image lazyload"
+											src="{{ bl_set.image | img_url: '300x300' }}"
+											data-src="{{ img_url }}"
+											data-widths="[180, 360, 540]"
+											data-aspectratio="{{ bl_set.image.aspect_ratio }}"
+											data-sizes="auto"
+											alt="{{ bl_set.image.alt | escape }}">   
+									</div>
+								{% if bl_set.link.size > 0 %}
+									</a>
+								{% else %}	
+									</div>
+								{% endif %}
+                         {% else %}
+					 	<div class="image-item-container">
+                     	    <div class="img_placeholder__wrap" style="padding-top: 52.6%;">
+                     	        {{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+                     	    </div>
+                     	</div>
+                      {% endif %}
+						
+						<div class="sidebar_banner_caption banner-caption position_{{ bl_set.caption_position }}">
+							<div class="caption_text"> 
+								 {% if bl_set.title.size > 0 %}
+									<h2 class="h4">{{ bl_set.title }}</h2>
+								{% endif %}
+								
+								{% if bl_set.text.size > 0 %}
+									<p class="block-text">{{ bl_set.text }}</p>
+								{% endif %}
+							</div>
+							  
+								
+						</div>
+					</a>
+				</div>
+		{% endcase %}
+</div>
+
+{%- endfor -%}
+
+

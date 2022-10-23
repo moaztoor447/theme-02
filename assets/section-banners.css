@@ -1,0 +1,115 @@
+
+/**
+ * Section banners
+ */
+
+.section .banner-item .link_hover {
+    overflow: hidden;
+}
+.section .banner-item .link_hover img{
+    transition: .3s;
+}
+
+.section .banner-item .link_hover:hover img{
+    opacity: .875;
+    transform: scale(1.03);
+}
+
+.section .banner-item {
+    position: relative;
+}
+
+.banner-item .caption *:not(.btn) + .btn,
+.banner-item .caption *:not(.btn) + .link {
+    margin-top: 1.1rem;
+}
+
+.section .caption * + .block-title,
+.section .caption * + .block-text {
+    margin-top: 0.8rem;
+}
+
+.section .banner-caption {
+    position: relative;
+}
+
+.section .caption .caption_text {
+    position: relative;
+    z-index: 3;
+}
+
+.section .banner-caption.inverted *:not(.btn) {
+    color: var(--color-white);
+}
+
+.section .style-standard .banner-caption p {
+    margin: 0;
+}
+
+.section .style-standard .banner-caption .text-banner {
+    font-size: 18px;
+    line-height: 1.667;
+    color: var(--color-black);
+}
+
+.section .style-standard .banner-caption p + a {
+    margin-top: 20px;
+}
+.section_banners .banner-item {
+    margin-bottom: 0;
+}
+
+
+
+@media (max-width: 767px) {
+    .section .banner-caption {
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+    .section .banner-item .caption .caption_text {
+        padding-bottom: 20px;
+    }
+}
+
+@media (max-width: 991px) {
+    .section_banners {
+        max-width: 570px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+.full-width .section_banners .caption.container {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+
+.section .image-item-container {
+    position: relative;
+}
+
+.section .image-item-wrapper {
+    display: block;
+    margin: 0 auto;
+}
+
+.section_banners .banner-badge {
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    min-width: 4.375rem;
+    min-height: 2.813rem;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    background-color: var(--color-black);
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}

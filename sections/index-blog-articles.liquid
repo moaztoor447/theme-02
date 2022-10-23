@@ -1,0 +1,646 @@
+{%- assign item = section.settings -%}
+{%- assign postCount = item.section_blog_limit | plus: 0 -%}
+{%- assign postView = item.post_view | plus: 0 -%}
+
+{%- assign useC = false -%}
+{% if item.carousel_view %}
+  {%- assign useC = true -%}
+{% endif %}
+
+{%- assign section_blog = 0 -%}
+{% if item.section_blog != blank %}
+	{%- assign section_blog = blogs[item.section_blog] -%}
+{% endif %}
+
+{% case item.column_item %}
+  {% when '16%' %}
+  {%- assign column_item = 'col-xl-2 col-md-6' -%}
+  {% when '20%' %}
+  {%- assign column_item = 'col-xl-2-5 col-md-6' -%}
+  {% when '25%' %}
+  {%- assign column_item = 'col-xl-3 col-md-6' -%}
+  {% when '33%' %}
+  {%- assign column_item = 'col-xl-4 col-md-6' -%}
+  {% when '50%' %}
+  {%- assign column_item = 'col-xl-6 col-md-6' -%}
+  {% when '100%' %}
+  {%- assign column_item = 'col-xl-12' -%}
+  {%- assign column_class = 'column_item_fullwidth' -%}
+{% endcase %}
+
+
+{% unless section_blog.empty? %}
+	
+	  {% style %}
+  		{% if item.use_blog_image_overlay %}
+			     /* Style background overlay */
+			     .section-style-{{ section.id }} .blog__main .article_image::before {
+			         content: '';
+			         position: absolute;
+			         top: 0;
+			         left: 0;
+			         right: 0;
+			         bottom: 0;
+			         display: block;
+			         z-index: 1;
+			         background-color: {{ item.blog_image_color | color_modify: 'alpha', item.blog_image_color_opacity }};
+			         transition: .3s;
+			     }
+  		{% endif %}
+
+		@media (min-width: 1200px){
+			.section-style-{{ section.id }} .blog__main:not(.img_article_none) .article_caption:not(.article_caption_no_image){
+				padding: {{ item.inset_caption }};
+			}
+		}
+
+		{% endstyle %} 
+	
+
+
+<div class="section-style-{{ section.id }}">
+	{%- include 'section-style' -%}
+	<div class="{{ item.container_width }}">
+		<div class="blog__main {% if item.blog_caption_position == 'bottom' %} article_caption--bottom {% elsif blog_caption_position == 'top' %} article_caption--top {% else %}{% endif %} align--{{ item.textalign_pos }}{% if item.style != 'type_h_1' and useC and section_blog.articles_count > postView %} mx-0{% endif %} linkstyle--{{ item.link_style  }} row{% if item.style == 'type_h_1' %} justify-content-md-between justify-content-center{% endif %} type_{{ item.post_layout }}{% if item.caption_absolute == true and item.post_layout != 'list' %} caption_absolute{% endif %}{% if item.hide_img == true %} img_article_none{% endif %}{% if item.desc_none == true %} desc_article_none{% endif %}">
+		 {% if item.section_title != blank or item.item_text != blank or item.show_view_all %}
+		  <div class="{% if item.style == 'type_h_3' %} text-center col-md-12 {% elsif item.style == 'type_h_1' %} col-xl-4{% else %} mb-3 mb-xl-0 text-left {% endif %} col-12 {% unless useC %} mt-3 {% endunless %}">
+			{% if item.section_title != blank %}
+			  <h2 class="{% if item.style == 'type_h_1' %}h3 mb-3{% else %} h4{% endif %} mb-1">
+				{{ item.section_title }}
+			  </h2>
+			{% endif %}
+			
+			{% if item.item_text != blank %}
+			  <div class="{% if item.style == 'type_h_1' %}text{% else %} subtext{% endif %}">
+				{{ item.item_text }}
+			  </div>
+			{% endif %}
+		  {% if item.style == 'type_h_1' %}
+			{% if item.show_view_all %}
+			  <div class="view_all__wrap col-12 px-0 mt-4">
+				<a href="{{ blogs[item.section_blog].url }}" class="btn btn-md btn-primary {% if settings.use_lg %} btn-gradient {% endif %}">{{ 'blog.articles.view_all_posts' | t }}</a>
+			  </div>
+			{% endif %}
+			{% endif %}
+		 </div>
+		 {% endif %}
+			{% unless section_blog.empty? %}
+		{% if useC and section_blog.articles_count > postView %}
+			<div id="zmz-carousel-{{ section.id }}" class="{% if item.style == 'type_h_1' %}col-xl mt-md-0 mt-3 {% endif %}swiper-container zmz-swiper-container mt-2 mt-xl-4 {% if item.inverted %} inverted{% endif %} {% if item.post_view == '1' %} swiper-nav-wrapper_mod{% endif %}"
+				 data-options='{
+						"observer": true,
+						"observeParents": true,
+						"pagination": {"el": "#pagination_{{ section.id }}", {% if item.carousel_control_type == 'fraction' %}"type": "fraction"{% elsif item.carousel_control_type == 'progressbar' %}"type": "progressbar"{% else %}"clickable": true{% endif %}},
+						"navigation": {"nextEl": "#next_{{ section.id }}", "prevEl": "#prev_{{ section.id }}"},
+						"spaceBetween": {% if item.reset_indent %}0{% else %}15{% endif %},
+						"slidesPerView": 1,
+						{% if item.carousel_control_type == 'fraction' %}"slidesPerGroup": 1, {% endif %}
+						"breakpoints": {
+							"640": { 
+								"slidesPerView": 2,
+								 {% if item.carousel_control_type == 'fraction' %} "slidesPerGroup": 2, {% endif %}
+								"spaceBetween": {% if item.reset_indent %}0{% else %}20{% endif %}
+							 },
+							"1024": {
+								"slidesPerView": {{ postView }},
+								{% if item.carousel_control_type == 'fraction' %} "slidesPerGroup": {{ postView }}, {% endif %}
+								"spaceBetween": {% if item.reset_indent %}0{% else %}30{% endif %}
+							},
+							"1536": {
+								"slidesPerView": {{ postView }},
+								{% if section.settings.carousel_control_type == 'fraction' %}"slidesPerGroup": {{ productsView }}, {% endif %}
+								"spaceBetween": {% if item.reset_indent == true %}0{% elsif settings.use_custom_container_only_index == false or settings.use_custom_container_only_index and template == 'index' %}{{ settings.spacer }}{% else %} 30{% endif %}
+							 }
+						}
+					}'>
+			
+			<div class="swiper-wrapper mx-0 mb-7">
+				{% for article in section_blog.articles limit: postCount %}
+					<div class="swiper-slide">
+						{% case item.post_layout %}
+					 		{% when 'grid' %}
+					 			{% include 'blog-grid-item' %}
+					 		{% when 'list' %}
+					 			{% include 'blog-listing-item' %}
+					 	 {% endcase %}
+					</div>
+				{% endfor %}
+			</div>
+		
+				{% unless item.off_carousel_pag %}
+					<div id="pagination_{{ section.id }}" class="swiper-pagination"></div>
+				{% endunless %}
+				{% unless item.off_carousel_nav %}
+					<div id="prev_{{ section.id }}" class="swiper-button-prev"></div>
+					<div id="next_{{ section.id }}" class="swiper-button-next"></div>
+				{% endunless %}
+		</div>
+	{% else %}
+		<div class="row{% if item.reset_indent == true %} gx-0{% endif %}{% if item.inverted %} inverted{% endif %} {% if item.style == 'type_h_1' %} col-xl{% endif %}">
+			{% for article in section_blog.articles limit: postCount %}
+				<div class="{{ column_class }} {{ column_item }} col-12 mt-3 text-left text-md-{{ item.textalign_pos }}">
+				  {% case item.post_layout %}
+				  {% when 'grid' %}
+					{% include 'blog-grid-item' %}
+				  {% when 'list' %}
+					{% include 'blog-listing-item' %}
+				  {% endcase %}
+				</div>
+			{% else %}
+			  {% for article in (1..postCount) %}
+				<div class="{{ column_item }} col-md-6 col-12 mt-3">
+				  <div class="article_item no-content mb-2">
+					<div class="card-wrapper">
+						  <div class="card__inner">
+							<div class="card__media-full-spacer">
+							  <div class="media media--landscape"></div>
+							</div>
+						  </div>
+						</div>
+					<div class="article_caption mt-1">
+					  <h2 class="article_title h5">
+							 <span>
+								Post name
+							 </span>
+					  </h2>
+					  <div class="link link-primary mt-2">
+							 <span>
+								Post link url
+							 </span>
+					  </div>
+					</div>
+				  </div>
+				</div>
+			  {% endfor %}
+			{% endfor %}
+		</div>
+	{% endif %}
+			{% endunless %}
+		</div>
+	  {% unless item.style == 'type_h_1' %}
+		{% if item.show_view_all %}
+		  <div class="view_all__wrap col-12 px-0 mt-5 text-center">
+			<a href="{{ blogs[item.section_blog].url }}" class="btn btn-md btn-primary {% if settings.use_lg %} btn-gradient {% endif %}">{{ 'blog.articles.view_all_posts' | t }}</a>
+		  </div>
+		{% endif %}
+	  {% endunless %}
+	</div>
+</div>
+
+{% endunless %}
+
+{% schema %}
+{
+	"name": "Blog articles",
+	"tag": "section",
+	"class": "section section_homepage index_section_blog-articles",
+	"settings": [
+		{
+			"type":      "select",
+			"id":        "container_width",
+			"label":     "Container width",
+			"options": [
+				{
+					"value": "container",
+					"label": "Box"
+				},
+				{
+					"value": "container-fluid",
+					"label": "Container Fluid"
+				},
+				{
+					"value": "full-width",
+					"label": "Full"
+				}
+			],
+			"default":   "container"
+		},
+		
+		{
+			"type": "checkbox",
+			"id": "reset_indent",
+			"label": "Remove indent",
+			"default":   false
+		},
+		{
+			"type": "text",
+			"id": "inset_section",
+			"label": "Inset Section",
+			"default": "0px 0px 0px 0px",
+			"info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+		},
+		
+		{
+			"type": "text",
+			"id": "offset_section",
+			"label": "Offset Section",
+			"default": "0px 0px 0px 0px",
+			"info": "offset: Top Right Bottom Left"
+		},
+		
+		{
+			"type": "color",
+			"id": "bg_section",
+			"label": "Background Section",
+			"default": "#ffffff"
+		},
+		{
+			"type": "text",
+			"id": "section_title",
+			"label": "Heading",
+  			"default": "Blog"
+		},
+ 		{
+ 			"type": "richtext",
+ 			"id": "item_text",
+ 			"label": "Text",
+ 			"default": "<p>Blog description</p>"
+ 		},
+  
+  		{
+  			"type": "checkbox",
+  			"id": "show_view_all",
+  			"label": "Show 'View all post' button"
+  		},
+  
+		{
+			"type": "select",
+			"id": "style",
+			"label": "Item Heading style",
+  			"default": "type_h_2",
+			"options": [
+				{
+					"value": "type_h_1",
+					"label": "Style 1"
+				},
+				{
+					"value": "type_h_2",
+					"label": "Style 2"
+				},
+  				{
+  					"value": "type_h_3",
+  					"label": "Style 3"
+  				}
+			]
+		},
+  
+		{
+			"type": "blog",
+			"id": "section_blog",
+			"label": "Blog"
+		},
+  
+  		{
+  			"type": "select",
+  			"id": "post_layout",
+  			"label": "Choose post layout",
+  			"options": [
+  				{
+  					"value": "grid",
+  					"label": "Grid"
+  				},
+  				{
+  					"value": "list",
+  					"label": "List"
+  				}
+  			],
+  			"default": "grid"
+  		},
+  
+ 		{
+ 			"type": "select",
+ 			"id": "textalign_pos",
+ 			"label": "Caption text align",
+ 			"default": "left",
+ 			"options": [
+ 				{
+ 					"label": "Left align",
+ 					"value": "left"
+ 				},
+ 				{
+ 					"label": "Center align",
+ 					"value": "center"
+ 				},
+ 				{
+ 					"label": "Right align",
+ 					"value": "right"
+ 				}
+ 			]
+ 		},
+  
+  
+  		{
+  			"type": "select",
+  			"id": "column_item",
+  			"label": "Width of Columns(not apply to carousel)",
+  			"options": [
+  				{
+  					"value": "16%",
+  					"label": "width 16,66%"
+  				},
+  				{
+  					"value": "20%",
+  					"label": "width 20%"
+  				},
+  				{
+  					"value": "25%",
+  					"label": "width 25%"
+  				},
+  				{
+  					"value": "33%",
+  					"label": "width 33.3333%"
+  				},
+  				{
+  					"value": "50%",
+  					"label": "width 50%"
+  				},
+				{
+					"value": "100%",
+					"label": "width 100%"
+				}
+  			],
+  			"default": "33%"
+  		},
+		{
+			"type": "select",
+			"id": "section_blog_limit",
+			"label": "Show posts",
+			"default": "3",
+			"options": [
+				{
+					"value": "1",
+					"label": "1"
+				},
+				{
+					"value": "2",
+					"label": "2"
+				},
+				{
+					"value": "3",
+					"label": "3"
+				},
+				{
+					"value": "4",
+					"label": "4"
+				},
+				{
+					"value": "5",
+					"label": "5"
+				},
+  				{
+  					"value": "6",
+  					"label": "6"
+  				},
+  				{
+  					"value": "7",
+  					"label": "7"
+  				},
+  				{
+  					"value": "8",
+  					"label": "8"
+  				}
+			]
+		},
+  
+  		{
+  			"type": "select",
+  			"id": "blog_image_ratio",
+  			"options": [
+  				{
+  					"value": "adapt",
+  					"label": "adapt"
+  				},
+  				{
+  					"value": "portrait-thumb",
+  					"label": "portrait"
+  				},
+  				{
+  					"value": "square",
+  					"label": "square"
+  				},
+  				{
+  					"value": "landscape",
+  					"label": "landscape"
+  				}
+  			],
+  			"default": "adapt",
+  			"label": "image ratio"
+  		},
+
+		{
+			"type": "checkbox",
+			"id": "blog_show_info",
+			"label": "Show info",
+			"default": true
+		},
+		
+		{
+			"type": "checkbox",
+			"id": "blog_show_author",
+			"label": "Show author",
+			"default": true
+		},
+		
+		{
+			"type": "checkbox",
+			"id": "blog_show_date",
+			"label": "Show date",
+			"default": true
+		},
+		
+		{
+			"type": "checkbox",
+			"id": "show_comments",
+			"label": "Show comments",
+			"default": true
+		},
+  		{
+			"type": "checkbox",
+			"id": "blog_show_tags",
+			"label": "Show tags",
+			"default": false,
+  			"info": "limit - 3"
+  		},
+  		{
+  			"type": "checkbox",
+  			"id": "caption_absolute",
+  			"label": "Caption on image",
+  			"default": false,
+  			"info": "For Grid or Masonry layout"
+  		},
+  
+ 		{
+ 			"type": "select",
+ 			"id": "blog_caption_position",
+  			"label": "Caption position on image",
+  			"info": "Need use 'Caption on image'",
+ 			"options": [
+ 				{
+ 					"value": "bottom",
+ 					"label": "Bottom"
+ 				},
+ 				{
+ 					"value": "center",
+ 					"label": "Center"
+ 				},
+ 				{
+ 					"value": "top",
+ 					"label": "Top"
+ 				}
+ 			],
+ 			"default": "center"
+ 		},
+  
+  		{
+  			"type": "text",
+  			"id": "inset_caption",
+  			"label": "Inset Caption",
+  			"default": "0",
+  			"info": "offset: Top Right Bottom Left"
+  		},
+  		{
+  			"type": "checkbox",
+  			"id": "inverted",
+  			"label": "Inverted",
+  			"default": false
+  		},
+  
+  		{
+  			"type": "checkbox",
+  			"id": "desc_none",
+  			"label": "Article description none",
+  			"default": false
+  		},
+  
+  		{
+  			"type": "checkbox",
+  			"id": "hide_img",
+  			"label": "Hide article image",
+  			"default": false
+  		},
+  
+  		{
+  			"type": "select",
+  			"id": "link_style",
+  			"label": "Link style",
+  			"default": "link",
+  			"options": [
+  				{
+  					"value": "link",
+  					"label": "url style as Link"
+  				},
+  				{
+  					"value": "btn",
+  					"label": "url style as Button"
+  				}
+  			]
+  		},
+  
+  		{
+  			"type": "checkbox",
+  			"id": "use_blog_image_overlay",
+  			"label": "Use background overlay",
+  			"default": false
+  		},
+  
+  		{
+  			"type": "color",
+  			"id": "blog_image_color",
+  			"label": "Image overlay"
+  		},
+  		{
+  			"type":      "range",
+  			"id":        "blog_image_color_opacity",
+  			"min":       0,
+  			"max":        1,
+  			"step":       0.1,
+  			"unit":       "px",
+  			"label":     "Background opacity",
+  			"default":   0.5
+  		},
+  
+		{
+			"type": "header",
+			"content": "Carousel settings"
+		},
+  
+  		{
+  			"type": "checkbox",
+  			"id": "carousel_view",
+  			"label": "Use carousel",
+  			"default":  false
+  		},
+
+		{
+		"type": "select",
+		"id": "post_view",
+		"label": "Carousel post view",
+			"options": [
+				{
+					"value": "1",
+					"label": "1"
+				},
+				{
+					"value": "2",
+					"label": "2"
+				},
+				{
+					"value": "3",
+					"label": "3"
+				},
+				{
+					"value": "4",
+					"label": "4"
+				}
+			],
+			"default": "3",
+  			"info": "If this value is more/equal article count in blog, the carousel will be disabled"
+		},
+  
+	
+		{
+			"type": "checkbox",
+			"id": "off_carousel_nav",
+			"label": "Disable carousel navigation",
+			"default":  false
+		},
+		{
+			"type": "checkbox",
+			"id": "off_carousel_pag",
+			"label": "Disable carousel pagination",
+			"default":  false
+		},
+		{
+			"type": "select",
+			"id": "carousel_control_type",
+			"label": "Pagination type",
+			"options": [
+				{
+					"value": "pagination",
+					"label": "Bullets"
+				},
+				{
+					"value": "fraction",
+					"label": "Fraction"
+				},
+				{
+					"value": "progressbar",
+					"label": "Progressbar"
+				}
+			],
+			"default": "pagination"
+		}
+	],
+	"presets": [
+		{
+			"name": "Blog articles",
+			"category": "Blog",
+			"settings": {
+				"section_blog": "News",
+				"section_blog_limit": "3"
+			}
+		}
+	]
+}
+{% endschema %}
+

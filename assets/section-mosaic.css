@@ -1,0 +1,99 @@
+/**
+ * Section mega mosaic
+ */
+
+.section_mosaic .collection_listing__main > div{
+    margin-bottom: 0;
+}
+
+.section_mosaic .collection_listing__main .items_count--none .items_count {
+    display: none;
+}
+
+.section_mosaic .caption * + .btn {
+    margin-top: 2.5rem;
+}
+.section_mosaic .caption * + .link  {
+    margin-top: 2.2rem;
+}
+
+.section_mosaic .block_wrapper{
+    position: relative;
+}
+
+.section_mosaic .block_wrapper .link-list{
+    position: relative;
+    z-index: 5;
+}
+.section_mosaic .block_wrapper.linklist {
+    display: flex;
+}
+
+
+main .section_mosaic .product_listing__main:not(.product_listing__list) .product_item_wrap  {
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+main .section_mosaic .product_listing__main:not(.product_listing__list) {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+
+.section_mosaic .product_listing__list .product_info {
+	padding-top:0;
+  	margin-top:0!important;
+  	padding-right: 15%;
+}
+
+
+.section_mosaic .list_products .product_item {
+	align-items: flex-start;
+}
+
+.section_mosaic .blog__main.type_list .article_item > .row {
+	 align-items: flex-start!important;
+}
+
+.section_mosaic .blog__main.type_list .article_item .article_info {
+	margin-top: 0;
+}
+
+
+@media (min-width: 992px) {
+
+.section_mosaic .one-item-carousel.product_listing__grid {
+  	padding-top: 40px;
+	padding-left: 60px;
+    padding-right: 60px;
+}
+
+  .section_mosaic .one-item-carousel.product_listing__grid .swiper-slide{
+  	margin-right: 90px!important;
+  }  
+  
+}
+
+@media (min-width: 768px) {
+    main .section_mosaic .product_listing__main:not(.product_listing__list) {
+        margin-left: 0;
+        margin-right: 0;
+    }
+   main .section_mosaic .product_listing__main:not(.product_listing__list) .product_item_wrap {
+        margin-bottom: 0;
+       padding-left: 0;
+       padding-right: 0;
+    }
+}
+
+.section_mosaic .block-title strong {
+    color: var(--color-primary);
+}
+
+.section_mosaic .block-title.h1{
+    text-transform: uppercase;
+}
+
+

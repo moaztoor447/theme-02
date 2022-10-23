@@ -1,0 +1,98 @@
+/* Pagination */
+
+.pagination {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+}
+
+@media (max-width: 767px) {
+    #main-collection-product-grid + .pagination {
+        margin-top: 50px;
+    }
+}
+
+.pagination p {
+    font-size: 14px;
+    line-height: 1;
+    margin: 0;
+}
+
+.pagination ul {
+    margin: 17px 0 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+}
+
+.pagination ul > li a, .pagination ul > li span {
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    padding-bottom: 3px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    font-size: 14px;
+    border-radius: 0;
+    color: var(--base-font-color);
+    border-bottom: 1px solid transparent;
+}
+
+.pagination ul > li + li {
+    margin-left: 10px;
+}
+
+.pagination li.pagination_el a:hover,
+.pagination li.pagination_el a:focus,
+.pagination li.pagination_el a:active,
+.pagination li.pagination_el span:hover,
+.pagination li.pagination_el span:focus,
+.pagination li.pagination_el span:active{
+    color: var(--color-black);
+    border-bottom-color: var(--color-black);
+}
+
+.pagination .pagination_el.pagination_current span,
+.pagination .pagination_el.pagination_current a{
+    color: var(--color-black);
+    border-bottom-color: var(--color-black);
+}
+
+.pagination .pagination_prev a,
+.pagination .pagination_prev span,
+.pagination .pagination_next a,
+.pagination .pagination_next span {
+    font-size: 0;
+    background-color: transparent;
+    border: none;
+}
+
+.pagination li svg path{
+    fill: var(--color-grey-4);
+}
+.pagination li:hover svg path,
+.pagination li:active svg path,
+.pagination li:focus svg path{
+    fill: var(--color-black);
+}
+
+@media (min-width: 768px)  {
+    .pagination .pagination_prev {
+        margin-right: 30px;
+    }
+    .pagination .pagination_next {
+        margin-left: 30px;
+    }
+}
+
+
+

@@ -1,0 +1,288 @@
+<div class="template_customer template_customer__login">
+
+	<h1 class="page_heading h2 custom_page_heading">
+		{% if section.settings.login_title.size > 0 %}
+			{{ section.settings.login_title }}
+		 {% else %}
+			{{ page_title }} 
+		{% endif %}
+	</h1>
+  
+  {% if customer %}
+		<div class="container-small container-small-570 mt-4">
+			<div class="customer_wrapper row justify-content-center">
+				<div class="col-6">
+					<a href="/account" class="customer_block text-center customer_block__info">
+						<svg class="mb-1" width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M19.9996 28.334C26.1029 28.334 31.4413 30.959 34.3446 34.8757L31.2746 36.3273C28.9112 33.5273 24.7446 31.6673 19.9996 31.6673C15.2546 31.6673 11.0879 33.5273 8.72458 36.3273L5.65625 34.874C8.55958 30.9573 13.8963 28.334 19.9996 28.334ZM19.9996 3.33398C22.2097 3.33398 24.3293 4.21196 25.8921 5.77476C27.4549 7.33756 28.3329 9.45718 28.3329 11.6673V16.6673C28.3328 18.8148 27.5037 20.8793 26.0185 22.4303C24.5333 23.9813 22.5067 24.8991 20.3613 24.9923L19.9996 25.0007C17.7894 25.0007 15.6698 24.1227 14.107 22.5599C12.5442 20.9971 11.6663 18.8775 11.6663 16.6673V11.6673C11.6664 9.51988 12.4955 7.45538 13.9807 5.90436C15.4659 4.35333 17.4925 3.43552 19.6379 3.34232L19.9996 3.33398ZM19.9996 6.66732C18.7242 6.66725 17.4971 7.15453 16.5691 8.02946C15.6412 8.90439 15.0827 10.1008 15.0079 11.374L14.9996 11.6673V16.6673C14.9983 17.9688 15.5046 19.2195 16.4109 20.1537C17.3171 21.0878 18.5519 21.6318 19.8529 21.67C21.1538 21.7082 22.4184 21.2376 23.3779 20.3582C24.3374 19.4788 24.9161 18.26 24.9913 16.9607L24.9996 16.6673V11.6673C24.9996 10.3412 24.4728 9.06947 23.5351 8.13178C22.5974 7.1941 21.3257 6.66732 19.9996 6.66732Z" fill="#121212"/>
+						</svg>
+						<h5>{{ 'customer.account.account_title' | t }}</h5>
+					</a>
+				</div>
+				<div class="col-6">
+					<a href="/account/logout" class="customer_block text-center customer_block__reset">
+						<svg class="mb-1" width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M30.6667 33.3327L30.6667 6.66601L19 6.66601L19 3.33268L32.3333 3.33268C32.7754 3.33268 33.1993 3.50827 33.5118 3.82083C33.8244 4.13339 34 4.55732 34 4.99935L34 34.9993C34 35.4414 33.8244 35.8653 33.5118 36.1779C33.1993 36.4904 32.7754 36.666 32.3333 36.666L19 36.666L19 33.3327L30.6667 33.3327ZM14 18.3327L25.6667 18.3327L25.6667 21.666L14 21.666L14 29.9993L4 19.9993L14 9.99935L14 18.3327Z" fill="#121212"/>
+						</svg>
+						<h5>{{ 'customer.account.logout' | t }}</h5>
+					</a>
+				</div>
+			</div>
+		</div>
+	 
+	{% else %}
+	
+	{% comment %} NAVIGATION {% endcomment %}
+	<div id="account_section__wrapper" class="mt-4">
+		<div class="customer_wrapper row">
+				
+				{% comment %} LOGIN {% endcomment %}
+				<div id="account_section__login"  class="account_section account_section__login p-xl-6 p-md-4 col-md-6 mt-4">
+					<div class="customer_item_wrap container-sm mr-auto ml-0 px-0">
+					 
+						{% form 'customer_login' %} 
+						 
+						 <h2 class="mb-3 h4 close-wrapper">{{ 'customer.login_form.title' | t }}</h2>
+						{% unless template.name == 'register' %}
+						{{ form.errors | default_errors | replace: 'errors', 'alert alert-danger' }}
+						{% endunless %}
+						<div class="form-group row">
+							<div class="col-12 text-left">
+								<label for="customer_email">{{ 'customer.login_form.email' | t }}</label>
+							</div>
+							<div class="form-control-content col-12">
+								<input type="email" value="" placeholder="Text" name="customer[email]" required="required" id="customer_email" class="form-control {% if form.errors contains "email" %}error{% endif %}">
+							</div>
+						</div>
+						
+						{% if form.password_needed %}
+							<div class="form-group row">
+								<div class="col-12 text-left">
+									<label for="customer_password">{{ 'customer.login_form.password' | t }}</label>
+								</div>
+								<div class="form-control-content col-12">
+									<div class="input-group">
+										<input type="password" placeholder="Password" value="" required="required" name="customer[password]" id="customer_password" class="form-control js-visible-password {% if form.errors contains "password" %} error{% endif %}">
+										<div class="input-group-append">
+											<div class="input-group-text" data-action="show-password">
+												<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="file_eye_el"><path d="M19.9213 6.33664C20.1557 5.81077 19.844 5.21824 19.2848 5.05073C18.7566 4.89251 18.1987 5.17332 17.9664 5.66527C16.4415 8.89505 13.3725 10.966 10.0416 10.966C6.6215 10.966 3.54948 8.90232 2.10083 5.68227C1.876 5.18253 1.32023 4.88805 0.785864 5.04012L0.728076 5.05657C0.155103 5.21963 -0.161611 5.82638 0.0839321 6.36027C0.677994 7.65193 1.46566 8.82793 2.44692 9.79417C2.80378 10.1456 2.90358 10.6891 2.64628 11.1163L2.37452 11.5674C2.08511 12.0479 2.25306 12.668 2.74729 12.9438C3.22751 13.2118 3.83775 13.0542 4.12169 12.589L4.23541 12.4027C4.52288 11.9316 5.1386 11.7753 5.64786 12.0022C6.39877 12.3366 7.2005 12.6011 8.01571 12.7778C8.51904 12.8869 8.90067 13.3108 8.90067 13.817V13.9866C8.90067 14.5463 9.3679 15 9.93786 15C10.5078 15 10.9751 14.5463 10.9751 13.9866V13.817C10.9751 13.3108 11.3565 12.887 11.8618 12.7872C12.6628 12.6289 13.4508 12.3976 14.1903 12.0598C14.7189 11.8183 15.372 11.963 15.6717 12.4541L15.754 12.589C16.038 13.0542 16.6482 13.2118 17.1284 12.9438C17.6227 12.668 17.7906 12.0479 17.5012 11.5674L17.2439 11.1403C16.9803 10.7027 17.0921 10.1451 17.4697 9.79728C18.5171 8.83258 19.3228 7.67903 19.9213 6.33664Z"/></svg>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						{% endif %}
+						
+						<div class="form-group">
+							<button class="btn btn-primary {% if settings.use_lg %} btn-gradient {% endif %} w-100" type="submit">{{ 'customer.login_form.button' | t }}</button>
+						</div>
+						{% endform %}
+					</div>
+					<a class="h6 mt-2" href="#" id="account_reset__link">
+						Forgot your password?
+					</a>
+				  
+				  {% comment %} RESET {% endcomment %}
+				  <div id="account_section__reset" class="account_section account_section__reset">
+					<div class="customer_item_wrap">
+					  <div class="h6 mb-3 close-wrapper">{{ 'customer.reset_password.title' | t }}
+						<a class="link_close account_reset__cancel" href="#" title="{{ 'customer.reset_password.close' | t }}">
+						  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M11.9997 10.5857L16.9497 5.63574L18.3637 7.04974L13.4137 11.9997L18.3637 16.9497L16.9497 18.3637L11.9997 13.4137L7.04974 18.3637L5.63574 16.9497L10.5857 11.9997L5.63574 7.04974L7.04974 5.63574L11.9997 10.5857Z" fill="#BEC0C4"/>
+						  </svg>
+						</a>
+					  </div>
+					  
+					  <div class="note">{{ 'customer.reset_password.subtitle' | t }}</div>
+					  
+					  <div class="subnote">{{ 'customer.reset_password.subtext' | t }}</div>
+					  
+					  {% form 'recover_customer_password' %}
+						<form action="">
+						  {% if form.posted_successfully? %}
+							<div class="alert alert-success">{{ 'customer.reset_password.success' | t }}</div>
+						  {% else %}
+							{{ form.errors | default_errors | replace: 'errors', 'alert alert-danger' }}
+						  {% endif %}
+						  <div class="form-group row align-items-md-center mt-3">
+							<div class="form-control-content col-lg-9 col-12 px-lg1">
+							  <input type="email" required="required"  placeholder="{{ 'customer.reset_password.email' | t }}" id="email_recover" name="email" value="" class="form-control">
+							</div>
+							<div class="form-group m-lg-0 col-lg-3 col-12 px-lg-1">
+							  <button type="submit" class="btn btn-primary {% if settings.use_lg %} btn-gradient {% endif %} w-100 m-lg-0">{{ 'customer.reset_password.button' | t }}</button>
+							</div>
+						  </div>
+						</form>
+						
+					  {% endform %}
+					</div>
+				  </div>
+					
+				</div>
+				
+				{% comment %} REGISTER {% endcomment %}
+				<div id="account_section__register" class="account_section account_section__register p-xl-6 p-md-4 col-md-6 mt-4">
+					<div class="customer_item_wrap container-sm ml-auto mr-0 px-0">
+						<h2 class="mb-0 h4">{{ 'customer.register_form.title' | t }}</h2>
+						<div class="mb-3">{{ 'customer.register_form.subtitle' | t }}</div>
+					 
+						{% form 'create_customer' %}
+						  
+						  {% unless template.name == 'login' %}
+						  	{{ form.errors | default_errors | replace: 'errors', 'alert alert-danger' }}
+						  {% endunless %}
+						<input type="hidden" id="password_confirmed" name="customer[password]">
+						
+						<div class="form-group row">
+							<div class="col-12 text-left">
+								<label for="first_name">{{ 'customer.register_form.first_name' | t }}</label>
+							</div>
+							<div class="form-control-content col-12">
+								<input type="text" value="" placeholder="Text" name="customer[first_name]" required="required"  id="first_name" class="form-control">
+							</div>
+						</div>
+						
+						<div class="form-group row">
+							<div class="col-12 text-left">
+								<label for="last_name">{{ 'customer.register_form.last_name' | t }}</label>
+							</div>
+							<div class="form-control-content col-12">
+								<input type="text" value="" placeholder="Text" name="customer[last_name]" required="required" id="last_name" class="form-control">
+							</div>
+						</div>
+						
+						<div class="form-group row">
+							<div class="col-12 text-left">
+								<label for="email">{{ 'customer.register_form.email' | t }}</label>
+							</div>
+							<div class="form-control-content col-12">
+								<input type="email" value="" placeholder="Email" name="customer[email]" required="required" id="email" class="form-control{% if form.errors contains "email" %} error{% endif %}">
+							</div>
+						</div>
+						
+						<div class="form-group row">
+							<div class="col-12 text-left">
+								<label for="password_1">{{ 'customer.register_form.password' | t }}</label>
+							</div>
+							<div class="form-control-content col-12">
+								<div class="input-group">
+									<input class="form-control js-visible-password" placeholder="password" required="required" type="password" value="" name="customer[password]" id="password_1">
+									<div class="input-group-append">
+										<div class="input-group-text" data-action="show-password">
+											<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="file_eye_el"><path d="M19.9213 6.33664C20.1557 5.81077 19.844 5.21824 19.2848 5.05073C18.7566 4.89251 18.1987 5.17332 17.9664 5.66527C16.4415 8.89505 13.3725 10.966 10.0416 10.966C6.6215 10.966 3.54948 8.90232 2.10083 5.68227C1.876 5.18253 1.32023 4.88805 0.785864 5.04012L0.728076 5.05657C0.155103 5.21963 -0.161611 5.82638 0.0839321 6.36027C0.677994 7.65193 1.46566 8.82793 2.44692 9.79417C2.80378 10.1456 2.90358 10.6891 2.64628 11.1163L2.37452 11.5674C2.08511 12.0479 2.25306 12.668 2.74729 12.9438C3.22751 13.2118 3.83775 13.0542 4.12169 12.589L4.23541 12.4027C4.52288 11.9316 5.1386 11.7753 5.64786 12.0022C6.39877 12.3366 7.2005 12.6011 8.01571 12.7778C8.51904 12.8869 8.90067 13.3108 8.90067 13.817V13.9866C8.90067 14.5463 9.3679 15 9.93786 15C10.5078 15 10.9751 14.5463 10.9751 13.9866V13.817C10.9751 13.3108 11.3565 12.887 11.8618 12.7872C12.6628 12.6289 13.4508 12.3976 14.1903 12.0598C14.7189 11.8183 15.372 11.963 15.6717 12.4541L15.754 12.589C16.038 13.0542 16.6482 13.2118 17.1284 12.9438C17.6227 12.668 17.7906 12.0479 17.5012 11.5674L17.2439 11.1403C16.9803 10.7027 17.0921 10.1451 17.4697 9.79728C18.5171 8.83258 19.3228 7.67903 19.9213 6.33664Z"/></svg>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group row">
+							<div class="col-12 text-left">
+								<label for="password_2">{{ 'customer.register_form.confirm_password' | t }}</label>
+							</div>
+							<div class="form-control-content col-12">
+								<div class="input-group">
+									<input type="password" value="" id="password_2" placeholder="confirm password" required="required" class="form-control js-visible-password">
+									<div class="input-group-append">
+										<div class="input-group-text" data-action="show-password">
+											<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="file_eye_el"><path d="M19.9213 6.33664C20.1557 5.81077 19.844 5.21824 19.2848 5.05073C18.7566 4.89251 18.1987 5.17332 17.9664 5.66527C16.4415 8.89505 13.3725 10.966 10.0416 10.966C6.6215 10.966 3.54948 8.90232 2.10083 5.68227C1.876 5.18253 1.32023 4.88805 0.785864 5.04012L0.728076 5.05657C0.155103 5.21963 -0.161611 5.82638 0.0839321 6.36027C0.677994 7.65193 1.46566 8.82793 2.44692 9.79417C2.80378 10.1456 2.90358 10.6891 2.64628 11.1163L2.37452 11.5674C2.08511 12.0479 2.25306 12.668 2.74729 12.9438C3.22751 13.2118 3.83775 13.0542 4.12169 12.589L4.23541 12.4027C4.52288 11.9316 5.1386 11.7753 5.64786 12.0022C6.39877 12.3366 7.2005 12.6011 8.01571 12.7778C8.51904 12.8869 8.90067 13.3108 8.90067 13.817V13.9866C8.90067 14.5463 9.3679 15 9.93786 15C10.5078 15 10.9751 14.5463 10.9751 13.9866V13.817C10.9751 13.3108 11.3565 12.887 11.8618 12.7872C12.6628 12.6289 13.4508 12.3976 14.1903 12.0598C14.7189 11.8183 15.372 11.963 15.6717 12.4541L15.754 12.589C16.038 13.0542 16.6482 13.2118 17.1284 12.9438C17.6227 12.668 17.7906 12.0479 17.5012 11.5674L17.2439 11.1403C16.9803 10.7027 17.0921 10.1451 17.4697 9.79728C18.5171 8.83258 19.3228 7.67903 19.9213 6.33664Z"/></svg>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div>
+								<button class="btn btn-primary {% if settings.use_lg %} btn-gradient {% endif %} w-100" type="submit">{{ 'customer.register_form.button' | t }}</button>
+							</div>
+						</div>
+						{% endform %}
+					</div>
+				</div>
+				
+				{% comment %} LOGIN GUEST {% endcomment %}
+				{% if shop.checkout.guest_login %}
+					<div id="account_section__login_guest" class="account_section account_section__login_guest col-md-6 mt-4">
+						<div class="customer_item_wrap">
+							<h2 class="close-wrapper h3 mb-3">Guest login</h2>
+							
+							<div class="note">Guest login allows you to place orders without registration</div>
+							
+							{% form 'guest_login' %}
+							<button class="btn btn-default" type="submit">Continue as Guest</button>
+							{% endform %}
+						</div>
+					</div>
+				{% endif %}
+			</div>
+	</div>
+	{% endif %}
+</div>
+
+{% comment %}
+	<script>
+		theme.loginForms = true;
+	</script>
+{% endcomment %}
+
+{% schema %}
+	{
+		"name": "Login",
+		"settings": [
+			{
+				"type": "header",
+				"content": "Login block"
+			},
+{
+				"type": "text",
+				"id": "login_title",
+				"label": "Login title"
+			}
+		]
+	}
+{% endschema %}
+
+{% javascript %} 
+jQuery(document).ready(function($) {
+
+	// TRACK ACCOUNT FORM 
+	$('.template_customer form').each(function (){      
+		$(this).on('submit', function(e){
+			var formCookie = $(this).attr('id');
+			$.cookie('accountForm', formCookie);
+		});
+	});
+
+	var section_reset = $('#account_section__reset');
+
+	// HIDE/SHOW FORM
+	 if ( section_reset.find('.alert').length ) {
+		section_reset.show();
+	};
+
+
+	// RESET
+	$('#account_reset__link').on('click', function(e) {
+		e.preventDefault();
+		section_reset.fadeIn(200);
+	});
+	$('.account_reset__cancel').on('click', function(e) {
+		e.preventDefault();
+		section_reset.fadeOut(200);
+	});
+	if ( document.location.href.indexOf( '#recover' ) !== -1 ) {
+		section_reset.show();
+	};
+
+	// VALIDATION
+	$('#create_customer').formValidation();
+	$('#create_customer').on('submit', function() {
+		$('#password_confirmed').val( $('#password_1').val() );
+	});
+
+	$('#customer_login').formValidation();
+	$('#account_section__activation form').formValidation();
+	$('#account_section__reset-account form').formValidation();
+});
+{% endjavascript %}

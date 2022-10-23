@@ -1,0 +1,92 @@
+
+<div class="header_cart">
+ 
+	<a class="cart_link {% if ajax %} {% unless template == 'cart' %} js_cart_link_toggle {% endunless %} {% endif %} header_icon {% if ss_item.view_cart == 'type-4' %} header_icon--revers{% endif %} {% unless style == 'type_1' %} item-absolute{% endunless %}" href="{% if ajax %} javascript:void(0){% else %}/cart{% endif %}">
+		{% unless ss_item.view_cart == 'type-1' %}
+			<span class="link_text">{{ 'layout.header.cart' | t }}</span>
+		{% endunless %}
+
+		<span class="svg-icon svg-icon--lg {% if ss_item.view_cart == 'type-2' %} hidden-xl{% endif %}">
+			{% render 'icon-cart' %}
+		</span>
+	
+		<span id="cart_items" class="header_cart_items">{{ cart.item_count }}</span>
+	</a>
+ 
+	{% if ajax %}
+		<script>
+			theme.cartAjaxOn = true;
+			theme.cartAjaxTextEmpty = '{{ 'pages.cart.empty_cart_1' | t }}';
+			theme.cartAjaxTextTotalPrice = '{{ 'pages.cart.total_price' | t }}';
+			theme.cartAjaxTextGoCart = '{{ 'pages.cart.go_to_cart' | t }}';
+			theme.cartAjaxTextGoCheckout = '{{ 'pages.cart.proceed_to_checkout' | t }}';
+			theme.cartAjaxTextClearCart = '{{ 'pages.cart.clear_cart' | t }}';
+		</script>
+
+		<div class="cart_content_wrap">
+			<div class="cart_content_preloader off">
+				<div class="global_loader"></div>
+			</div>
+			<div class="cart-content-header d-xl-none">
+				<span class="link_close js_cart_close">
+					{% render 'icon-close-small' %}
+				</span>
+				<div class="h4">{{ 'layout.header.cart' | t }}</div>
+			</div>
+			 
+			<div class="cart_content_box">
+				{% if cart.item_count > 0 %}
+					<ul class="cart_list_items">
+						{% for item in cart.items %}
+							<li class="cart_items" data-id="{{ forloop.index }}">
+								<img class="product-thumbnail item_img img-fluid" src="{{ item | img_url: '130x130', crop: 'center' }}"  alt="{{ item.title | escape }}" />
+								<div class="item_desc">
+									<a class="product_title" href="{{ item.product.url }}">{{ item.product.title | truncate: 30 }}</a>
+									<div class="product-price product-price-sm mt-2">
+										<span class="product-price money"><span class="product_quantity">{{ item.quantity }} X</span> {{ item.price | money }}</span>
+									</div>
+									<a class="item_remove_btn" href="#" data-id="{{ item.id }}">
+										<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path d="M17 6H22V8H20V21C20 21.2652 19.8946 21.5196 19.7071 21.7071C19.5196 21.8946 19.2652 22 19 22H5C4.73478 22 4.48043 21.8946 4.29289 21.7071C4.10536 21.5196 4 21.2652 4 21V8H2V6H7V3C7 2.73478 7.10536 2.48043 7.29289 2.29289C7.48043 2.10536 7.73478 2 8 2H16C16.2652 2 16.5196 2.10536 16.7071 2.29289C16.8946 2.48043 17 2.73478 17 3V6ZM18 8H6V20H18V8ZM9 4V6H15V4H9Z" fill="#121212"/>
+										</svg>
+									</a>
+								</div>
+							</li>
+						{% endfor %}
+					</ul>
+
+					<div class="box_footer">
+						<div class="cart_total mt-xl-2">
+							<span class="label mr-1">{{ 'pages.cart.total_price' | t }}: </span>
+							<span class="product-price money value">{{ cart.total_price | money }}</span>
+						</div>
+						<a class="cart_clear clear_cart_all_items-js d-block my-3" href="/cart/clear">
+							<span>{{ 'pages.cart.clear_cart' | t }}</span>
+						</a>
+						<div class="btn-group my-3">
+							<a class="btn btn-primary {% if settings.use_lg %} btn-gradient {% endif %} btn-block w-100" href="/cart">{{ 'pages.cart.go_to_cart' | t }}</a>
+							<a class="btn btn-secondary btn-block w-100 mt-2" href="/checkout">{{ 'pages.cart.proceed_to_checkout' | t }}</a>
+						</div>
+					</div>
+
+				{% else %}
+					<p class="empty_alert text-center my-0">
+						<span class="svg-icon svg-icon--lg">
+							{% render 'icon-cart' %}
+						</span>
+						<span class="mt-2">{{ 'pages.cart.empty_cart_1' | t }}</span>
+					</p>
+				{% endif %}
+			</div>
+		</div>
+	{% else %}
+		<script>
+			theme.cartAjaxOn = false;
+		</script>
+	{% endif %}
+	<style>
+		.global_loader {
+			background: url({{ 'cart_loader.gif' | asset_url }}) center center no-repeat;
+		}
+	</style>
+</div>

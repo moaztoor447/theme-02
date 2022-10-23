@@ -1,0 +1,37 @@
+
+<div id="main-collection-product-grid" data-id="{{ section.id }}">
+  <div class="row product_listing__main custom_pagination_list product_listing__grid sidebar-row" id="product_listing__sorted" data-paginate-by="{{ paginate_by }}">
+    {% for product in collection.products %}
+      <div class="{{ item_class }} product_item_wrap">
+        {% render 'product-listing-item',
+          product_card_product: product,
+          use_border_card: settings.use_border_card,
+          pc_grid_style: settings.pc_grid_style,
+          media_size: settings.image_ratio,
+          show_secondary_image: settings.show_secondary_image,
+          add_image_padding: settings.image_padding,
+          add_wrapper_image_bg: settings.bg_wrap_img_color,
+          add_image_bg: settings.bg_img_color,
+          badge_card_toggle: settings.badge_card_toggle,
+          product_card_vendor: settings.product_card_vendor,
+          product_card_reviews: settings.product_card_reviews,
+          product_card_col: settings.product_card_col,
+          product_card_sku: settings.product_card_sku,
+          product_card_options: settings.product_card_options,
+          current_text_product_option: settings.current_text_product_option,
+          opt_type: settings.opt_type,
+          product_card_variants: settings.product_card_variants,
+          variants_type_url: settings.variants_type_url,
+          product_card_variants_limit: settings.product_card_variants_limit
+        %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{%- if paginate.pages > 1 -%}
+  {% liquid
+      assign pagination_items = 'layout.pagination.products' | t
+    %}
+  {% render 'snippet-pagination', paginate: paginate, pagination_items: pagination_items %}
+{%- endif -%}

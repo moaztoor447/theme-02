@@ -1,0 +1,61 @@
+/**
+ * Section accordion
+ */
+
+.section_accordion .widget_acc_item {
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+.section_accordion .widget_acc_element{
+    padding: 0;
+    margin: 0;
+}
+
+
+
+.section_accordion .widget_acc_element .widget_toggle{
+    padding: 25px 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.section_accordion .widget_acc_element .widget_toggle svg{
+    flex: 0 0 auto;
+    margin-left: 15px;
+}
+
+.section_accordion .widget_acc_element .element_text {
+    padding: 20px 2rem 25px;
+    overflow-y: auto;
+}
+
+.section_accordion .widget_acc_element .element_text p{
+    padding-right: 5%;
+}
+
+@media (min-width: 768px) {
+    .section_accordion .widget_acc_element .element_text p{
+        padding-right: 15%;
+    }
+}
+
+.section_accordion .item-overlay_content .widget_acc_item{
+    position: relative;
+}
+
+.section_accordion .item-overlay_content .element_text{
+    position: absolute;
+    left:0;
+    right: 0;
+    top: 100%;
+    z-index: 10;
+}
+
+.section_accordion .image-item-container {
+    position: relative;
+}
+
+.section_accordion .image-item-wrapper {
+    display: block;
+    margin: 0 auto;
+}

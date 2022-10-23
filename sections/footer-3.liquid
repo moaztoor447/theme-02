@@ -1,0 +1,550 @@
+{%- assign img_size_lg = '1920x330' -%}
+{%- assign img_size_base = '166x137' -%}
+{%- assign foorter_logo_size = '117x36' -%}
+
+{%- assign item = section.settings -%}
+
+{% if section.settings.footer_newsletter == false %}
+  <style>
+	#shopify-section-footer-3 {
+		border-top: none;
+	}
+  </style>
+{% endif %}
+
+<footer class="footer_type_3 footer_dark">
+	{% if section.settings.footer_newsletter %}
+		<div class="footer_item__newsletter{% if section.settings.type_line %}{% else %} type_column{% endif %} without_toggle">
+			<div class="index_newsletter_wrapper{% if section.settings.offset-sm %} offset-sm{% endif %}"{% if section.settings.background_toggle %} style="background-color: {{ section.settings.bg_color }}"{% endif %}>
+				<div class="{% if section.settings.container_settings == 'container' %}container{% elsif section.settings.container_settings == 'full-width' %}full-width{% endif %}{% if section.settings.inverted %} inverted{% endif %}">
+					<div class="row">
+						<div class="{% if section.settings.type_line %}col-12 type-line {% else %} text-center container container-770{% endif %}{% if section.settings.image_1 %} offset-md-1{% endif %}">
+							{% if section.settings.image_1 %}
+							<div class="d-sm-flex align-items-sm-center px-xl-5">
+								<div class="img-fluid mr-sm-2 mr-lg-4 d-none d-sm-block">
+									<img src="{{ section.settings.image_1 | img_url: img_size_base }}" class="img-fluid" alt="{{ section.settings.image_1.alt }}">
+								</div>
+								{% endif %}
+								
+								<div class="item__newsletter">
+									<div class="newsletter-info">
+										<p class="{% if section.settings.type_line %}h5 {% else %}h6 {% endif %}newsletter-title">
+											{{ section.settings.title | escape }}
+										</p>
+										
+										{% if section.settings.text.size > 0 %}
+											<p class="{% if section.settings.type_line %}{% else %}h3 {% endif %}newsletter-description">
+												{{ section.settings.text | escape }}
+											</p>
+										{% endif %}
+									</div>
+									<div class="mw-570-mx-auto">
+									  {% include 'widget-newsletter' %}
+									</div>
+								</div>
+								{% if section.settings.image_1 %}
+							</div>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+	<div class="bg-footer">
+		<div class="container pt-md-7 pt-5 pb-md-0 pb-2 px-md-0">
+		<div class="footer_main row justify-content-around">
+			{% if section.settings.footer_logo  %}
+				<div class="col-12 col-md-6 col-lg-4 without_toggle">
+					<div class="footer_block mb-4 mb-md-0 border-n">
+						{% if section.settings.footer_logo_slogan.size > 0 %}
+							{% assign logo_slogan = section.settings.footer_logo_slogan | prepend:'<div class="footer-logo-slogan text">' | append:'</div>' %}
+						{% endif %}
+						{% assign logo_type = section.settings.footer_logo_type %}
+						{% assign logo_i = section.settings.footer_logo_main %}
+						{% assign logo_src = section.settings.footer_logo_main | img_url: footer_logo_size, crop:'center', scale: 2 %}
+						{% include 'logo-footer' slogan: logo_slogan, logo_t: logo_type, logo_image: section.settings.footer_logo_main, src: logo_src %}
+					{% if section.settings.contacts %}
+						<ul class="contact_list">
+							{% if section.settings.phone.size > 0 %}
+								<li>
+								<a class="contact_phone tel_ltr" href="tel:{{ section.settings.phone }}">
+									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+										<path d="M9.366 10.682C10.3043 12.3305 11.6695 13.6957 13.318 14.634L14.202 13.396C14.3442 13.1969 14.5543 13.0569 14.7928 13.0023C15.0313 12.9478 15.2814 12.9825 15.496 13.1C16.9103 13.8729 18.4722 14.3378 20.079 14.464C20.3298 14.4839 20.5638 14.5975 20.7345 14.7823C20.9052 14.9671 21 15.2094 21 15.461V19.923C21.0001 20.1706 20.9083 20.4094 20.7424 20.5932C20.5765 20.777 20.3483 20.8927 20.102 20.918C19.5698 20.9729 19.0351 21.0003 18.5 21C9.94 21 3 14.06 3 5.5C3 4.962 3.027 4.428 3.082 3.898C3.10725 3.6517 3.22298 3.42352 3.40679 3.25763C3.5906 3.09175 3.82941 2.99995 4.077 3H8.539C8.79056 2.99997 9.0329 3.09475 9.21768 3.26545C9.40247 3.43615 9.51613 3.67022 9.536 3.921C9.66222 5.52779 10.1271 7.08968 10.9 8.504C11.0175 8.71856 11.0522 8.96874 10.9977 9.2072C10.9431 9.44565 10.8031 9.65584 10.604 9.798L9.366 10.682ZM6.844 10.025L8.744 8.668C8.20478 7.50409 7.83535 6.26884 7.647 5H5.01C5.004 5.166 5.001 5.333 5.001 5.5C5 12.956 11.044 19 18.5 19C18.667 19 18.834 18.997 19 18.99V16.353C17.7312 16.1646 16.4959 15.7952 15.332 15.256L13.975 17.156C13.4287 16.9437 12.898 16.6931 12.387 16.406L12.329 16.373C10.3676 15.2567 8.74328 13.6324 7.627 11.671L7.594 11.613C7.30691 11.102 7.05628 10.5713 6.844 10.025Z"/>
+									</svg>
+									<span>{{ section.settings.phone_text }}<span>{{ section.settings.phone }}</span></span>
+								</a>
+							</li>
+							{% endif %}
+							{% if section.settings.email.size > 0 %}
+							<li>
+								<a class="contact_email" href="mailto:{{ section.settings.email }}">
+									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+										<path d="M3 3H21C21.2652 3 21.5196 3.10536 21.7071 3.29289C21.8946 3.48043 22 3.73478 22 4V20C22 20.2652 21.8946 20.5196 21.7071 20.7071C21.5196 20.8946 21.2652 21 21 21H3C2.73478 21 2.48043 20.8946 2.29289 20.7071C2.10536 20.5196 2 20.2652 2 20V4C2 3.73478 2.10536 3.48043 2.29289 3.29289C2.48043 3.10536 2.73478 3 3 3ZM20 7.238L12.072 14.338L4 7.216V19H20V7.238ZM4.511 5L12.061 11.662L19.502 5H4.511Z" />
+									</svg>
+									<span>{{ section.settings.email_text }}<span class="d-none">{{ section.settings.email }}</span></span>
+								</a>
+							</li>
+						{% endif %}
+						</ul>
+					{% endif %}
+					</div>
+				</div>
+			{% endif %}
+			
+			{% for block in section.blocks %}
+				{%- assign bl_it = block.settings -%}
+				{% case block.type %}
+					{% when 'linklist' %}
+						{%- assign linklist = block.settings.links -%}
+						<div class="col-12 col-md-6{% if forloop.first == true %} border-t{% endif %}{% if block.settings.column_item == 'column_2' %} col-lg-2{% elsif block.settings.column_item == 'column_3' %} col-lg-3{% elsif block.settings.column_item == 'column_4' %} col-lg-4{% elsif block.settings.column_item == 'column_5' %} col-md-5{% elsif block.settings.column_item == 'column_6' %} col-lg-6{% else %} col-lg-3{% endif %} footer_block">
+							<div class="footer_item footer_item__links{% if block.settings.custom_class.size > 0 %} {{ block.settings.custom_class }}{% endif %}">
+								<div class="linklist_footer_title h6 toggle-mobile mb-3">
+									{{ linklists[linklist].title }}
+									<svg class="d-md-none" width="9" height="6" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg">
+										<path d="M9 1.5L7.5 0L4.5 3L1.5 0L0 1.5L4.5 6L9 1.5Z" />
+									</svg>
+								</div>
+								<ul class="link_list content-toggle-mobile">
+									{% for link in linklists[linklist].links %}
+										<li>
+											<a {% if link.active %}class="active"{% endif %} href="{{ link.url }}">{{ link.title }}</a>
+										</li>
+									{% endfor %}
+								</ul>
+							</div>
+						</div>
+					{% when 'contacts' %}
+						<div class="col-12 col-md-6 {% if block.settings.column_item == 'column_2' %} col-lg-2{% elsif block.settings.column_item == 'column_3' %} col-lg-3{% elsif block.settings.column_item == 'column_4' %} col-lg-4{% elsif block.settings.column_item == 'column_5' %} col-lg-5{% elsif block.settings.column_item == 'column_6' %} col-lg-6{% else %} col-lg-3{% endif %} footer_block">
+							<div class="footer_item footer_item__contacts">
+								<div class="linklist_footer_title h6 toggle-mobile mb-3">
+									{{ block.settings.contacts_title }}
+									<svg class="d-md-none" width="9" height="6" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg">
+										<path d="M9 1.5L7.5 0L4.5 3L1.5 0L0 1.5L4.5 6L9 1.5Z" />
+									</svg>
+								</div>
+								<div class="content-toggle-mobile">
+									{% include 'widget-contact-list' %}
+								</div>
+							</div>
+						</div>
+					{% when 'social-column' %}
+			<div class="col-12 col-md-6 {% if block.settings.column_item == 'column_2' %} col-lg-2{% elsif block.settings.column_item == 'column_3' %} col-lg-3{% elsif block.settings.column_item == 'column_4' %} col-lg-4{% elsif block.settings.column_item == 'column_5' %} col-lg-5{% elsif block.settings.column_item == 'column_6' %} col-lg-6{% else %} col-lg-3{% endif %} footer_block">
+					<div class="footer_item footer_item__contacts">
+						<div class="linklist_footer_title h6 toggle-mobile mb-3">
+							{{ block.settings.socialicon_title }}
+							<svg class="d-md-none" width="9" height="6" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg">
+								<path d="M9 1.5L7.5 0L4.5 3L1.5 0L0 1.5L4.5 6L9 1.5Z" />
+							</svg>
+						</div>
+						<div class="content-toggle-mobile">
+							{% include 'social-icon-link'  style: 'type_2' %}
+						</div>
+					</div>
+					</div>
+				{% endcase %}
+			{% endfor %}
+	</div>
+	{% if section.settings.powered_toggle or section.settings.social_menu %}
+		<div class="footer_bottom_pannel">
+			<div class="container">
+				<div class="row align-items-center justify-content-md-between">
+					{% if section.settings.powered_toggle %}
+						<div class="col-12 col-md-auto mt-md-0">
+							<div class="footer_copyright">
+								{% assign copyright_year = "now" | date: "%Y" %}
+								<div class="mt-1">© {{ copyright_year }} - {{ powered_by_link }}</div>
+							</div>
+						</div>
+					{% endif %}
+					{% if section.settings.footer_submenu.size > 0 %}
+						<div class="col-12 col-md-auto text-md-right">
+							<ul class="footer-link-block mb-0">
+								{% for link in linklists[section.settings.footer_submenu].links limit:4 %}
+									<li class="link-block-item">
+										<a class="link-block-link" href="{{ link.url }}">{{ link.title }}</a>
+									</li>
+								{% endfor %}
+							</ul>
+						</div>
+					{% endif %}
+					{% if section.settings.payment_icons_toggle %}
+						<div class="col-12 col-md-auto text-md-right">
+							{% include 'payment-icons' %}
+						</div>
+					{% endif %}
+					{% if section.settings.social_menu %}
+						<div class="col-12 col-md-auto text-md-right">
+							{% include 'social-icon-link'  style: 'type_1' %}
+						</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	{% endif %}
+	</div>
+	</div>
+</footer>
+
+
+
+{% schema %}
+{
+	"name": "Footer type 3",
+	"max_blocks": 5,
+	"settings": [
+	{
+		"type": "header",
+		"content": "Newsletter form"
+	},
+
+	{
+		"type": "checkbox",
+		"id": "footer_newsletter",
+		"label": "Show newsletter",
+		"default": true
+	},
+
+	{
+		"type":      "select",
+		"id":        "container_settings",
+		"label":     "Newsletter layout",
+		"options": [
+			{
+				"value": "container",
+				"label": "Container"
+			},
+			{
+				"value": "full-width",
+				"label": "Full width"
+			}
+		],
+	"default":   "container"
+	},
+	{
+		"type": "text",
+		"id": "title",
+		"label": "Header text",
+		"default": "Title newsletter"
+	},
+	{
+		"type": "textarea",
+		"id": "text",
+		"label": "Text",
+		"default": "Description newsletter"
+	},
+	{
+		"type": "checkbox",
+		"id": "background_toggle",
+		"label": "Show background color",
+		"default": true
+	},
+	{
+		"type": "checkbox",
+		"id": "inverted",
+		"label": "Inverted style",
+		"default": false
+	},
+	{
+		"type": "checkbox",
+		"id": "type_line",
+		"label": "Type line",
+		"default": false
+	},
+	{
+		"type": "checkbox",
+		"id": "offset-sm",
+		"label": "Inner offset small",
+		"default": false
+	},
+	{
+		"type": "color",
+		"id": "bg_color",
+		"label": "Background color",
+		"default": "#ffffff"
+	},
+	{
+		"type": "image_picker",
+		"id": "image_1",
+		"label": "Image 1",
+		"info": "Newsletter image"
+	},
+
+		// PAYMENT ICONS
+		{
+			"type": "checkbox",
+			"id": "payment_icons_toggle",
+			"label": "Show payment icons",
+			"default": true
+		},
+
+
+		// FOOTER LOGO
+		{
+			"type": "header",
+			"content": "Footer Logo"
+		},
+
+		{
+			"type": "checkbox",
+			"id": "footer_logo",
+			"label": "Show logo or slogan",
+			"default": true
+		},
+		{
+			"type": "radio",
+			"id": "footer_logo_type",
+			"label": "Logo type",
+			"options": [
+				{
+					"value": "txt",
+					"label": "Text logo"
+				},
+				{
+					"value": "img",
+					"label": "Image logo"
+				}
+			]
+		},
+		{
+			"type": "header",
+			"content": "Retina logo information",
+			"info": "For a better display of the logo for retina display devices, load the logo twice as large as the required"
+		},
+		{
+			"type": "image_picker",
+			"id": "footer_logo_main",
+			"label": "Logo image"
+		},
+		{
+			"type": "richtext",
+			"id": "footer_logo_slogan",
+			"label": "Logo slogan"
+		},
+
+		// Contact info //////////////////////////////////////////////////////////////////////////
+
+		{
+			"type": "header",
+			"content": "Contact info"
+		},
+
+		{
+			"type": "checkbox",
+			"id": "contacts",
+			"label": "Show contact info",
+			"default": true
+		},
+
+		{
+			"type": "text",
+			"id": "phone",
+			"label": "Contacts phone"
+		},
+		{
+			"type": "text",
+			"id": "phone_text",
+			"label": "Contacts text phone"
+		},
+		{
+			"type": "text",
+			"id": "email",
+			"label": "Contacts email"
+		},
+		{
+			"type": "text",
+			"id": "email_text",
+			"label": "Contacts text email"
+		},
+
+
+		// COPYRIGHT
+		{
+			"type": "header",
+			"content": "'Powered by Shopify' link"
+		},
+		{
+			"type": "checkbox",
+			"id": "powered_toggle",
+			"label": "Show 'Powered by Shopify'",
+			"default": true
+		},
+		// SOCIAL ICONS
+		{
+			"type": "header",
+			"content": "social link icon"
+		},
+		{
+			"type": "checkbox",
+			"id": "social_menu",
+			"label": "Show social link icon",
+			"default": true
+		},
+
+		// FOOTER SUBMENU
+		{
+			"type": "header",
+			"content": "Footer submenu"
+		},
+		{
+			"type": "link_list",
+			"id": "footer_submenu",
+			"label": "Footer submenu",
+			"info": "Max 4 items"
+		}
+	],
+	"blocks": [
+		// LINKLIST
+		{
+			"type": "linklist",
+			"name": "Linklist",
+			"settings": [
+				{
+					"type": "select",
+					"id": "column_item",
+					"label": "Column width",
+					"options": [
+						{
+							"value": "column_2",
+							"label": "width 16.6667%"
+						},
+						{
+							"value": "column_3",
+							"label": "width 25%"
+						},
+						{
+							"value": "column_4",
+							"label": "width 33.3333%"
+						},
+						{
+							"value": "column_5",
+							"label": "width 41.6667%"
+						},
+						{
+							"value": "column_6",
+							"label": "width 50%"
+						}
+					],
+					"default": "column_3"
+				},
+				{
+					"type": "link_list",
+					"id": "links",
+					"label": "Choose linklist"
+				},
+				{
+					"type": "text",
+					"id": "custom_class",
+					"label": "Custom class"
+				}
+			]
+		},
+		// CONTACTS BLOCK
+		{
+			"type": "contacts",
+			"name": "Contacts block",
+			"settings": [
+				{
+					"type": "select",
+					"id": "column_item",
+					"label": "Column width",
+					"options": [
+						{
+							"value": "column_2",
+							"label": "width 16.6667%"
+						},
+						{
+							"value": "column_3",
+							"label": "width 25%"
+						},
+						{
+							"value": "column_4",
+							"label": "width 33.3333%"
+						},
+						{
+							"value": "column_5",
+							"label": "width 41.6667%"
+						},
+						{
+							"value": "column_6",
+							"label": "width 50%"
+						}
+					],
+					"default": "column_3"
+				},
+				{
+					"type": "text",
+					"id": "contacts_title",
+					"label": "Block title"
+				}
+			]
+		},
+		// SOCIAL COLUMN BLOCK
+		{
+			"type": "social-column",
+			"name": "Social link block",
+			"settings": [
+				{
+				"type": "select",
+				"id": "column_item",
+				"label": "Column width",
+					"options": [
+						{
+							"value": "column_2",
+							"label": "width 16.6667%"
+						},
+						{
+							"value": "column_3",
+							"label": "width 25%"
+						},
+						{
+							"value": "column_4",
+							"label": "width 33.3333%"
+						},
+						{
+							"value": "column_5",
+							"label": "width 41.6667%"
+						},
+						{
+							"value": "column_6",
+							"label": "width 50%"
+						}
+					],
+					"default": "column_3"
+				},
+				{
+					"type": "text",
+					"id": "socialicon_title",
+					"label": "Block title"
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+{% javascript %}
+  	(function ($) {
+      jQuery(document).ready(function($) {
+    	$('#newsletter_form .alert-success').hide();
+    	// CHECK FORM POSTED
+    	$('.contact-form').each(function (){
+    	$(this).on('submit', function(e){
+    	var formCookie = $(this).attr('class');
+    	$.cookie('formSended', formCookie); 
+    	});
+    	});
+    	
+    	if( document.location.href.indexOf('?customer_posted=true') > 0 && $.cookie('formSended') == 'contact-form') {
+    	$('#newsletter_form .form-wrapper').hide();
+    	$('#newsletter_form .newsletter-description').hide();
+    	$('#newsletter_form .alert-success').show();
+    	};
+    
+    	// FORM VALIDATION
+    	$('#newsletter_form').formValidation(); 
+         });
+  })(jQuery);
+{% endjavascript %} 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+                                                                                                                                     

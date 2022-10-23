@@ -1,0 +1,353 @@
+{% case pg_modal_mainthumb %}
+{% when 'square' %}
+{%- assign product_image_zoom_size = '1000x1000' -%}
+{% when 'rectangle' %}
+{%- assign product_image_zoom_size = '1024x1280' -%}
+{% endcase %}
+
+{%- assign images = product.media | where: "media_type", "image" -%}
+{% for image in images %}
+  {%- assign imageId = image.id | prepend: 'primary_img_' -%}
+{% endfor %}
+
+{%- if product.selected_or_first_available_variant.featured_media != null -%}
+  {%- assign featured_media = product.selected_or_first_available_variant.featured_media -%}
+{% else %}
+  {%- assign featured_media = product.featured_media -%}
+{%- endif -%}
+
+{%- assign pr_media_size = pr_image_ratio -%}
+
+{% if product.media.size >= 1 %}
+  {% for media in product.media %}
+	{%- assign media = media.src -%}
+	{%- assign image_media_aspect_ratio = media.aspect_ratio %}
+	{%- if media.aspect_ratio == nil -%}
+	  {%- assign image_media_aspect_ratio = 1 -%}
+	{%- endif -%}
+	{%- assign multyply = 0 -%}
+	{% unless media.aspect_ratio < 1 %}
+	  {% if product_view_type == 'carousel-vertical' and pr_media_size == 'portrait' %}
+		{%- assign multyply = 0.2 -%}
+	  {% endif %}
+	{% endunless %}
+  {% endfor %}
+{% endif %}
+
+{%- assign product_image_thumb = '150x' -%}
+{%- assign img_alignment = 'center' -%}
+
+{%- assign is_zoom = false -%}
+{% if pg_zoom != blank %}
+  {%- assign is_zoom = true -%}
+{% endif %}
+
+{%- assign use_pg_sticky = false -%}
+{% if use_gallery_sticky != blank %}
+  {%- assign use_pg_sticky = true -%}
+{% endif %}
+
+{%- assign use_more_image = false -%}
+{% if use_more_pr_image != blank %}
+  {%- assign use_more_image = true -%}
+{% endif %}
+
+{%- assign use_filter_color_thumbs = false -%}
+{% if use_filter_thumbs != blank %}
+  {%- assign use_filter_color_thumbs = true -%}
+{% endif %}
+
+ {% if product_image_alignment.size > 0 %}
+   {% case product_image_alignment %}
+   {% when 'top' %}
+   {%- assign pr_img_align = 'top' -%}
+   {% when 'bottom' %}
+   {%- assign pr_img_align = 'bottom' -%}
+	 {% else %}
+   {%- assign pr_img_align = 'center' -%}
+   {% endcase %}
+ {% endif %}
+
+
+{% case product_view_type %}
+{% when 'carousel-vertical' %}
+  <div class="single_product__img">
+	<div class="{% if product.media.size > 1 %}image-gallery-container{% endif %}{% if use_pg_sticky %} stickyimgpr-js{% endif %}">
+	  {% case product.media.size %}
+	  {% when 0 %}
+		<img loading="lazy" class="img-fluid lazyload lazypreload" src="{{ 'no_image.png' | asset_url }}" alt="no image"/>
+	  {% when 1 %}
+		<div class="product__img_wrap">
+		  {% render 'product-media', media: featured_media, pr_img_min_size: pr_img_min_size, imageId: imageId, pr_media_size: pr_media_size, pr_img_align: pr_img_align, image_media_aspect_ratio: image_media_aspect_ratio, product_image_zoom_size: product_image_zoom_size, zoomImage, product_image_scale: product_image_scale %}
+		</div>
+		{% else %}
+		<div class="gallery_thumbs_wrapper">
+		  <div id="gallery_thumbs-{{ section.id }}" class="swiper-container gallery_thumbs">
+			<div class="swiper-wrapper">
+			  {%- if product.selected_or_first_available_variant.featured_media != null -%}
+				<div class="swiper-slide" data-k="{% if pr_media_size == 'square' %}1{% else %}{{ image_media_aspect_ratio | minus: multyply }}{% endif %}">
+				  {% render 'product-media', media: featured_media, pr_img_min_size: pr_img_min_size, pr_media_size: pr_media_size, pr_img_align: pr_img_align, image_media_aspect_ratio: image_media_aspect_ratio, display_as_preview: true %}
+				</div>
+			  {%- endif -%}
+			  {% for media in product.media %}
+				{%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
+				  <div class="swiper-slide" data-k="{% if pr_media_size == 'square' %}1{% else %}{{ image_media_aspect_ratio | minus: multyply }}{% endif %}">
+					{% render 'product-media', media: media, pr_img_min_size: pr_img_min_size, pr_media_size: pr_media_size, pr_img_align: pr_img_align, image_media_aspect_ratio: image_media_aspect_ratio, display_as_preview: true %}
+					{% if media.media_type contains 'video' %}
+					  {% if media.host == 'youtube' %}
+						<i class="icon-media"> {% render 'icon-YTvideo' %}</i>
+					  {% else %}
+						<i class="icon-media"> {% render 'icon-video' %}</i>
+					  {% endif %}
+					  {% elsif media.media_type contains 'model' %}
+					  <i class="icon-media">{% render 'icon-3d_model' %}</i>
+					{% endif %}
+				  </div>
+				{%- endunless -%}
+			  {% endfor %}
+			</div>
+		  </div>
+		  {% if pg_nav %}
+			<div class="swiper-button-prev button-thumbs-next out-container"></div>
+			<div class="swiper-button-next button-thumbs-prev out-container"></div>
+		  {% endif %}
+		</div>
+		<div id="gallery_big-{{ section.id }}" class="swiper-container gallery_cover" style="flex-grow: 100;">
+		  {% if settings.badge_toggle %}
+			{% render 'product-badge', product_card_product: product, on_sale: true %}
+		  {% endif %}
+		  <div class="swiper-wrapper">
+
+			{%- if product.selected_or_first_available_variant.featured_media != null -%}
+			  <div class="swiper-slide{% if media.media_type == 'model' or media.media_type == 'video' %} swiper-no-swiping{% endif %} slide-{{ featured_media.media_type }}" data-index="0" data-media-type="{{ featured_media.media_type }}">
+				{% render 'product-media', media: featured_media, pg_modalgallery: pg_modalgallery, pr_img_min_size: pr_img_min_size, pr_img_align: pr_img_align, imageId: imageId, pr_media_size: pr_media_size, image_media_aspect_ratio: image_media_aspect_ratio, product_image_zoom_size: product_image_zoom_size, is_zoom: is_zoom, zoomImage: 'item-zoom-js', product_image_scale: product_image_scale %}
+			  </div>
+			{%- endif -%}
+
+			{% for media in product.media %}
+			  {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
+				<div class="swiper-slide{% if media.media_type == 'model' or media.media_type == 'video' %} swiper-no-swiping{% endif %} slide-{{ media.media_type }}" data-index="{{ forloop.index }}" data-media-type="{{ media.media_type }}">
+				  {% render 'product-media', media: media, pg_modalgallery: pg_modalgallery, pr_img_min_size: pr_img_min_size, imageId: imageId, pr_img_align: pr_img_align, pr_media_size: pr_media_size, image_media_aspect_ratio: image_media_aspect_ratio, product_image_zoom_size: product_image_zoom_size, is_zoom: is_zoom, zoomImage: 'item-zoom-js', product_image_scale: product_image_scale %}
+				</div>
+			  {%- endunless -%}
+			{% endfor %}
+		  </div>
+
+		  {% if pg_fraction %}
+			<div class="swiper-counter"></div>
+		  {% endif %}
+		  {% if pg_nav %}
+			<div class="swiper-button-prev button-cover-prev"><span>{{ 'layout.pagination.previous' | t }}</span></div>
+			<div class="swiper-button-next button-cover-next"><span>{{ 'layout.pagination.next' | t }}</span></div>
+		  {% endif %}
+		</div>
+		{% if pg_pag %}
+		  <div id="pagination_{{ section.id }}" class="swiper-pagination out-container sw-pb"></div>
+		{% endif %}
+	  {% endcase %}
+	</div>
+  </div>
+
+{% when 'carousel-horizontal' %}
+  <div class="single_product__img {% if pg_thumbshide %} gallery_thumbs_hide{% endif %}">
+	<div class="{% if product.media.size > 1 %}image-gallery-container{% endif %}{% if use_pg_sticky %} stickyimgpr-js{% endif %}">
+	  {% case product.media.size %}
+	  {% when 0 %}
+		<img loading="lazy" class="img-fluid" src="{{ 'no_image.png' | asset_url }}" alt="no image"/>
+	  {% when 1 %}
+		<div class="product__img_wrap">
+		  {% render 'product-media', media: featured_media, pr_img_min_size: pr_img_min_size, imageId: imageId, pr_media_size: pr_media_size, pr_img_align: pr_img_align, image_media_aspect_ratio: image_media_aspect_ratio, product_image_zoom_size: product_image_zoom_size, is_zoom: is_zoom, product_image_scale: product_image_scale %}
+		</div>
+		{% else %}
+		<div id="gallery_big-{{ section.id }}" class="swiper-container gallery_cover">
+		  {% if settings.badge_toggle %}
+			{% render 'product-badge', product_card_product: product, on_sale: true %}
+		  {% endif %}
+
+		  <div class="swiper-wrapper">
+
+			{%- if product.selected_or_first_available_variant.featured_media != null -%}
+			  <div class="swiper-slide {% if media.media_type == 'model' or media.media_type == 'video' %} swiper-no-swiping{% endif %} slide-{{ featured_media.media_type }}" data-index="0" data-media-type="{{ featured_media.media_type }}">
+				{% render 'product-media', media: featured_media, pg_modalgallery: pg_modalgallery, pr_img_min_size: pr_img_min_size, pr_img_align: pr_img_align, imageId: imageId, pr_media_size: pr_media_size, image_media_aspect_ratio: image_media_aspect_ratio, product_image_zoom_size: product_image_zoom_size, is_zoom: is_zoom, zoomImage: 'item-zoom-js', product_image_scale: product_image_scale %}
+			  </div>
+			{%- endif -%}
+
+			{% for media in product.media %}
+			  {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
+				<div class="swiper-slide{% if media.media_type == 'model' or media.media_type == 'video' %} swiper-no-swiping{% endif %} slide-{{ media.media_type }}" data-index="{{ forloop.index }}" data-media-type="{{ media.media_type }}">
+				  {% render 'product-media', media: media, pg_modalgallery: pg_modalgallery, pr_img_min_size: pr_img_min_size, pr_img_align: pr_img_align, imageId: imageId, pr_media_size: pr_media_size, image_media_aspect_ratio: image_media_aspect_ratio, product_image_zoom_size: product_image_zoom_size, is_zoom: is_zoom, zoomImage: 'item-zoom-js', product_image_scale: product_image_scale %}
+				</div>
+			  {%- endunless -%}
+			{% endfor %}
+		  </div>
+
+		  {% if pg_pag %}
+			<div id="pagination_{{ section.id }}" class="swiper-pagination sw-pb"></div>
+		  {% endif %}
+		  {% if pg_fraction %}
+			<div class="swiper-counter"></div>
+		  {% endif %}
+		  {% if pg_nav %}
+			<div class="swiper-button-prev button-cover-prev"><span>{{ 'layout.pagination.previous' | t }}</span></div>
+			<div class="swiper-button-next button-cover-next"><span>{{ 'layout.pagination.next' | t }}</span></div>
+		  {% endif %}
+		</div>
+
+		<div id="gallery_thumbs-{{ section.id }}" class="swiper-container gallery_thumbs" {% unless pg_thumbshide %} style="margin-top:{{ pg_spacebi }}px" {% endunless %}>
+		  <div class="swiper-wrapper {% if pg_thumbshide %} visibility-h{% endif %}">
+			{%- if product.selected_or_first_available_variant.featured_media != null -%}
+			  <div class="swiper-slide">
+				{% render 'product-media', media: featured_media, pr_img_min_size: pr_img_min_size, pr_media_size: pr_media_size, pr_img_align: pr_img_align, image_media_aspect_ratio: image_media_aspect_ratio, display_as_preview: true %}
+			  </div>
+			{%- endif -%}
+			{% for media in product.media %}
+			  {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
+				<div class="swiper-slide">
+				  {% render 'product-media', media: media, pr_img_min_size: pr_img_min_size, pr_media_size: pr_media_size, pr_img_align: pr_img_align, image_media_aspect_ratio: image_media_aspect_ratio, display_as_preview: true %}
+				  {% if media.media_type contains 'video' %}
+					{% if media.host == 'youtube' %}
+					  <i class="icon-media"> {% render 'icon-YTvideo' %}</i>
+					{% else %}
+					  <i class="icon-media"> {% render 'icon-video' %}</i>
+					{% endif %}
+					{% elsif media.media_type contains 'model' %}
+					<i class="icon-media">{% render 'icon-3d_model' %}</i>
+				  {% endif %}
+				</div>
+			  {%- endunless -%}
+			{% endfor %}
+		  </div>
+		</div>
+
+	  {% endcase %}
+	</div>
+  </div>
+
+{% when 'sticky' %}
+  <div class="single_product__img">
+	<div class="product-sticky-image">
+	  {% if settings.badge_toggle %}
+		{% render 'product-badge', product_card_product: product, on_sale: true %}
+	  {% endif %}
+	  {% case product.media.size %}
+	  {% when 0 %}
+		<div class="product__img_wrap">
+		  <img loading="lazy" class="img-fluid" data-src="{{ 'no_image.png' | asset_url }}" alt="no image">
+		</div>
+	  {% when 1 %}
+		<div class="product__img_wrap">
+		  {% render 'product-media', media: featured_media, pr_img_min_size: pr_img_min_size, pr_img_align: pr_img_align, imageId: imageId, pr_media_size: pr_media_size, image_media_aspect_ratio: image_media_aspect_ratio, product_image_zoom_size: product_image_zoom_size, is_zoom: is_zoom, zoomImage: 'item-zoom-inner-js', product_image_scale: product_image_scale %}
+		</div>
+		{% else %}
+		{% for media in product.media %}
+		  <div class="product__img_wrap">
+			{% render 'product-media', media: media, pg_modalgallery: pg_modalgallery, pr_img_align: pr_img_align, pr_img_min_size: pr_img_min_size, imageId: imageId, pr_media_size: pr_media_size, image_media_aspect_ratio: image_media_aspect_ratio, product_image_zoom_size: product_image_zoom_size, is_zoom: is_zoom, zoomImage: 'item-zoom-inner-js', product_image_scale: product_image_scale %}
+		  </div>
+		{% endfor %}
+	  {% endcase %}
+	</div>
+  </div>
+
+{% when 'tile' %}
+
+  <div class="single_product__img">
+	<div class="product-tile-image">
+	  {% if settings.badge_toggle %}
+		{% render 'product-badge', product_card_product: product, on_sale: true %}
+	  {% endif %}
+	  <ul class="product__img_wrap{% unless use_filter_color_thumbs %}{% if use_more_image %} tile_gallery{% endif %}{% endunless %}{% if use_pg_sticky %} stickyimgpr-js{% endif %}">
+		{% case product.media.size %}
+		{% when 0 %}
+		  
+		  <li>
+			<img class="img-fluid" src="{{ 'no_image.png' | asset_url }}" alt="">
+		  </li>
+		  
+		{% when 1 %}
+		  <li class="d-flex flex-column">
+			{% render 'product-media', media: featured_media, pr_img_min_size: pr_img_min_size, pr_img_align: pr_img_align, imageId: imageId, pr_media_size: pr_media_size, image_media_aspect_ratio: image_media_aspect_ratio, product_image_zoom_size: product_image_zoom_size, is_zoom: is_zoom, zoomImage: 'item-zoom-inner-js', product_image_scale: product_image_scale %}
+		  </li>
+		  
+		  {% else %}
+
+		  {%- for media in product.media -%}
+			  <li class="tile_gallery_item">
+				{% render 'product-media', media: media, use_filter_color_thumbs: use_filter_color_thumbs, pg_modalgallery: pg_modalgallery, pr_img_align: pr_img_align, imageId: imageId, pr_media_size: pr_media_size, image_media_aspect_ratio: image_media_aspect_ratio, product_image_zoom_size: product_image_zoom_size, is_zoom: is_zoom, zoomImage: 'item-zoom-inner-js', product_image_scale: product_image_scale %}
+			  </li>
+		  {%- endfor -%}
+
+		  {% unless use_filter_color_thumbs %}
+			{% if use_more_image %}
+			  <li class="btn-more-image open">
+				<div class="more-js link link-primary">Show more</div>
+				<div class="less-js link mt-2">Show less</div>
+			  </li>
+			{% endif %}
+		  {% endunless %}
+		{% endcase %}
+	  </ul>
+
+	</div>
+
+	<style>
+        .type_tile .product__img_wrap {
+            margin-left: -{{ pg_spacebtilei | divided_by: 2 }}px;
+            margin-right: -{{ pg_spacebtilei | divided_by: 2 }}px;
+        }
+
+        .type_tile .product__img_wrap > li {
+            padding-left: {{ pg_spacebtilei | divided_by: 2 }}px;
+            padding-right: {{ pg_spacebtilei | divided_by: 2 }}px;
+            margin: 0 0 {{ pg_spacebtilei }}px;
+        }
+
+        .type_tile .product__img_wrap > li.btn-more-image {
+            flex: 1 0 97%;
+        }
+
+        .type_tile .product__img_wrap > li:not(.btn-more-image),
+        .type_tile .product__img_wrap > li.btn-more-image.open{
+            flex: 0 0 calc(50% - {{ pg_spacebtilei }}px);
+        }
+	</style>
+  </div>
+
+{% when 'carousel-big' %}
+  <div class="single_product__img">
+	{% case product.media.size %}
+	{% when 0 %}
+	  <img src="{{ 'no_image.png' | asset_url }}" alt=""/>
+	{% when 1 %}
+		{% render 'product-media', media: featured_media, pr_img_min_size: pr_img_min_size, pr_img_align: pr_img_align, imageId: imageId, pr_media_size: pr_media_size, image_media_aspect_ratio: image_media_aspect_ratio, product_image_zoom_size: product_image_zoom_size, is_zoom: is_zoom, zoomImage: 'item-zoom-inner-js', product_image_scale: product_image_scale %}
+	  {% else %}
+
+	  <div id="gallery_thumbs-{{ section.id }}" class="gallery_thumbs swiper-container">
+		<div class="swiper-wrapper">
+			<div class="swiper-slide{% if media.media_type == 'model' or media.media_type == 'video' %} swiper-no-swiping{% endif %} slide-{{ featured_media.media_type }}" data-index="0" data-media-type="{{ featured_media.media_type }}">
+			  {% render 'product-media', media: featured_media, pg_modalgallery: pg_modalgallery, pr_img_min_size: pr_img_min_size, pr_img_align: pr_img_align, imageId: imageId, pr_media_size: pr_media_size, image_media_aspect_ratio: image_media_aspect_ratio, product_image_zoom_size: product_image_zoom_size %}
+			</div>
+
+			{% for media in product.media offset: 1 %}
+			 <div class="swiper-slide{% if media.media_type == 'model' or media.media_type == 'video' %} swiper-no-swiping{% endif %} slide-{{ media.media_type }}" data-index="{{ forloop.index }}" data-media-type="{{ media.media_type }}">
+				{% render 'product-media', media: media, pg_modalgallery: pg_modalgallery, pr_img_min_size: pr_img_min_size, imageId: imageId, pr_img_align: pr_img_align, pr_media_size: pr_media_size, image_media_aspect_ratio: image_media_aspect_ratio, product_image_zoom_size: product_image_zoom_size %}
+			 </div>
+			{% endfor %}
+		</div>
+		  <div class="swiper-button-prev button-thumbs-prev out-container"><span>{{ 'layout.pagination.previous' | t }}</span></div>
+		  <div class="swiper-button-next button-thumbs-next out-container"><span>{{ 'layout.pagination.next' | t }}</span></div>
+	  </div>
+
+	  <div id="gallery_big-{{ section.id }}" class="gallery_cover swiper-container">
+		<div class="swiper-wrapper">
+		  {% for media in product.media %}
+			  <div class="swiper-slide">
+				{% render 'product-media', media: media, pr_img_min_size: pr_img_min_size, pr_media_size: pr_media_size, pr_img_align: pr_img_align, image_media_aspect_ratio: image_media_aspect_ratio, display_as_preview: true %}
+			  </div>
+		  {% endfor %}
+		</div>
+	  </div>
+
+	{% endcase %}
+  </div>
+{% endcase %}
+

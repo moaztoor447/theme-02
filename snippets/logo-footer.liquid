@@ -1,0 +1,16 @@
+{% case logo_t %}
+	{% when 'txt' %}
+		<a class="footer-logo" href="{{ shop.url }}">{{ shop.name }} {{ slogan }}</a>
+	{% when 'img' %}
+		<div>
+			{% if logo_image.size > 0 %}
+				<a class="footer-logo" href="{{ shop.url }}">
+					<img src="{{ src }}" alt="{{ shop.name }}">
+				</a>
+				{{ slogan }}
+			{% else %}
+				<a class="footer-logo" href="{{ shop.url }}">{{ shop.name }}</a>
+				{{ slogan }}
+			{% endif %}
+		</div>
+{% endcase %}

@@ -1,0 +1,232 @@
+<div class="template_customer template_customer__account">
+	<div class="page_heading custom_page_heading">
+	  <h5>{{ 'customer.account.title' | t }}, {{ customer.name }}</h5>
+		{% comment %}<a class="link_logout" href="/account/logout">{{ 'customer.account.logout' | t }}</a>{% endcomment %}
+		{% if section.settings.welcome_text != blank %}
+			<p class="text mb-0">{{ section.settings.welcome_text }}</p>
+		{% endif %}
+	</div>
+	<div id="account_customer__wrapper" class="mt-6 tab_content_wrapper row">
+	  <div class="col-md-3">
+		<div class="tab_navigation">
+		<div class="tab_nav tab_nav--item tab_nav_1 active" data-tab="0"><span class="text sub-text">{{ 'customer.account.account_info_title' | t }}</span></div>
+		<div class="tab_nav tab_nav--item tab_nav_2" data-tab="1">
+		  <span class="text sub-text">{{ 'customer.account.account_addresses_title' | t }}</span>
+		</div>
+		<div class="tab_nav tab_nav--item tab_nav_3" data-tab="2">
+		  <span class="text sub-text">
+			{{ 'customer.account.account_orders_title' | t }}
+		  </span>
+		</div>
+		{% if settings.wishlist_toggle == true and settings.wishlist_page != '' %}
+		  <div class="tab_nav--item">
+			<a id="customer_account__wishlist" class="wishlist-link customer_block__wishlist text sub-text" href="{{ pages[settings.wishlist_page].url }}" title="{{ 'layout.wishlist.wishlist' | t }}">
+				<span>
+				  {{ 'layout.wishlist.wishlist' | t }}
+				<span class="zemez_wishlist_total wishlist_products_number"></span></span>
+			</a>
+		  </div>
+		{% endif %}
+		<div class="tab_nav--item">
+		  <a href="/account/logout" class="customer_block__reset text sub-text">
+			<span>{{ 'customer.account.logout' | t }}</span>
+		  </a>
+		</div>
+	  </div>
+	  </div>
+	  
+	  <div class="col-md-9">
+		<div class="tab_content mt-4 mt-md-0">
+			<div class="tab_item fade tab_item_1 active">
+			  <div id="account_section__info" class="account_section account_section__info ">
+			 	 <div class="account_table__info">
+				<div class="form-group row">
+				  <div class="col-12 text-left">
+					<label>{{ 'customer.account.account_info_name' | t }}</label>
+				  </div>
+				  <div class="form-control-content col-12">
+					<input type="text" readonly value='{{ customer.name }}' class="form-control">
+				  </div>
+				</div>
+				
+				<div class="form-group row">
+				  <div class="col-12 text-left">
+					<label>{{ 'customer.account.account_info_email' | t }}</label>
+				  </div>
+				  <div class="form-control-content col-12">
+					<input type="text" readonly value='{{ customer.email }}' class="form-control">
+				  </div>
+				</div>
+				
+				<div class="form-group row">
+				  <div class="col-12 text-left">
+					<label>{{ 'customer.account.account_info_orders' | t }}</label>
+				  </div>
+				  <div class="form-control-content col-12">
+					<input type="text" readonly value='{{ customer.orders | size }}' class="form-control">
+				  </div>
+				</div>
+				
+				<div class="form-group row">
+				  <div class="col-12 text-left">
+					<label>{{ 'customer.account.account_info_total_spent' | t }}</label>
+				  </div>
+				  <div class="form-control-content col-12">
+					<input type="text" readonly value='{{ customer.total_spent | money | strip_html }}' class="form-control">
+				  </div>
+				</div>
+			  </div>
+			  </div>
+			</div>
+			<div class="tab_item fade tab_item_2">
+			  <div class="account_table__default">
+				{% if customer.default_address == nil %}
+				  <div class="row">
+					<h4>{{ 'customer.account.account_addresses_title' | t }}</h4>
+					
+					<p class="subtitle_lg mt-3">{{ 'customer.account.account_addresses_default_empty' | t }}</p>
+					
+				  </div>
+				{% else %}
+				  {% if customer.default_address.name.size > 0 %}
+					<h4>{{ 'customer.account.account_addresses_title' | t }}</h4>
+					<div class="form-group row">
+					  <div class="col-12 text-left">
+						<label>{{ 'customer.register_form.first_name' | t }}</label>
+					  </div>
+					  <div class="form-control-content col-12">
+						<input type="text" readonly value='{{ customer.default_address.name }}' class="form-control">
+					  </div>
+					</div>
+				  {% endif %}
+				  
+				  <div class="form-group row">
+					<div class="col-12 text-left">
+					  <label>Address</label>
+					</div>
+					<div class="form-control-content col-12">
+					  <input type="text" readonly class="form-control" value='{% if customer.default_address.address1.size > 0 %} {{ customer.default_address.address1 }} {% endif %}{% if customer.default_address.address2.size > 0 %} {{ customer.default_address.address2 }} {% endif %}{% if customer.default_address.city.size > 0 %} {{ customer.default_address.city }} {% endif %}{% if customer.default_address.province.size > 0 %} {{ customer.default_address.province }} {% endif %}{% if customer.default_address.zip.size > 0 %} {{ customer.default_address.zip }} {% endif %}{% if customer.default_address.country.size > 0 %} {{ customer.default_address.country }} {% endif %}'>
+					</div>
+				  </div>
+				  
+				  <div class="form-group row">
+					<div class="col-12 text-left">
+					  <label>{{ 'customer.register_form.first_name' | t }}</label>
+					</div>
+					<div class="form-control-content col-12">
+					  <input type="text" readonly class="form-control" value='{{ customer.default_address.name }}'>
+					</div>
+				  </div>
+				  
+				  {% if customer.default_address.phone.size > 0 %}
+					<div class="form-group row">
+					  <div class="col-12 text-left">
+						<label>{{ 'customer.addresses.form_phone' | t }}</label>
+					  </div>
+					  <div class="form-control-content col-12">
+						<input type="text" readonly class="form-control" value='{{ customer.default_address.phone }}'>
+					  </div>
+					</div>
+				  {% endif %}
+				{% endif %}
+				
+				<a class="link_edit btn btn-sm btn-primary mt-2" href="/account/addresses" title="{{ 'customer.account.account_addresses_manage' | t }}">
+				  <span>{{ 'customer.account.account_addresses_manage' | t }}</span>
+				</a>
+			  </div>
+			</div>
+			<div class="tab_item fade tab_item_3">
+			  <div id="account_section__orders" class="account_section account_section__order ">
+				<div class="customer_orders_wrap">
+				  <h4>{{ 'customer.account.account_orders_title' | t }}</h4>
+				  {% if customer.orders.size == 0 %}
+					<p class="note subtitle_lg mt-3">{{ 'customer.account.account_orders_none' | t }}</p>
+				  {% else %}
+					<div class="account_table__wrap order-wrapper my-3">
+					  <div class="account_order">
+						<div class="table-row table-row-head mb-0 d-none d-md-flex">
+						  <div class="table-cell order-title"><span>{{ 'customer.account.account_orders_order_number' | t }}</span></div>
+						  <div class="table-cell order-date"><span>{{ 'customer.account.account_orders_date' | t }}</span></div>
+						  <div class="table-cell order-payment"><span>{{ 'customer.account.account_orders_payment_status' | t }}</span></div>
+						  <div class="table-cell order-status"><span>{{ 'customer.account.account_orders_fulfillment_status' | t }}</span></div>
+						  <div class="table-cell order-price"><span>{{ 'customer.account.account_orders_total' | t }}</span></div>
+						</div>
+						
+						{% for order in customer.orders %}
+						  <div class="table-row table-labeled mb-3 mb-md-0{% if order.cancelled %} order_cancelled{% endif %}">
+							<div class="table-cell order-title">
+							  <div class="table-cell-heading d-md-none">
+								<span>{{ 'customer.account.account_orders_order_number' | t }}</span>
+							  </div>
+							  <div class="table-cell-content">
+								<span>{{ order.name | link_to: order.customer_url }}</span>
+							  </div>
+							</div>
+							<div class="table-cell order-date">
+							  <div class="table-cell-heading d-md-none">
+								<span>{{ 'customer.account.account_orders_date' | t }}</span>
+							  </div>
+							  <div class="table-cell-content">
+								{{ order.created_at | date: "%b %d, %Y" }}
+							  </div>
+							</div>
+							<div class="table-cell order-payment">
+							  <div class="table-cell-heading d-md-none">
+								<span>{{ 'customer.account.account_orders_payment_status' | t }}</span>
+							  </div>
+							  <div class="table-cell-content">
+								{{ order.financial_status_label }}
+							  </div>
+							</div>
+							<div class="table-cell order-status">
+							  <div class="table-cell-heading d-md-none">
+								<span>{{ 'customer.account.account_orders_fulfillment_status' | t }}</span>
+							  </div>
+							  <div class="table-cell-content">
+								<span  class="label{% if order.fulfillment_status == 'unfulfilled' %} label-unfulfilled{% elsif order.fulfillment_status == 'shipped' %} label-shipped{% elsif order.fulfillment_status == 'partial' %} label-partial{% elsif order.fulfillment_status == 'unshipped' %} label-unshipped{% else %} label-any{% endif %}">
+								  {{ order.fulfillment_status_label }}
+								</span>
+							  </div>
+							</div>
+							<div class="table-cell order-price">
+							  <div class="table-cell-heading d-md-none">
+								<span>{{ 'customer.account.account_orders_total' | t }}</span>
+							  </div>
+							  <div class="table-cell-content">
+								<span>{{ order.total_price | money }}</span>
+							  </div>
+							</div>
+						  </div>
+						  <hr class="my-md-4 my-2 custom-hr">
+						{% endfor %}
+					  </div>
+					</div>
+				  {% endif %}
+				</div>
+				<a class="link_close account_order__close mt-2 btn btn-sm btn-primary" href="/collections" title="{{ 'customer.addresses.go_to_shop' | t }}">
+				  <span>{{ 'customer.addresses.go_to_shop' | t }}</span>
+				</a>
+			  </div>
+			</div>
+		</div>
+	  </div>
+	</div>
+ 
+</div>
+
+{% schema %}
+{
+	"name": "Account",
+	"settings": [
+		{
+			"type": "header",
+			"content": "Welcome block"
+		},
+		{
+			"type": "textarea",
+			"id": "welcome_text",
+			"label": "Welcome text"
+		}
+	]
+}
+{% endschema %}

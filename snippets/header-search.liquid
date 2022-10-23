@@ -1,0 +1,14 @@
+
+{% if toggle_search %}
+<div class="search_toggle header_icon {% if ss_item.view_search == 'type-4' %} header_icon--revers{% endif %}">
+	{% unless ss_item.view_search == 'type-1' %}
+		<span class="link_text d-none d-xl-block">
+					{{ 'layout.header.search' | t }}
+				</span>
+	{% endunless %}
+	<span class="svg-icon svg-icon--lg {% if ss_item.view_search == 'type-2' %} hidden-xl{% endif %}">
+		{% render 'icon-search' %}
+	</span>
+</div>
+{% endif %}
+

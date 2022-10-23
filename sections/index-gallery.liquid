@@ -1,0 +1,238 @@
+
+{%- assign itemsCount = section.settings.items_count | plus: 0 -%}
+
+{%- assign img_min_size = '150x240' -%}
+{% if section.settings.boxed %}
+	{%- assign img_size = '280x449' -%}
+{% else %}
+	{%- assign img_size = '613x460' -%}
+{% endif %}
+
+
+<div class="section_gallery__{{ section.id }}"  style="position: relative;">
+	
+{% if section.settings.boxed %}
+	<div class="container container_big">
+{% endif %}
+      
+		{% if section.settings.section_title.size > 0 %}
+			<h2 class="section_heading text-center"><span>{{ section.settings.section_title }}</span></h2>
+		{% endif %}
+		{% if itemsCount <= 3 %}
+		<div class="row">
+			{% for block in section.blocks limit: itemsCount %}
+			<div class="col-12 col-sm-3 col-lg-4">
+				<div class="gallery_item">
+					<div class="item_image">
+						{% if block.settings.item_link.size > 0 %}
+						<a class="item_caption" href="{{ block.settings.item_link }}">
+							{% else %}
+							<div class="item_caption">
+								{% endif %}
+								
+								{% if block.settings.item_img.size > 0 %}
+									{% comment %}
+									<div class="img_placeholder__wrap img_placeholder" style="background-image: url( {{ block.settings.item_img | img_url: img_size, crop: block.settings.item_img_alignment }} );"></div>
+									{% endcomment %} 
+									<img loading="lazy" class="blur-up lazyload w-100"
+										 src="{{ block.settings.item_img | img_url: img_min_size, crop: block.settings.item_img_alignment, format: 'jpg' }}"
+										 alt="{{ block.settings.item_img.alt | escape }}"
+										 data-src="{{ block.settings.item_img | img_url: img_size, crop: block.settings.item_img_alignment, format: 'jpg' }}"
+									>
+								{% else %}
+									<div class="img_placeholder__wrap">
+										{{ 'image' | placeholder_svg_tag: 'medium_placeholder' }}
+									</div>
+								{% endif %}
+								{% if block.settings.item_link.size > 0 %}
+						</a>
+						{% else %}
+					</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+	{% else %}
+	   <div class="gallery_carousel swiper-container" id="gallery_carousel_{{ section.id }}" data-items="{{ itemsCount }}">
+	  	<div class="swiper-wrapper">
+	  		{% for block in section.blocks limit: itemsCount %}
+	  		<div class="swiper-slide">
+	  			<div class="gallery_item">
+	  				<div class="item_image">
+	  					{% if block.settings.item_link.size > 0 %}
+	  					<a class="item_caption w-100" href="{{ block.settings.item_link }}">
+	  						{% else %}
+	  						<div class="item_caption w-100">
+	  							{% endif %}
+							  
+								{% if block.settings.item_img.size > 0 %}
+									<img loading="lazy" class="blur-up lazyload w-100"
+										 src="{{ block.settings.item_img | img_url: img_min_size, crop: block.settings.item_img_alignment, format: 'jpg' }}"
+										 alt="{{ block.settings.item_img.alt | escape }}"
+										 data-src="{{ block.settings.item_img | img_url: img_size, crop: block.settings.item_img_alignment, format: 'jpg' }}"
+									>
+								{% else %}
+									<div class="img_placeholder__wrap">
+										{{ 'image' | placeholder_svg_tag: 'medium_placeholder' }}
+									</div>
+								{% endif %}
+	  							
+	  							{% if block.settings.item_link.size > 0 %}
+	  					</a>
+	  					{% else %}
+	  				</div>
+	  				{% endif %}
+	  			</div>
+	  		</div>
+	  	</div>
+	  	{% endfor %}
+      </div>
+         <div id="pagination_{{ section.id }}" class="swiper_pagination"></div>
+      </div>
+    {% endif %}
+
+{% if section.settings.boxed %}
+  </div>
+{% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Gallery",
+  "class": "section section_homepage index_section_gallery",
+  "settings": [
+  {
+  "type": "text",
+  "id": "section_title",
+  "label": "Section Title"
+  },
+  {
+  "type": "checkbox",
+  "id": "boxed",
+  "label": "Boxed size"
+  },
+  {
+  "type": "select",
+  "id": "items_count",
+  "label": "Gallery carousel",
+  "options": [
+  {
+  "value": "4",
+  "label": "4"
+  },
+  {
+  "value": "5",
+  "label": "5"
+  },
+  {
+  "value": "6",
+  "label": "6"
+  }
+  ]
+  }
+  ],
+  "blocks": [
+  {
+  "type": "image",
+  "name": "Image",
+  "settings": [
+  {
+  "type": "image_picker",
+  "id": "item_img",
+  "label": "Image",
+  "info": "For higher quality upload images wider than 2048 pixels"
+  },
+  {
+  "type": "select",
+  "id": "item_img_alignment",
+  "label": "Image alignment",
+  "default": "center",
+  "options": [
+  {
+  "value": "top",
+  "label": "Top"
+  },
+  {
+  "value": "center",
+  "label": "Middle"
+  },
+  {
+  "value": "bottom",
+  "label": "Bottom"
+  }
+  ]
+  },
+  {
+  "type": "url",
+  "id": "item_link",
+  "label": "Link",
+  "info": "Optional"
+  }
+  ]
+  }
+  ],
+  "presets": [
+  {
+  "name": "Gallery",
+  "category": "Image",
+  "blocks": [
+  {
+  "type": "image"
+  },
+  {
+  "type": "image"
+  },
+  {
+  "type": "image"
+  }
+  ]
+  }
+  ]
+  }
+{% endschema %}
+ 
+{% javascript %}
+jQuery(document).ready(function($) {
+setTimeout(function(i) {
+$('.gallery_carousel').each(function(i) {
+var galleryId = '#' + $(this).attr('id');
+var galleryVar = $(this).attr('id');
+var pagination = '#' + $(this).attr('id').replace('gallery_carousel_','pagination_');
+
+
+var carouselGalleryVar = new Swiper( galleryId, {
+effect: 'slide',
+slidesPerView: 3,
+spaceBetween: 40,
+speed: 500,
+observer: true,
+observeParents: true,
+autoplay: {
+disableOnInteraction: false,
+},
+breakpoints: {
+576: {
+slidesPerView: 1,
+spaceBetween: 0
+},
+768:{
+slidesPerView: 2,
+spaceBetween: 20
+},
+1200: {
+slidesPerView: 3,
+spaceBetween: 40
+}
+},
+pagination: {
+el: '.swiper_pagination',
+type: 'bullets',
+clickable: true
+}
+});
+});
+}, 1000);
+});
+{% endjavascript %}

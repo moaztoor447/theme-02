@@ -1,0 +1,80 @@
+
+
+	
+	<div class="row flex-column justify-content-center align-items-center">
+	{% if section.settings.use_bg != blank %}
+		<style>
+			.template-404 main {
+				margin-bottom:0!important;
+			}
+			.img_bg__wrap {
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				z-index: -2;
+			}
+		</style>
+	{% if section.settings.image.size > 0 %}
+		<div class="img_bg__wrap lazyload"
+			data-bgset="{%- render 'bgset', image: section.settings.image -%}"
+			data-sizes="auto"
+			data-parent-fit="contain"
+		></div>
+	{% else %}
+		<div class="img_placeholder_wrapper">
+		{{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+		</div>
+	{% endif %}
+{% endif %}
+		<div class="col-12 col-md-8">
+			<div class="text-center">
+						<h1 class="custom_large_title mb-3 h2">{{ 'pages.404.title_1' | t }}</h1>
+						<h2 class="h4">{{ 'pages.404.title_2' | t }}</h2>
+						<p class="mt-2">{{ 'pages.404.title_3' | t }}</p>
+					
+						<div class="mt-4">
+							<div class="page_search">
+								<form action="/search" method="get" role="search" class="search-form d-flex align-items-stretch">
+									<input class="form-control mr-1" type="search" name="q" placeholder="{{ 'pages.404.search' | t }}" aria-label="{{ 'pages.404.search' | t }}">
+									<button class="btn btn-primary {% if settings.use_lg %} btn-gradient {% endif %}" type="submit">
+										<span class="d-none">{{ 'pages.search.search' | t }}</span>
+										<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+											<path d="M9,0C4,0,0,4,0,9s4,9,9,9s9-4,9-9S14,0,9,0z M9,16c-3.9,0-7-3.1-7-7c0-3.9,3.1-7,7-7c3.9,0,7,3.1,7,7C16,12.9,12.9,16,9,16z" ></path>
+											<path d="M14.3,14.3c0.4-0.4,1-0.4,1.4,0l4,4c0.4,0.4,0.4,1,0,1.4c-0.4,0.4-1,0.4-1.4,0l-4-4C13.9,15.3,13.9,14.7,14.3,14.3z" ></path>
+										</svg>
+									</button>
+								</form>
+							</div>
+						</div>
+						<a class="btn btn-primary btn-lg mt-3 mt-md-4" href="/collections">
+							<span>{{ 'pages.404.return' | t }}</span>
+						</a>
+			</div>
+		</div>
+	</div>
+
+
+
+{% schema %}
+  {
+    "name": "Page 404",
+	"class": "section-404",
+    "settings": [
+		{
+			"type": "image_picker",
+			"id": "image",
+			"label": "Image",
+			"info": "The image should be more than 2048px wide to resize and crop properly"
+		  },
+		  {
+			"type": "checkbox",
+			"id": "use_bg",
+			"label": "Use image background",
+			"default": false
+		  }
+	]
+  }
+{% endschema %}
+

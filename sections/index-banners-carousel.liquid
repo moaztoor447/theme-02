@@ -1,0 +1,399 @@
+{%- assign sbcCount = section.settings.sbc_count | plus: 0 -%}
+{%- assign sbcView = section.settings.sbc_view -%}
+{%- assign item_class = 'col-12 col-sm-6 col-md-4' -%}
+{%- assign img_min_size = '150x113' -%}
+{%- assign img_size = '360x270' -%}
+
+{% if section.settings.background_toggle %}
+	<div style="background-color: {{ section.settings.bg_color }}" class="bg-section">
+{% endif %}
+
+{% if section.settings.container_view %}
+	<div class="{% if section.settings.container_settings == 'container' %}container{% elsif section.settings.container_settings == 'container-xl' %} container container-xxl {% endif %}{% if bannersCount > 3 and section.settings.carousel_pagination_type == 'navigation'%} swiper-nav-wrapper {% endif %}">
+{% endif %}
+{% if section.settings.subheading.size > 0 %}
+	<div class="h6 section_subheading"><span>{{ section.settings.subheading }}</span></div>
+{% endif %}
+{% if section.settings.section_title.size > 0 %}
+	<h2 class="section_heading {% if bannersCount > 3 %} swiper-title{% endif %}">
+		<span>{{ section.settings.section_title }}</span>
+		{% if section.settings.carousel_pagination_type == 'pagination' %}
+			<div data-responsive-id="swiper-pagination" data-responsive-layout="desktop tablet">
+				<div id="pagination_{{ section.id }}" class="swiper_pagination"></div>
+			</div>
+		{% endif %}
+	</h2>
+{% endif %}
+
+{% if bannersCount <= 3 %}
+	<div class="row">
+		{% for block in section.blocks %}
+			<div class="{{ item_class }}">
+				<div class="banner-item style-{{ block.settings.banner_style }}">
+					{% if block.settings.item_video_url.size > 0 %}
+						<a href="{{ block.settings.item_video_url }}" class="banner-image-link fancybox-media fancybox.iframe">
+							<span class="banner-media">
+								<svg width="12" height="14" viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg">
+									<path d="M11 5.26795C12.3333 6.03775 12.3333 7.96225 11 8.73205L3.5 13.0622C2.16666 13.832 0.499999 12.8697 0.499999 11.3301L0.5 2.66987C0.5 1.13027 2.16667 0.168021 3.5 0.937822L11 5.26795Z" />
+								</svg>
+							</span>
+					{% endif %}
+
+					{% if block.settings.item_img.size > 0 %}
+						<img loading="lazy" class="banner-image lazyload blur-up img-fluid w-100" src="{{ block.settings.item_img | img_url: img_min_size, crop: 'center' }}" alt="{{ block.settings.image.alt | escape }}"
+							data-src="{{ block.settings.item_img | img_url: img_size, crop: 'center' }}"
+							data-widths="[360, 540, 720, 900, 1080, 1296, 1512, 1728, 1810]"
+							>
+					{% else %}
+						<div class="img_placeholder__wrap">
+							{{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+						</div>
+					{% endif %}
+					{% if block.settings.item_video_url.size > 0 %}
+						</a>
+					{% endif %}
+					<div class="banner-caption">
+						{% if block.settings.item_title_1.size > 0 %}
+							<div class="h4">{{ block.settings.item_title_1 }}</div>
+						{% endif %}
+						{% if block.settings.item_date.size > 0 %}
+							<div class="date-banner">{{ block.settings.item_date }}</div>
+						{% endif %}
+						{% if block.settings.item_text_1.size > 0 %}
+							<p class="text-banner">{{ block.settings.item_text_1 }}</p>
+						{% endif %}
+						{% if block.settings.link_text.size > 0 and block.settings.item_link.size > 0 %}
+							<a href="{{ block.settings.item_link }}" class="link link-primary">{{ block.settings.link_text }}</a>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+{% else %}
+	<div id="banners_carousel_{{ section.id }}" class="banners-carousel swiper-container" data-slides-per-view="{{ bannersView }}">
+		<div class="swiper-wrapper">
+			{% for block in section.blocks %}
+
+				<div class="swiper-slide">
+					<div class="banner-item style-{{ block.settings.banner_style }}">
+						{% if block.settings.item_video_url.size > 0 %}
+						<a href="{{ block.settings.item_video_url }}" class="banner-image-link fancybox-media fancybox.iframe">
+							<span class="banner-media">
+								<svg width="12" height="14" viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg">
+									<path d="M11 5.26795C12.3333 6.03775 12.3333 7.96225 11 8.73205L3.5 13.0622C2.16666 13.832 0.499999 12.8697 0.499999 11.3301L0.5 2.66987C0.5 1.13027 2.16667 0.168021 3.5 0.937822L11 5.26795Z" />
+								</svg>
+							</span>
+							{% endif %}
+
+							{% if block.settings.item_img.size > 0 %}
+								<img loading="lazy" class="banner-image lazyload blur-up img-fluid w-100" src="{{ block.settings.item_img | img_url: img_min_size, crop: 'center' }}" alt="{{ block.settings.image.alt | escape }}"
+									 data-src="{{ block.settings.item_img | img_url: img_size, crop: 'center' }}"
+									 data-widths="[360, 540, 720, 900, 1080, 1296, 1512, 1728, 1810]"
+								>
+							{% else %}
+								<div class="img_placeholder__wrap">
+									{{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+								</div>
+							{% endif %}
+							{% if block.settings.item_video_url.size > 0 %}
+						</a>
+						{% endif %}
+						<div class="banner-caption">
+							{% if block.settings.item_title_1.size > 0 %}
+								<h2 class="h4">{{ block.settings.item_title_1 }}</h2>
+							{% endif %}
+							{% if block.settings.item_date.size > 0 %}
+								<div class="date-banner">{{ block.settings.item_date }}</div>
+							{% endif %}
+							{% if block.settings.item_text_1.size > 0 %}
+								<p class="text-banner">{{ block.settings.item_text_1 }}</p>
+							{% endif %}
+							{% if block.settings.link_text.size > 0 and block.settings.item_link.size > 0 %}
+								<a href="{{ block.settings.item_link }}" class="link link-primary">{{ block.settings.link_text }}</a>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+		<div class="swiper-pagination-bullets p-md-0 m-md-0" data-responsive-id="swiper-pagination" data-responsive-layout="mobile"></div>
+	</div>
+	{% if section.settings.carousel_pagination_type == 'navigation' %}
+		<div id="prev_{{ section.id }}" class="swiper-button-prev"><svg width="18" height="32" viewBox="0 0 18 32" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.97006 15.7424L17.2276 29.9999L15.7427 31.4849L0.000214999 15.7424L15.7427 -6.1165e-05L17.2276 1.48486L2.97006 15.7424Z" /></svg></div>
+		<div id="next_{{ section.id }}" class="swiper-button-next"><svg width="18" height="32" viewBox="0 0 18 32" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M14.2578 15.7425L0.000244141 1.48492L1.48517 0L17.2276 15.7425L1.48517 31.4849L0.000244141 30L14.2578 15.7425Z" /></svg></div>
+	{% endif %}
+{% endif %}
+
+{% if section.settings.container_view %}
+	</div>
+{% endif %}
+{% if section.settings.background_toggle %}
+	</div>
+{% endif %}
+
+{% schema %}
+
+{
+	"name": "Banners with carousel",
+	"class": "section section_homepage section_banners section_banners_carousel",
+	"max_blocks": 6,
+	"settings": [
+		{
+			"type": "header",
+			"content": "Banners with carousel"
+		},
+		{
+			"type": "text",
+			"id": "section_title",
+			"label": "Section Title"
+		},
+		{
+			"type": "text",
+			"id": "subheading",
+			"label": "Subheading",
+			"default": "Subheading"
+		},
+		{
+			"type": "checkbox",
+			"id": "background_toggle",
+			"label": "Show background color",
+			"default": false
+		},
+		{
+			"type": "color",
+			"id": "bg_color",
+			"label": "Background color",
+			"default": "#F6F7F9"
+		},
+		{
+			"type": "checkbox",
+			"id": "container_view",
+			"label": "Use container",
+			"default":   false
+		},
+		{
+			"type":      "select",
+			"id":        "container_settings",
+			"label":     "Container width",
+			"options": [
+				{
+					"value": "container",
+					"label": "Container"
+				},
+				{
+					"value": "container-xl",
+					"label": "Container xl"
+				}
+			],
+			"default":   "container",
+			"info":      "If use container"
+		},
+		{
+			"type": "header",
+			"content": "Carousel settings"
+		},
+		{
+			"type": "select",
+			"id": "banners_count",
+			"label": "Banners count",
+			"default": "4",
+			"options": [
+				{
+					"value": "2",
+					"label": "2"
+				},
+				{
+					"value": "3",
+					"label": "3"
+				},
+				{
+					"value": "4",
+					"label": "4"
+				},
+				{
+					"value": "5",
+					"label": "5"
+				},
+				{
+					"value": "6",
+					"label": "6"
+				},
+				{
+					"value": "7",
+					"label": "7"
+				},
+				{
+					"value": "8",
+					"label": "8"
+				},
+				{
+					"value": "9",
+					"label": "9"
+				},
+				{
+					"value": "10",
+					"label": "10"
+				}
+			]
+		},
+		{
+			"type": "select",
+			"id": "banners_view",
+			"label": "Banners view",
+			"default": "3",
+			"options": [
+				{
+					"value": "3",
+					"label": "3"
+				},
+				{
+					"value": "4",
+					"label": "4"
+				},
+				{
+					"value": "5",
+					"label": "5"
+				}
+			]
+		},
+		{
+			"type": "select",
+			"id": "carousel_pagination_type",
+			"label": "Pagination type",
+			"default": "pagination",
+			"options": [
+				{
+					"value": "pagination",
+					"label": "Pagination"
+				},
+				{
+					"value": "navigation",
+					"label": "Navigation"
+				}
+			]
+		}
+	],
+	"blocks": [
+
+		// Banner 33%
+		{
+			"type": "banner_33",
+			"name": "Banner",
+			"limit": 6,
+			"settings": [
+				{
+					"type": "select",
+					"id": "banner_style",
+					"label": "Banner style",
+					"default": "standart",
+						"options": [
+						{
+							"label": "Standart",
+							"value": "standart"
+						}
+					]
+				},
+				{
+					"type": "image_picker",
+					"id": "item_img",
+					"label": "Banner image"
+				},
+				{
+					"type": "text",
+					"id": "item_video_url",
+					"label": "Banner video link"
+				},
+				{
+					"type": "text",
+					"id": "item_title_1",
+					"label": "Caption title (h3)"
+				},
+				{
+					"type": "text",
+					"id": "item_date",
+					"label": "Date"
+				},
+				{
+					"type": "text",
+					"id": "item_text_1",
+					"label": "Caption text #1"
+				},
+				{
+					"type": "url",
+					"id": "item_link",
+					"label": "Link banner",
+					"info": "Optional"
+				},
+				{
+					"type": "text",
+					"id": "link_text",
+					"label": "Link text"
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "Banners with carousel",
+			"category": "Image",
+			"blocks": [
+				{
+					"type": "banner_33"
+				},
+				{
+					"type": "banner_33"
+				},
+				{
+					"type": "banner_33"
+				},
+				{
+					"type": "banner_33"
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+{% javascript %}
+jQuery(document).ready(function($) {
+	$('.banners-carousel').each(function(i) {
+
+		var sliderId = '#' + $(this).attr('id');
+		var sliderVar = $(this).attr('id');
+		var sliderPagination = '#pagination_' + sliderVar.replace('banners_carousel_', '');
+
+		var carouselVar = new Swiper( sliderId, {
+			effect: 'slide',
+			slidesPerView: 1,
+			spaceBetween: 10,
+			speed: 500,
+			autoplayDisableOnInteraction: false,
+			pagination: {
+				el: sliderPagination,
+				type: 'bullets',
+				clickable: true,
+			},
+			navigation: {
+				nextEl: $(this).parent().parent().find('.swiper-button-next'),
+				prevEl: $(this).parent().parent().find('.swiper-button-prev')
+			},
+			breakpoints: {
+				576: {
+					slidesPerView: 2,
+					spaceBetween: 15
+				},
+				768: {
+					slidesPerView: 3,
+					spaceBetween: 30
+				},
+				1200: {
+					spaceBetween: 30,
+					slidesPerView: parseInt($(this).attr('data-slides-per-view')) || 3
+				}
+			}
+		});
+	});
+});
+{% endjavascript %}

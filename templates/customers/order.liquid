@@ -1,0 +1,185 @@
+<div class="template_customer template_customer__order">
+	<div class="container">
+		<h1 class="page_heading">{{ page_title }} 
+			<a href="/account" title="{{ 'customer.order_details.back_to_account' | t }}">
+				<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M9 0H20V20H9V18H18V2H9V0Z" fill="#222222"/>
+				<path d="M3.31844 9H12V11H3.25147L6 13.7156L4.85714 15L0 10.0458L4.85714 5L6 6.28441L3.31844 9Z" fill="#222222"/>
+				</svg>
+			</a>
+		</h1>
+
+		<div class="account_section">
+			{% comment %}<h4>{{ 'customer.order_details.order_details' | t }}</h4>{% endcomment %}
+
+			{% if order.cancelled %}
+				<p class="alert alert-danger">
+					{%- assign cancelled_at = order.cancelled_at | date: "%B %d, %Y %I:%M%p" -%}
+					<p>{{ 'customer.order.cancelled' | t: date: cancelled_at }}</p>
+					<p>{{ 'customer.order.cancelled_reason' | t: reason: order.cancel_reason }}</p>
+				</p>
+			{% endif %}
+
+			<table class="account_table table_info">
+				<tr>
+					<td class="cell_left">{{ 'customer.order_details.order_placed' | t }}</td>
+					<td class="cell_right">{{ order.created_at | date: "%B %d, %Y %I:%M%p" }}</td>
+				</tr>
+				<tr>
+					<td class="cell_left">{{ 'customer.order_details.order_payment_status' | t }}</td>
+					<td class="cell_right">{{ order.financial_status }}</td>
+				</tr>
+				<tr>
+					<td class="cell_left">{{ 'customer.order_details.order_fulfillment_status' | t }}</td>
+					<td class="cell_right">{{ order.fulfillment_status }}</td>
+				</tr>
+			</table>
+
+			<div class="account_table__wrap">
+				<table class="account_table account_table__order-details">
+					<tr class="row_header">
+						<th>{{ 'customer.order_details.order_product' | t }}</th>
+						<th>{{ 'customer.order_details.order_product_sku' | t }}</th>
+						<th>{{ 'customer.order_details.order_product_price' | t }}</th>
+						<th class="cell_min">{{ 'customer.order_details.order_product_quantity' | t }}</th>
+						<th class="cell_right cell_min">{{ 'customer.order_details.order_product_total' | t }}</th>
+					</tr>
+
+					{% for line_item in order.line_items %}
+						<tr class="row_border row_product">
+							<td>
+								{{ line_item.title | link_to: line_item.product.url }}
+								{% if line_item.fulfillment %}
+									<div class="note">
+									  {%- assign created_at = line_item.fulfillment.created_at | time_tag: format: 'date' -%}
+									  {{ 'customer.order_details.fulfilled_at_html' | t: date: created_at }}
+										{% if line_item.fulfillment.tracking_number %}
+											<a href="{{ line_item.fulfillment.tracking_url }}">{{ line_item.fulfillment.tracking_company }} #{{ line_item.fulfillment.tracking_number }}</a>
+										{% endif %}
+									</div>
+								{% endif %}
+							</td>
+							<td>{{ line_item.sku }}</td>
+							<td class="product-price">{{ line_item.price | money }}</td>
+							<td class="cell_min">{{ line_item.quantity }}</td>
+							<td class="cell_min cell_right">
+								<span class="product-price">{{ line_item.quantity | times: line_item.price | money }}</span>
+							</td>
+						</tr>
+					{% endfor %}
+
+					<tr>
+						<td colspan="4">{{ 'customer.order_details.order_subtotal' | t }}</td>
+						<td class="cell_right">
+							<span class="product-price">{{ order.subtotal_price | money }}</span>
+						</td>
+					</tr>
+
+					{% for discount in order.discounts %}
+						<tr>
+							<td colspan="4">{{ 'customer.order_details.order_discount' | t }} — {{ discount.code }}</td>
+							<td class="cell_right">
+								<span class="product-price">{{ discount.savings | money }}</span>
+							</td>
+						</tr>
+					{% endfor %}
+
+					{% for shipping_method in order.shipping_methods %}
+						<tr>
+							<td colspan="4">{{ 'customer.order_details.order_shipping' | t }} — {{ shipping_method.title }}</td>
+							<td class="cell_right">
+								<span class="product-price">{{ shipping_method.price | money }}</span>
+							</td>
+						</tr>
+					{% endfor %}
+
+					{% for tax_line in order.tax_lines %}
+						<tr>
+							<td colspan="4">{{ 'customer.order_details.order_tax' | t }} — {{ tax_line.title }} ({{ tax_line.rate | times: 100 }}%)</td>
+							<td class="cell_right"><span class="product-price">{{ tax_line.price | money }}</span></td>
+						</tr>
+					{% endfor %}
+
+					<tr class="row_total">
+						<td class="cell_left" colspan="4">{{ 'customer.order_details.order_total' | t }}</td>
+						<td class="cell_right">
+							<span class="product-price">{{ order.total_price | money }}</span>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<div class="account_section__wrapper">
+			<div class="account_section">
+				<h4>{{ 'customer.order_details.order_billing_address' | t }}</h4>
+
+				{% if order.billing_address.name.size > 0 %}
+					<p class="address_item address_item__name">
+						<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M19.9005 18.8945C19.801 17.9899 19.602 17.0854 19.204 16.1809C18.7065 14.9749 18.01 13.8693 17.0149 12.9648C16.1194 12.0603 15.0249 11.2563 13.8308 10.7538C11.4428 9.74874 8.65672 9.74874 6.16915 10.7538C4.97512 11.2563 3.8806 11.9598 2.98507 12.8643C2.08955 13.7688 1.29353 14.8744 0.79602 16.0804C0.497512 16.9849 0.199005 17.9899 0.0995025 18.8945L0 20H20L19.9005 18.8945ZM2.28856 17.9899C2.38806 17.5879 2.48756 17.2864 2.68657 16.8844C3.08458 15.8794 3.68159 15.0754 4.37811 14.2714C5.17413 13.5678 5.97015 12.9648 6.96517 12.5628C8.95522 11.7588 11.1443 11.7588 13.0348 12.5628C14.0299 12.9648 14.9254 13.5678 15.6219 14.2714C16.3184 14.9749 16.9154 15.8794 17.3134 16.8844C17.4129 17.1859 17.6119 17.5879 17.7114 17.9899H2.28856Z" fill="#222222"/>
+						<path d="M12.9 6.88199C13.6 6.18634 14 5.19255 14 4C14 2.80745 13.6 1.91304 12.9 1.11801C11.3 -0.372671 8.7 -0.372671 7.2 1.11801C6.4 1.91304 6 2.90683 6 4C6 5.09317 6.4 6.08696 7.2 6.88199C8.7 8.37267 11.3 8.37267 12.9 6.88199ZM8.6 2.6087C9.3 1.91304 10.7 1.91304 11.4 2.6087C11.8 3.00621 12 3.50311 12 4C12 4.49689 11.8 4.99379 11.4 5.3913C10.7 6.08696 9.3 6.08696 8.6 5.3913C8.2 5.09317 8 4.59627 8 4C8 3.40373 8.2 2.90683 8.6 2.6087Z" fill="#222222"/>
+						</svg>
+						<span>{{ order.billing_address.name }}</span>
+					</p>
+				{% endif %}
+
+				<p class="address_item address_item__location">
+					<svg width="24" height="22" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M19.7 21H14.2V14.5H9.8V21H4.3V10H1L12 1L23 10H19.7V21ZM15.3 20H18.6V9H20.14L12 2.35L3.86 9H5.4V20H8.7V13.5H15.3V20Z" fill="#222222" stroke="black" stroke-width="0.5"/>
+					</svg>
+					{% if order.billing_address.address1.size > 0 %}<span>{{ order.billing_address.address1 }}</span>{% endif %}
+					{% if order.billing_address.address2.size > 0 %}<span>{{ order.billing_address.address2 }}</span>{% endif %}
+					{% if order.billing_address.city.size > 0 %}<span>{{ order.billing_address.city }}</span>{% endif %}
+					{% if order.billing_address.province.size > 0 %}<span>{{ order.billing_address.province }}</span>{% endif %}
+					{% if order.billing_address.zip.size > 0 %}<span>{{ order.billing_address.zip }}</span>{% endif %}
+					{% if order.billing_address.country.size > 0 %}<span>{{ order.billing_address.country }}</span>{% endif %}
+				</p>
+
+				{% if order.billing_address.phone.size > 0 %}
+					<p class="address_item address_item__phone">
+						<svg width="19" height="20" viewBox="0 0 19 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M13.9 20C6.2 19.899 0.1 13.5354 0 5.65657V5.15152C0 3.53535 2.2 0.808081 3.4 0L4.9 0.40404L8 6.86869L7.6 8.18182L6.8 8.68687C6.6 8.78788 6.6 8.9899 6.7 9.19192C7.1 9.89899 7.5 10.6061 8.1 11.3131C8.7 11.8182 9.3 12.3232 10.1 12.7273C10.2 12.8283 10.4 12.7273 10.5 12.6263L11 11.7172L12.3 11.3131L18.6 14.4444L19 15.8586C17.2 18.5859 15.7 20 14.5 20H13.9ZM3.7 2.52525C2.8 3.43434 2 4.74748 2 5.15152V5.55556C2.1 12.4242 7.4 17.8788 13.9 17.9798H14.3C14.6 17.8788 15.5 17.0707 16.5 15.6566L12.1 13.4343V13.5354C11.5 14.5455 10.2 14.9495 9.1 14.4444C8.2 13.9394 7.4 13.3333 6.6 12.6263C5.9 11.8182 5.3 10.9091 4.8 10C4.3 8.88889 4.6 7.57576 5.6 6.9697L5.7 6.86869L3.7 2.52525Z" fill="#222222"/>
+						</svg>
+						{{ order.billing_address.phone }}
+					</p>
+				{% endif %}
+			</div>
+
+			<div class="account_section">
+				<h4>{{ 'customer.order_details.order_shipping_address' | t }}</h4>
+
+				{% if order.shipping_address.name.size > 0 %}
+					<p class="address_item address_item__name">
+						<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M19.9005 18.8945C19.801 17.9899 19.602 17.0854 19.204 16.1809C18.7065 14.9749 18.01 13.8693 17.0149 12.9648C16.1194 12.0603 15.0249 11.2563 13.8308 10.7538C11.4428 9.74874 8.65672 9.74874 6.16915 10.7538C4.97512 11.2563 3.8806 11.9598 2.98507 12.8643C2.08955 13.7688 1.29353 14.8744 0.79602 16.0804C0.497512 16.9849 0.199005 17.9899 0.0995025 18.8945L0 20H20L19.9005 18.8945ZM2.28856 17.9899C2.38806 17.5879 2.48756 17.2864 2.68657 16.8844C3.08458 15.8794 3.68159 15.0754 4.37811 14.2714C5.17413 13.5678 5.97015 12.9648 6.96517 12.5628C8.95522 11.7588 11.1443 11.7588 13.0348 12.5628C14.0299 12.9648 14.9254 13.5678 15.6219 14.2714C16.3184 14.9749 16.9154 15.8794 17.3134 16.8844C17.4129 17.1859 17.6119 17.5879 17.7114 17.9899H2.28856Z" fill="#222222"/>
+						<path d="M12.9 6.88199C13.6 6.18634 14 5.19255 14 4C14 2.80745 13.6 1.91304 12.9 1.11801C11.3 -0.372671 8.7 -0.372671 7.2 1.11801C6.4 1.91304 6 2.90683 6 4C6 5.09317 6.4 6.08696 7.2 6.88199C8.7 8.37267 11.3 8.37267 12.9 6.88199ZM8.6 2.6087C9.3 1.91304 10.7 1.91304 11.4 2.6087C11.8 3.00621 12 3.50311 12 4C12 4.49689 11.8 4.99379 11.4 5.3913C10.7 6.08696 9.3 6.08696 8.6 5.3913C8.2 5.09317 8 4.59627 8 4C8 3.40373 8.2 2.90683 8.6 2.6087Z" fill="#222222"/>
+						</svg>
+						<span>{{ order.shipping_address.name }}</span>
+					</p>
+				{% endif %}
+
+				<p class="address_item address_item__location">
+					<svg width="24" height="22" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M19.7 21H14.2V14.5H9.8V21H4.3V10H1L12 1L23 10H19.7V21ZM15.3 20H18.6V9H20.14L12 2.35L3.86 9H5.4V20H8.7V13.5H15.3V20Z" fill="#222222" stroke="black" stroke-width="0.5"/>
+					</svg>
+					{% if order.shipping_address.address1.size > 0 %}<span>{{ order.shipping_address.address1 }}</span>{% endif %}
+					{% if order.shipping_address.address2.size > 0 %}<span>{{ order.shipping_address.address2 }}</span>{% endif %}
+					{% if order.shipping_address.city.size > 0 %}<span>{{ order.shipping_address.city }}</span>{% endif %}
+					{% if order.shipping_address.province.size > 0 %}<span>{{ order.shipping_address.province }}</span>{% endif %}
+					{% if order.shipping_address.zip.size > 0 %}<span>{{ order.shipping_address.zip }}</span>{% endif %}
+					{% if order.shipping_address.country.size > 0 %}<span>{{ order.shipping_address.country }}</span>{% endif %}
+				</p>
+
+				{% if order.shipping_address.phone.size > 0 %}
+					<p class="address_item address_item__phone">
+						<svg width="19" height="20" viewBox="0 0 19 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M13.9 20C6.2 19.899 0.1 13.5354 0 5.65657V5.15152C0 3.53535 2.2 0.808081 3.4 0L4.9 0.40404L8 6.86869L7.6 8.18182L6.8 8.68687C6.6 8.78788 6.6 8.9899 6.7 9.19192C7.1 9.89899 7.5 10.6061 8.1 11.3131C8.7 11.8182 9.3 12.3232 10.1 12.7273C10.2 12.8283 10.4 12.7273 10.5 12.6263L11 11.7172L12.3 11.3131L18.6 14.4444L19 15.8586C17.2 18.5859 15.7 20 14.5 20H13.9ZM3.7 2.52525C2.8 3.43434 2 4.74748 2 5.15152V5.55556C2.1 12.4242 7.4 17.8788 13.9 17.9798H14.3C14.6 17.8788 15.5 17.0707 16.5 15.6566L12.1 13.4343V13.5354C11.5 14.5455 10.2 14.9495 9.1 14.4444C8.2 13.9394 7.4 13.3333 6.6 12.6263C5.9 11.8182 5.3 10.9091 4.8 10C4.3 8.88889 4.6 7.57576 5.6 6.9697L5.7 6.86869L3.7 2.52525Z" fill="#222222"/>
+						</svg>
+						{{ order.shipping_address.phone }}
+					</p>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>

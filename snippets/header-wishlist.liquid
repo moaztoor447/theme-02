@@ -1,0 +1,16 @@
+{% if  settings.wishlist_toggle == true and settings.wishlist_page != '' %}
+	<div class="header_wishlist">
+		<a class="wishlist-link header_icon{% if ss_item.view_wishlist == 'type-4' %} header_icon--revers{% endif %}" href="{{ pages[settings.wishlist_page].url }}" title="{{ 'layout.wishlist.wishlist' | t }}">
+			{% unless ss_item.view_wishlist == 'type-1' %}
+				<span class="link_text">{{ 'layout.wishlist.wishlist' | t }}</span>
+			{% endunless %}
+
+			<span class="svg-icon svg-icon--lg {% if ss_item.view_wishlist == 'type-2' %} hidden-xl {% endif %}">
+				{% render 'icon-heart' %}
+			</span>
+
+			<span class="zemez_wishlist_total"></span>  
+		</a>
+	</div>
+{% endif %}  
+   

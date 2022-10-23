@@ -1,0 +1,84 @@
+
+
+<div class="blog_listing__main blog_listing__main_{{ item.type_blog }}">
+    <div class="row{% if item.type_blog == 'list' and item.width_item == 'col-xl-12' %} gx-0{% endif %}">
+      {%- case item.type_blog -%}
+        {% when 'grid' %}
+          {%- for article in blog.articles -%}
+          <div class="col-12 col-sm-6 {{ item.width_item }} mb-3 mb-md-4">
+            {%- include 'blog-grid-item' -%}
+          </div>
+          {%- endfor -%}
+        {% when 'masonry' %}
+            <div class="grid">
+              {%- for article in blog.articles -%}
+                {%- include 'blog-masonry-item' -%}
+              {%- endfor -%}
+            </div>
+      {% when 'list' %}
+          {%- for article in blog.articles -%}
+            <div class="col-12 {{ item.width_item }}">
+               {%- include 'blog-listing-item' -%}
+            </div>
+          {%- endfor -%}
+      {% endcase %}
+    </div>
+  
+	{%- if paginate.pages > 1 -%}
+      {% liquid
+        assign pagination_items = 'layout.pagination.articles' | t
+      %}
+      {% render 'snippet-pagination', paginate: paginate, pagination_items: pagination_items %}
+	{%- endif -%}
+</div>
+
+
+{%- if item.type_blog == 'masonry' -%}
+  
+  <style>
+    @media (min-width: 1200px){
+      .blog__main .blog_listing__main_masonry .grid {
+         grid-gap: 30px;
+         grid-auto-rows: 11px;
+         grid-template-columns: repeat({{ item.column_masonry_item }}, minmax(135px, 1fr));
+      }
+    }
+  </style>
+  
+  <script type="text/javascript">
+
+
+  $(document).ready(function () {
+    setTimeout(function () {
+      resizeAllGridItems();
+      window.addEventListener("resize", resizeAllGridItems);
+      var allItems = document.getElementsByClassName("item");
+      for(var x=0; x < allItems.length; x++){
+        imagesLoaded(allItems[x], resizeInstance);
+      }
+    }, 300);
+  });
+  
+  
+  function resizeGridItem(item){
+    var grid = document.getElementsByClassName("grid")[0];
+    var rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
+    var rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-row-gap'));
+    var rowSpan = Math.ceil((item.querySelector('.article_item_masonry').getBoundingClientRect().height+rowGap)/(rowHeight+rowGap));
+    item.style.gridRowEnd = "span " + rowSpan;
+  }
+  
+  function resizeAllGridItems(){
+    var allItems = document.getElementsByClassName("item");
+    for(var x=0; x < allItems.length; x++){
+      resizeGridItem(allItems[x]);
+    }
+  }
+  
+  function resizeInstance(instance){
+    var item = instance.elements[0];
+    resizeGridItem(item);
+  }
+
+</script>
+{% endif %}

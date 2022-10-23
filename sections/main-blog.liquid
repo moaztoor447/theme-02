@@ -1,0 +1,493 @@
+{{ 'component-pagination.css' | asset_url | stylesheet_tag }}
+
+{%- assign item = section.settings -%}
+{%- assign paginate_blog = item.pagination_count -%}
+
+{% style %}
+{% if item.use_blog_image_overlay %}
+	   /* Style background overlay */
+	   .section-style-{{ section.id }} .blog__main .article_image::before {
+		   content: '';
+		   position: absolute;
+		   top: 0;
+		   left: 0; 
+		   right: 0;
+		   bottom: 0;
+		   display: block;
+		   z-index: 1;
+		   background-color: {{ item.blog_image_color | color_modify: 'alpha', item.blog_image_color_opacity }};
+		   transition: .3s;
+	   }
+{% endif %}
+
+@media (min-width: 1200px){
+  .section-style-{{ section.id }} .blog__main:not(.img_article_none) .article_caption:not(.article_caption_no_image){
+	  padding: {{ item.inset_caption }};
+  }
+}
+
+{% endstyle %} 
+
+
+{%- paginate blog.articles by paginate_blog -%}
+
+<div class="section-style-{{ section.id }}">
+
+<div class="blog__main type_{{ item.type_blog }} {% if item.blog_caption_position == 'bottom' %} article_caption--bottom {% elsif item.blog_caption_position == 'top' %} article_caption--top {% else %}{% endif %} align--{{ item.textalign_pos }} {% if item.caption_absolute == true and item.post_layout != 'list' %} caption_absolute{% endif %}{% if item.hide_img == true %} img_article_none{% endif %} {% if item.desc_none == true %} desc_article_none{% endif %} linkstyle--{{ item.link_style }} {% unless item.type_blog == 'masonry' %}{% if item.width_item == 'col-xl-12' and item.layout == 'no_column' %} caption-large {% endif %}{% endunless %}">
+	{% if item.blog_template_title.size > 0 %}
+		<h1 class="section_heading text-center">{{ item.blog_template_title }}</h1>
+	{% endif %}
+	
+	{%- case item.layout -%}
+	{%- when 'left_column' -%}
+		<div class="row flex-sm-row-reverse justify-content-between">
+			<div class="col-sm-12 col-md-7 col-lg-8 {% if item.inverted %} inverted{% endif %}">
+				{%- include 'blog-layout' -%}
+			</div>
+			<div class="col-sm-12 col-md-4 col-lg-3 leftColumn">
+				{%- include 'sidebar-blog' -%}
+			</div>
+		</div>
+	
+	{%- when 'right_column' -%}
+		<div class="row">
+			<div class="col-sm-12 col-md-7 col-lg-8 justify-content-between {% if item.inverted %} inverted{% endif %}">
+			  {%- include 'blog-layout' -%}
+			</div>
+			<div class="col-sm-12 col-md-4 col-lg-3 rightColumn">
+				{%- include 'sidebar-blog' -%}
+			</div>
+		</div>
+	{%- when 'no_column' -%}
+	  	{%- include 'blog-layout' -%}
+	{%- endcase -%}
+</div>
+</div>
+{% endpaginate %}
+
+{% schema %}
+{
+	"name": "Blog pages",
+	"settings": [
+		{
+			"type": "select",
+			"id": "layout",
+			"label": "Design",
+			"default": "left_column",
+			"options": [
+				{
+					"value": "left_column",
+					"label": "with Left Column"
+				},
+				{
+					"value": "right_column",
+					"label": "with Right Column"
+				},
+				{
+					"value": "no_column",
+					"label": "No Column"
+				}
+			]
+		},
+  		{
+  			"type": "select",
+  			"id": "type_blog",
+  			"label": "Type Blog",
+  			"options": [
+  				{
+  					"value": "masonry",
+  					"label": "Type Masonry Grid"
+  				},
+  				{
+  					"value": "grid",
+  					"label": "Type Grid"
+  				},
+  				{
+  					"value": "list",
+  					"label": "Type List"
+  				}
+  			], "default": "grid"
+  		},
+  
+  		{
+  			"type": "select",
+  			"id": "width_item",
+  			"label": "Width Grid/List item",
+  			"default": "col-xl-4",
+  			"options": [
+  				{
+  					"value": "col-xl-4",
+  					"label": "33%"
+  				},
+  				{
+  					"value": "col-xl-6",
+  					"label": "50%"
+  				},
+  				{
+  					"value": "col-xl-12",
+  					"label": "100%"
+  				}
+  			]
+  		},
+  
+  		{
+  			"type": "select",
+  			"id": "column_masonry_item",
+  			"label": "Column Masonry",
+  			"default": "3",
+  			"options": [
+  				{
+  					"value": "2",
+  					"label": "Two columns"
+  				},
+  				{
+  					"value": "3",
+  					"label": "Three columns"
+  				},
+  				{
+  					"value": "4",
+  					"label": "Four columns"
+  				}
+  			]
+  		},
+  
+		{
+			"type": "text",
+			"id": "blog_template_title",
+			"label": "blog template title"
+		},
+		
+		{
+			"type": "select",
+			"id": "pagination_count",
+			"label": "Paginated by",
+			"options": [
+  				{
+  					"value": "2",
+  					"label": "2"
+  				},
+				{
+					"value": "3",
+					"label": "3"
+				},
+  				{
+  					"value": "4",
+  					"label": "4"
+  				},
+				{
+					"value": "6",
+					"label": "6"
+				},
+ 				{
+ 					"value": "8",
+ 					"label": "8"
+ 				},
+				{
+					"value": "9",
+					"label": "9"
+				},
+				{
+					"value": "12",
+					"label": "12"
+				}
+			],
+			"default": "9"
+		},
+  
+  		{
+  			"type": "checkbox",
+  			"id": "caption_absolute",
+  			"label": "Caption on image",
+  			"default": false,
+  			"info": "For Grid or Masonry layout"
+  		},
+  
+  		{
+  			"type": "select",
+  			"id": "blog_caption_position",
+  			"label": "Caption position on image",
+  			"info": "Need use 'Caption on image'",
+  			"options": [
+  				{
+  					"value": "bottom",
+  					"label": "Bottom"
+  				},
+  				{
+  					"value": "center",
+  					"label": "Center"
+  				},
+  				{
+  					"value": "top",
+  					"label": "Top"
+  				}
+  			],
+  			"default": "center"
+  		},
+  
+  		{
+  			"type": "select",
+  			"id": "textalign_pos",
+  			"label": "Caption text align",
+  			"default": "left",
+  			"options": [
+  				{
+  					"label": "Left align",
+  					"value": "left"
+  				},
+  				{
+  					"label": "Center align",
+  					"value": "center"
+  				},
+  				{
+  					"label": "Right align",
+  					"value": "right"
+  				}
+  			]
+  		},
+  
+		{
+			"type": "checkbox",
+			"id": "blog_show_info",
+			"label": "Show info",
+			"default": true
+		},
+  
+  		{
+  			"type": "checkbox",
+  			"id": "blog_show_tags",
+  			"label": "Show tags",
+  			"default": false,
+  			"info": "limit - 3"
+  		},
+  
+		{
+			"type": "checkbox",
+			"id": "blog_show_author",
+			"label": "Show author",
+			"default": true
+		},
+
+		{
+			"type": "checkbox",
+			"id": "blog_show_date",
+			"label": "Show date",
+			"default": true
+		},
+  		{
+  			"type": "checkbox",
+  			"id": "inverted",
+  			"label": "Inverted",
+  			"default": false
+  		},
+  
+ 		{
+ 			"type": "checkbox",
+ 			"id": "desc_none",
+ 			"label": "Article description none",
+ 			"default": false
+ 		},
+
+		{
+			"type": "checkbox",
+			"id": "show_comments",
+			"label": "Show comments",
+			"default": true
+		},
+  
+  		{
+  			"type": "select",
+  			"id": "link_style",
+  			"label": "Link style",
+  			"default": "link",
+  				"options": [
+  				{
+  					"value": "link",
+  					"label": "url style as Link"
+  				},
+  				{
+  					"value": "btn",
+  					"label": "url style as Button"
+  				}
+  			]
+  		},
+   
+  		{
+  			"type": "select",
+  			"id": "blog_image_ratio",
+  			"options": [
+  				{
+  					"value": "adapt",
+  					"label": "adapt"
+  				},
+  				{
+  					"value": "portrait-thumb",
+  					"label": "portrait"
+  				},
+  				{
+  					"value": "square",
+  					"label": "square"
+  				},
+  				{
+  					"value": "landscape",
+  					"label": "landscape"
+  				}
+  			],
+  			"default": "adapt",
+  			"label": "image ratio"
+  		},
+  		{
+  			"type": "checkbox",
+  			"id": "hide_img",
+  			"label": "Hide article image",
+  			"default": false
+  		},
+  
+  		{
+  			"type": "checkbox",
+  			"id": "use_blog_image_overlay",
+  			"label": "Use background overlay",
+  			"default": false
+  		},
+  		
+  		{
+  			"type": "color",
+  			"id": "blog_image_color",
+  			"label": "Image overlay"
+  		},
+  		{
+  			"type":      "range",
+  			"id":        "blog_image_color_opacity",
+  			"min":       0,
+  			"max":        1,
+  			"step":       0.1,
+  			"label":     "Background opacity",
+  			"default":   0.5
+  		}
+	],
+	"blocks": [
+		// BLOG SEARCH
+		{
+		"type": "blog_search",
+		"name": "Blog search",
+			"settings": [
+				{
+					"type": "text",
+					"id": "search_title",
+					"label": "Widget title",
+					"default": "Search blog"
+				}
+			]
+		},
+		
+		// LINK LISTS
+		{
+		"type": "link-list",
+		"name": "Link lists",
+			"settings": [
+				{
+					"type": "text",
+					"id": "block_title",
+					"label": "Widget title",
+					"default": "Link lists"
+				},
+				{
+					"type": "link_list",
+					"id": "links",
+					"label": "Choose linklist"
+				}
+			]
+		},
+		
+		// RECENT ARTICLES
+		{
+		"type": "resent_articles",
+		"name": "Resent articles",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Widget title",
+					"default": "Resent articles"
+				}
+			]
+		},
+		
+		// TAGS
+		{
+			"type": "blog_tags",
+			"name": "Blog tags",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Widget title",
+					"default": "Blog tags"
+				}
+			]
+		},
+		
+		// COMMENTS
+		{
+		"type": "blog_comments",
+		"name": "Blog comments",
+		"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Widget title",
+					"default": "Blog comments"
+				}
+			]
+		},
+		
+		// BANNER
+		{
+			"type": "widget_banner",
+			"name": "Banner",
+			"settings": [
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Image",
+					"info": "The image should be more than 280px wide to resize and crop properly"
+				},
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Heading"
+				},
+				{
+					"type": "text",
+					"id": "text",
+					"label": "Text",
+					"default": "Banner text"
+				},
+				{
+					"type": "url",
+					"id": "link",
+					"label": "Link"
+				},
+				{
+					"type": "select",
+					"id": "caption_position",
+					"label": "Caption position",
+					"options": [
+						{
+							"label": "Top",
+							"value": "top"
+						},
+						{
+							"label": "Bottom",
+							"value": "bottom"
+						},
+						{
+							"label": "Center",
+							"value": "center"
+						}
+					]
+				}
+			]
+		}
+	]
+}
+{% endschema %}

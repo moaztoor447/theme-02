@@ -1,0 +1,56 @@
+
+<div class="collection-style-{{ collection.id }}">
+  <style>
+    @media (min-width: 1200px) {
+      .collection-style-{{ collection.id }} {
+        padding: {{ item.inset_section }};
+      }
+    }
+    .collection-style-{{ collection.id }}{
+      background:{{ item.bg_section }};
+      margin: {{ item.offset_section }};
+    }
+    .collection-style-{{ collection.id }} > .full_width{
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+    }
+  </style>
+  <div  {% unless item.info_style == 'style_3' %}class="{{ item.container_width }}"{% endunless %}>
+    <div class="collection-information{% if item.collection_image_toggle and type_bg_img_col and bg_img_collection %} collection-information__fullwidth{% endif %}{% if custom_class %} {{ custom_text_class }}{% endif %}"
+        {% if item.collection_image_toggle and type_bg_img_col and  bg_img_collection %} style=" background-image: url( {{ bg_img | img_url: '1200x450', crop: item.img_alignment }} ); " {% endif %}>
+      <div class="{% unless item.info_style == 'style_3' %} {% if item.container_width == 'full_width' %} container{% endif %}{% endunless %}{% if item.collection_image_toggle == false %} mt-0 {% endif %} {% if item.collection_image_toggle and type_bg_img_col and  bg_img_collection %}  text-center py-5 py-md-7{% endif %}">
+        {% if collection.image or item.collection_tags_toggle or item.collection_desc_toggle and collection.description != blank %}
+            <div class="row align-items-center collection_info {{ item.descr_align_column }}">
+              {% if item.collection_image_toggle and type_bg_img_col == false %}
+                {% if collection.image %}
+                  <div class="collection_img col-12 col-md-{{ item.img_column }}">
+                    <img class="lazyload img-fluid w-100" src="{{ col_img | img_url: col_img_min_size, crop: item.collection_img_alignment }}" alt="{{ collection.title | escape }}" data-src="{{ col_img | img_url: col_img_size, crop: item.collection_img_alignment }}">
+                  </div>
+                {% endif %}
+              {% endif %}
+             
+                <div class="collection_text {% if cap_inverted_style %} inverted{% endif %} {% if item.collection_image_toggle and type_bg_img_col and  bg_img_collection %}  mx-auto {% endif %} col-md-{{ item.descr_column }}">
+                  <h1 class="collection_title h3 mt-md-1 mt-3">{{ collection.title }}</h1>
+                  {% if item.collection_desc_toggle and collection.description != blank %}
+                    <div class="collection_desc rte">
+                      {{ collection.description | truncatewords: 100 }}
+                    </div>
+                  {% endif %}
+                  {% unless item.info_style == 'style_2' %}
+                    {% if item.collection_tags_toggle  %}
+                      <div class="mt-3">
+                       {%- include 'filter-tags-img-or-lnk' -%}
+                      </div>
+                    {% endif %}
+                  {% endunless  %}
+                </div>
+            </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

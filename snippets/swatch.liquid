@@ -1,0 +1,112 @@
+{% if swatch == blank %}
+  <div class="swatch error">
+	<p>You must include the snippet swatch.liquid with the name of a product option.</p>
+	<p>Use: <code>{% raw %}{% include 'swatch' with 'name of your product option here' %}{% endraw %}</code></p>
+	<p>Example: <code>{% raw %}{% include 'swatch' with 'Color' %}{% endraw %}</code></p>
+  </div>
+{% else %}
+  
+  {% assign found_option = false %}
+  {% assign is_color = false %}
+  {% assign is_size = false %}
+  {% assign option_index = 0 %}
+  
+  
+  {% for option in product.options %}
+	{% if option == swatch %}
+	  {% assign found_option = true %}
+	  {% assign option_index = forloop.index0 %}
+	  <style>
+          label[for="product_select_{{ section.id }}-option-{{ option_index }}"],
+		  #product_select_{{ section.id }}-option-{{ option_index }},
+		  .product__options + .single_product__options label {display: none; margin: 0;}
+	  </style>
+	  <script type="text/javascript">
+
+          window.load = function () {
+              $('.selector-wrapper:eq({{ option_index }})').hide();
+          }
+	  
+	  </script>
+	  {% assign downcased_option = swatch | downcase %}
+	  
+	  {% if downcased_option contains 'colo' %}
+		{% assign is_color = true %}
+	  {% endif %}
+	  {% if downcased_option contains 'size' %}
+		{% assign is_size = true %}
+	  {% endif %}
+	  
+	{% endif %}
+  {% endfor %}
+  
+  {% unless found_option %}
+	<div class="swatch error">
+	  <p>You included the snippet swatch.liquid with the name of a product option — <code>'{{ swatch }}'</code> — that does not belong to your product.</p>
+	  <p>Use <code>{% raw %}{% include 'swatch' with 'name of your product option here' %}{% endraw %}</code></p>
+	  <p>Example: <code>{% raw %}{% include 'swatch' with 'Color' %}{% endraw %}</code></p>
+	  <p><strong>This is case-sensitive!</strong> Do not put in <code>'color'</code> if your product option name is <code>'Color'</code>.</p>
+	</div>
+	{% else %}
+	
+	<div class="swatch clearfix" data-option-index="{{ option_index }}">
+	  <div class="header">
+			{{ swatch }}:
+			<span class="option-select-value" id="option-select-value-{{ option_index }}"></span>
+	  </div>
+	  
+	  {% assign values = '' %}
+	  {%- assign opt_imgs = '' -%}
+	  {%- assign opts1 = '' -%}
+	  
+	  {% for variant in product.variants %}
+			{% assign value = variant.options[option_index] %}
+		{% unless values contains value %}
+			{% assign values = values | join: ',' %}
+			{% assign values = values | append: ',' | append: value %}
+			{% assign values = values | split: ',' %}
+			{%- assign _o1 =  '%' | append: variant.option1 | append: '%' -%}
+		
+			{%- unless opts1 contains _o1 -%}
+				{%- assign opts1 = opts1 | append: _o1 -%}
+				{%- assign opt_imgs = variant.image.src | product_img_url: '60x60' -%}
+			{%- endunless -%}
+	  
+		<div data-value="{{ value | escape }}" class="swatch-element{% if is_color and sw_c_type != 'sw_but' %} color{% endif %} {{ value | handle }} {% if variant.available %} available{% else %} soldout{% endif %}">
+			  <input id="swatch-{{ section.id }}-{{ option_index }}-{{ value | handle }}" type="radio" name="option-{{ option_index }}" value="{{ value | escape }}" {% unless variant.available %}disabled{% endunless %} />
+			  {% if is_color and sw_c_type != 'sw_but' %}
+				<label for="swatch-{{ section.id }}-{{ option_index }}-{{ value | handle }}" style="{% if is_sw_bi %} background-image: url({{ opt_imgs }}); {% else %}background-color: {{ value | split: ' ' | last | handle }};{% endif %}">
+				  <img class="crossed-out" src="{{ 'cross.svg' | asset_url }}" alt=""/>
+				</label>
+			  {% else %}
+				<label for="swatch-{{ section.id }}-{{ option_index }}-{{ value | handle }}">
+				  {{ value }}
+				  <img class="crossed-out" src="{{ 'cross.svg' | asset_url }}" alt=""/>
+				</label>
+			  {% endif %}
+			</div>
+		{% endunless %}
+	 
+		{% if variant.available %}
+			<script type="text/javascript">
+        	    jQuery('.swatch[data-option-index="{{ option_index }}"] .{{ value | handle }}').removeClass('soldout').addClass('available').find(':radio').removeAttr('disabled');                                                                                                                             
+			</script>
+		{% endif %}
+	  {% endfor %}
+	  
+	  <script type="text/javascript">
+          var valueInput = jQuery('.swatch[data-option-index="{{ option_index }}"] input:checked').attr('value');
+          jQuery('.swatch[data-option-index="{{ option_index }}"] input:checked').parent().parent().find('.option-select-value').text(valueInput);
+
+          jQuery('.swatch[data-option-index="{{ option_index }}"] input').on('click', function () {
+              jQuery(this).parent().parent().find('input').attr('checked', false);
+              var valueInput = jQuery(this).attr('value');
+              jQuery(this).attr('checked', true);
+              jQuery(this).parent().parent().find('.option-select-value').text(valueInput);
+          });
+	  </script>
+	</div>
+  {% endunless %}
+{% endif %}
+
+

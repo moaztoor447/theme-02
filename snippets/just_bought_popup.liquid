@@ -1,0 +1,166 @@
+<div>
+  <div class="p_just__bought position_{{ settings.caption_position }}">
+    {% assign min = 1 %}
+    {% assign max = collections.all.products.size %}
+    {% assign diff = max | minus: min %}
+    {% assign randomNumber = "now" | date: "%N" | modulo: diff | plus: min %}
+    
+    {% assign arr_all__products = collections.all.products %}
+      <span class="close"><svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+      	<path d="M6.364 4.95L11.314 0L12.728 1.414L7.778 6.364L12.728 11.314L11.314 12.728L6.364 7.778L1.414 12.728L0 11.314L4.95 6.364L0 1.414L1.414 0L6.364 4.95Z" fill="#BEC0C4"/>
+      </svg>
+    </span>
+ 
+    <div class="inner">
+      <ul>
+    	{% for product in collections.all.products offset: randomNumber limit: 1 %}
+        	<li>
+              <a href="/products/{{ product.handle }}">
+                {% if settings.custom_heading != blank %}
+				        	<div class="custom_title">{{ settings.custom_heading }}</div>
+				        {% endif %}  
+                <div>
+                  {{ product | image_url: width: 200 | image_tag: loading: 'lazy' }} 
+                </div> 
+                <div class="product_name title mt-1">{{ product.title }}</div>   
+              </a>
+	        </li>    	
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+    
+  <style>
+    .custom_title {
+    	font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+      color: #121212;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .p_just__bought{
+      transition: all 600ms ease-in-out;
+      position: fixed; 
+      top: 200px;
+      width: 220px;
+      padding: 20px 30px;   
+      display: flex;
+      align-items: center;
+      z-index: 999;
+      background: rgba(255,255,255,1);
+      box-shadow: 0px 6px 10px rgba(181, 185, 189, 0.14);
+    }
+    .p_just__bought.position_right.opened{
+      right: 5px;
+    }
+    .p_just__bought.position_right {
+      left: auto;
+	  right: -100%;
+    }
+    .p_just__bought.position_left.opened{
+      left: 5px;
+    }
+    .p_just__bought.position_left {
+      left: -100%;
+	  right: auto;
+    } 
+    
+    .p_just__bought.position_b_right.opened{
+      right: 5px;
+    }
+    .p_just__bought.position_b_right {
+      left: auto;
+	    right: -100%;
+      bottom: 10px;
+      top: auto;
+    }
+    .p_just__bought.position_b_left.opened{
+      left: 5px;
+    }
+    .p_just__bought.position_b_left {
+      left: -100%;
+	    right: auto;
+      bottom: 10px;
+      top: auto;
+    }
+    
+    .p_just__bought .inner{
+      max-height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      color: #333; 
+    }
+    .p_just__bought .close{
+      position: absolute;
+      display: block;
+      color: #333;
+      font-size: 12px;
+      cursor: pointer;
+      top: 5px;
+      z-index: 3;
+      left: 0;
+      right: 0;
+      text-align: right;
+      padding: 0 15px;
+      border-radius: 3px;
+    }
+    .p_just__bought .close:hover {
+    	color: #000;
+    }
+    .p_just__bought img{
+      width: 150px; 
+      height: auto; 
+      object-fit: cover;
+    }
+    .title {
+     	  margin-top: 10px;
+      	color: #121212;
+      	font-size: 13px;
+        text-align: center;
+     }
+  </style>
+  <script>
+    (function ($) {
+     
+    let interval = "{{ settings.interval }}",
+        timeout  = "{{ settings.timeout }}";
+ 
+    let $p_just__bought = $(".p_just__bought"),
+        $close = $p_just__bought.find(".close");
+
+    
+      function setItemData() {
+        $.getJSON('/products.json', (data) => {
+          let item = data.products[Math.floor(Math.random()*data.products.length)];
+          $p_just__bought.find(".title").text(item.title);
+          $p_just__bought.find("li img").attr('src', item.images[0].src);
+          $p_just__bought.find("a").attr("href", '/products/'+item.handle);
+        });
+        setTimeout(function(){
+           $p_just__bought.addClass("opened");  
+        },700);     
+      }
+
+     function justBought() {
+      setItemData();
+      setTimeout(function(){
+        $p_just__bought.removeClass("opened"); 
+      },timeout);
+    }   
+
+    var justBoughtTimer = setInterval(justBought, interval); 
+
+    clearInterval(justBoughtTimer);
+    justBoughtTimer = setInterval(justBought, interval); 
+
+    $close.on("click", function(e){
+      $p_just__bought.removeClass("opened");  
+      clearInterval(justBoughtTimer);   
+      justBoughtTimer = setInterval(justBought, interval);
+    });   
+
+})(jQuery);
+  </script>
+</div>

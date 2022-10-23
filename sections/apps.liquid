@@ -1,0 +1,71 @@
+<div class="section-style-{{ section.id }}">
+  {%- include 'section-style' -%}
+  <div class="{{ section.settings.container_width }}">
+    {%- for block in section.blocks -%}
+      {% render block %}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Apps",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type":      "select",
+      "id":        "container_width",
+      "label":     "Container width",
+      "options": [
+        {
+          "value": "container",
+          "label": "Box"
+        },
+        {
+          "value": "container-fluid",
+          "label": "Container Fluid"
+        },
+        {
+          "value": "full-width",
+          "label": "Full"
+        }
+      ],
+      "default":   "container"
+    },
+  
+    {
+      "type": "color",
+      "id": "bg_section",
+      "label": "Background Section",
+      "default": "#ffffff"
+    },
+    
+    {
+      "type": "text",
+      "id": "inset_section",
+      "label": "Inset Section",
+      "default": "0px 0px 0px 0px",
+      "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+    },
+    
+    {
+      "type": "text",
+      "id": "offset_section",
+      "label": "Offset Section",
+      "default": "0px 0px 0px 0px",
+      "info": "offset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Apps"
+    }
+  ]
+}
+{% endschema %}

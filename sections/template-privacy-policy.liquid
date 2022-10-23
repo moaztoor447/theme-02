@@ -1,0 +1,69 @@
+<h1 class="page_heading">{{ page_title }}</h1>
+<div class="page_content pb-4 pt-3">
+	{% for block in section.blocks %}
+		{% case block.type %}
+			{% when 'text-block' %}
+				<div class="page_content__block page_content__text">
+					{% if block.settings.title.size > 0 %}
+						<h2 class="h4">{{ block.settings.title }}</h2>
+					{% endif %}
+
+					{% if block.settings.text.size > 0 %}
+						<div class="block_content rte mb-4">
+							{{ block.settings.text }} 
+						</div>
+					{% endif %}
+				</div>
+
+		{% endcase %}
+	{% endfor %}
+	<p class="contact_email d-flex align-items-center mb-0">
+		<svg width="20" height="20" viewBox="0 0 20 20" fill="#FDA828" xmlns="http://www.w3.org/2000/svg" class="mr-1">
+			<path fill-rule="evenodd" clip-rule="evenodd" d="M15 4H5C3.34315 4 2 5.34315 2 7V13C2 14.6569 3.34315 16 5 16H15C16.6569 16 18 14.6569 18 13V7C18 5.34315 16.6569 4 15 4ZM5 2C2.23858 2 0 4.23858 0 7V13C0 15.7614 2.23858 18 5 18H15C17.7614 18 20 15.7614 20 13V7C20 4.23858 17.7614 2 15 2H5Z" />
+			<path fill-rule="evenodd" clip-rule="evenodd" d="M9.34149 11.7527L1.34149 4.75271L2.6585 3.24756L10 9.67137L17.3415 3.24756L18.6585 4.75271L10.6585 11.7527C10.2815 12.0826 9.71852 12.0826 9.34149 11.7527Z" />
+		</svg>
+		<a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
+	</p>
+</div>
+
+{% schema %}
+{
+	"name": "Privacy policy",
+	"class": "section section_template section_template__privacy",
+	"max_blocks": 10,
+	"settings": [
+		{
+			"type": "header",
+			"content": "Privacy Policy"
+		},
+		{
+			"type": "text",
+			"id": "email",
+			"label": "Email address"
+		}
+	],
+
+	"blocks": [
+
+		// TEXT BLOCK
+		{
+			"type": "text-block",
+			"name": "Text block",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Title",
+					"default": "Information"
+				},
+				{
+					"type": "richtext",
+					"id": "text",
+					"label": "Text",
+					"default": "<p>Welcome to our Privacy Policy page! When you use our store services, you trust us with your information.</p>"
+				}
+			]
+		}
+	]
+}
+{% endschema %}

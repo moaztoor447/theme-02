@@ -1,0 +1,22 @@
+<div class="header_account {% if customer %} header_account_customer{% endif %}">
+	<a class="header_icon {% if ss_item.view_login == 'type-4' %} header_icon--revers{% endif %}" href="{{ routes.account_url }}" title="{% if customer %}{{ 'customer.account.account_title' | t }} {% else %} {{ 'layout.header.my_account' | t }}{% endif %}">
+		
+		{% if customer %}
+			<span class="link_text is_user">
+				{{ 'customer.account.title' | t }}
+				<span class="user-name d-xl-block">{{ customer.name }}</span>
+			</span>
+			{% else %}
+				{% unless ss_item.view_login == 'type-1' %}
+					<span class="link_text">
+						{{ 'layout.header.my_account' | t }}
+					</span>
+				{% endunless %}
+		
+		{% endif %}
+
+		<span class="svg-icon svg-icon--lg{% if ss_item.view_login == 'type-2' %} hidden-xl{% endif %}">
+			{% render 'icon-user' %}
+		</span>
+	</a>
+</div>

@@ -1,0 +1,581 @@
+{%- liquid
+  assign on_sale = false
+  if product_card_product.compare_at_price_min > product_card_product.price_min
+  assign on_sale = true
+  endif
+  
+  assign product_card_product_border = ''
+  if use_border_card
+  assign product_card_product_border = 'use_border'
+  endif
+  
+  assign current_variant = product_card_product.selected_or_first_available_variant
+  
+  assign qw_modal = false
+  if settings.use_qw_modal
+  assign qw_modal = true 
+  endif
+  
+  if qw_modal
+	capture popup_content
+		render 'qv_modal'
+	endcapture
+  endif 
+  
+-%}
+  
+  
+<div class="product_item js-product-thumbnail {{ pc_grid_style }} {{ product_card_product_border }} product_item--{{ product_card_product.featured_media.media_type }}  {% if settings.wishlist_toggle %} {{ product_card_product_class }}{% endif %}" id="product__{{ product_card_product.handle }}">
+  
+  <div class="product_img_wrap">
+	<div class="product_img">
+	  
+	  {% if product_card_product.featured_media.media_type == 'image' %}
+	  <a class="card-wrapper" href="{{ product_card_product.url | default: '#' }}" data-image-id="{{ image.id }}">
+		{% else %}
+		<div class="card-wrapper" data-image-id="{{ image.id }}">
+		  {% endif %}
+		  
+		  <div class="card__inner">
+			{%- if product_card_product.featured_media -%}
+			  {%- liquid
+				assign featured_media_aspect_ratio = product_card_product.featured_media.aspect_ratio
+				if product_card_product.featured_media.aspect_ratio == nil
+				assign featured_media_aspect_ratio = 1
+				endif -%}
+			  <div class="card__media-full-spacer" style=" padding: {{ add_image_padding | append: 'px' }}; background-color: {{ add_wrapper_image_bg }};">
+				
+				<div class="media media--transparent media--{{ media_size }} media--hover-effect" {% if media_size == 'adapt' and product_card_product.featured_media %} style="padding-bottom: {{ 1 | divided_by: featured_media_aspect_ratio | times: 100 }}%;"{% endif %}>
+				  {% case product_card_product.featured_media.media_type %}
+				  {% when 'image' %}
+					<img data-image srcset="{%- if product_card_product.featured_media.width >= 288 -%}{{ product_card_product.featured_media | img_url: '288x' }} 288w,{%- endif -%}
+								{%- if product_card_product.featured_media.width >= 360 -%}{{ product_card_product.featured_media | img_url: '360x' }} 360w,{%- endif -%}
+								{%- if product_card_product.featured_media.width >= 533 -%}{{ product_card_product.featured_media | img_url: '533x' }} 533w,{%- endif -%}
+								{%- if product_card_product.featured_media.width >= 720 -%}{{ product_card_product.featured_media | img_url: '720x' }} 720w,{%- endif -%}
+								{%- if product_card_product.featured_media.width >= 940 -%}{{ product_card_product.featured_media | img_url: '940x' }} 940w,{%- endif -%}
+								{%- if product_card_product.featured_media.width >= 1066 -%}{{ product_card_product.featured_media | img_url: '1066x' }} 1066w{%- endif -%}"
+						 src="{{ product_card_product.featured_media | img_url: '533x' }}"
+						 sizes="(min-width: 1100px) 535px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
+						 alt="{{ product_card_product.featured_media.alt | escape }}"
+						 loading="lazy"
+						 class="motion-reduce"
+						 width="{{ product_card_product.featured_media.width }}"
+						 height="{{ product_card_product.featured_media.height }}"
+						 style="background-color: {{ add_image_bg }};">
+					
+					{%- if product_card_product.media[1] != nil and show_secondary_image -%}
+					  <img data-image srcset="{%- if product_card_product.media[1].width >= 288 -%}{{ product_card_product.media[1] | img_url: '288x' }} 288w,{%- endif -%}
+								{%- if product_card_product.media[1].width >= 360 -%}{{ product_card_product.media[1] | img_url: '360x' }} 360w,{%- endif -%}
+								{%- if product_card_product.media[1].width >= 533 -%}{{ product_card_product.media[1] | img_url: '533x' }} 533w,{%- endif -%}
+								{%- if product_card_product.media[1].width >= 720 -%}{{ product_card_product.media[1] | img_url: '720x' }} 720w,{%- endif -%}
+								{%- if product_card_product.media[1].width >= 940 -%}{{ product_card_product.media[1] | img_url: '940x' }} 940w,{%- endif -%}
+								{%- if product_card_product.media[1].width >= 1066 -%}{{ product_card_product.media[1] | img_url: '1066x' }} 1066w{%- endif -%}"
+						   src="{{ product_card_product.media[1] | img_url: '533x' }}"
+						   sizes="(min-width: 1100px) 535px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
+						   alt="{{ product_card_product.media[1].alt | escape }}"
+						   loading="lazy"
+						   class="motion-reduce"
+						   width="{{ product_card_product.media[1].width }}"
+						   height="{{ product_card_product.media[1].height }}"
+						   style="background-color: {{ add_image_bg }};">
+					{%- endif -%}
+				  {% when 'external_video' %}
+					{% if product_card_product.featured_media.host == "youtube" %}
+					  {{ product_card_product.featured_media | external_video_url: controls: 0, color: "white" | external_video_tag: class: "youtube_video" }}
+					{% else %}
+					  {{ product_card_product.featured_media | external_video_url: loop: 1, muted: 1 | external_video_tag: class: "vimeo_video" }}
+					{% endif %}
+				  {% when 'video' %}
+					{{ product_card_product.featured_media | video_tag: loop: true, controls: true, controlslist:"nodownload", disablepictureinpicture: true, image_size: "master", width: "700x" }}
+				  {% when 'model' %}
+					{{ product_card_product.featured_media | model_viewer_tag }}
+					{% else %}
+					{{ product_card_product.featured_media | media_tag }}
+				  {% endcase %}
+				</div>
+			  </div>
+			{%- else -%}
+			  <div class="card__content"><h2 class="card__text h2">{{ product_card_product.title }}</h2></div>
+			{%- endif -%}
+		  </div>
+		  
+		  {% if product_card_product.featured_media.media_type == 'image' %}
+	  </a>
+	  {% else %}
+	</div>
+	{% endif %}
+	{% if badge_card_toggle %}
+	  {% render 'product-badge', product_card_product: product_card_product, on_sale: true %}
+	{% endif %}
+  </div>
+  
+  <div class="product-buttons--wrap">
+	{% unless pc_grid_style == 'grid_style_1' %}
+	  <div class="product-func-buttons">
+		{% if settings.wishlist_toggle %}
+		  <button btn-wishlist-js type="button" aria-label="Add to wishlist" class="wishlist_btn icon-btn btn-wishlist-js" data-product-handle="{{ product_card_product.handle }}">
+				<span class="wishlist-icon">
+					{% render 'icon-heart' %}
+				</span>
+				<span class="action_add">
+				   <span class="tooltip">
+					  <span class="tooltiptext  {% if pc_grid_style == 'grid_style_2' or pc_grid_style == 'grid_style_3' %} tooltip-top{% else %} tooltip-left{% endif %}">
+						{{ 'layout.wishlist.add_to_wishlist' | t }}
+					  </span>
+				  </span>
+				</span>
+			
+				<span class="action_remove">
+					<span class="tooltip">
+					  <span class="tooltiptext  {% if pc_grid_style == 'grid_style_2' or pc_grid_style == 'grid_style_3' %} tooltip-top{% else %} tooltip-left{% endif %}">
+						{{ 'layout.wishlist.remove_from_wishlist' | t }}
+					  </span>
+					</span>
+				 
+				</span>
+		  </button>
+		{% endif %}
+		
+		{% if settings.show_compare %}
+		  <button type="button" btn-compare-js class="js-compare-btn compare_btn icon-btn" data-product-handle="{{ product_card_product.handle }}">
+			{% render 'icon-compare' %}
+			<span class="action_add">
+			  <span class="tooltip">
+				  <span class="tooltiptext {% if pc_grid_style == 'grid_style_2' or pc_grid_style == 'grid_style_3' %} tooltip-top{% else %} tooltip-left{% endif %}">{{ 'layout.compare.compareTitle' | t }}</span>
+			  </span>
+			</span>
+		 
+			<span class="action_remove">
+				<span class="tooltip">
+					<span class="tooltiptext {% if pc_grid_style == 'grid_style_2' or pc_grid_style == 'grid_style_3' %} tooltip-top{% else %} tooltip-left{% endif %}">{{ 'layout.wishlist.remove_from_wishlist' | t }}</span>
+				</span>
+			</span>
+			
+		  </button>
+		{% endif %}
+	  
+	  </div>
+	{% endunless %}
+	<div class="product-buttons">
+	  {% if qw_modal %}
+		<a class="js_quick_view quick_view_icon{% unless pc_grid_style == 'grid_style_1' %} icon-btn{% endunless %}" href="{{ product_card_product.url }}" title="{{ 'layout.product.quick_view_button' | t }}">
+			   <span class="tooltip">
+					<span class="tooltiptext tooltip-top">{{ 'layout.product.quick_view_button' | t }}</span>
+			   </span>
+		  {% render 'icon-eye' %}
+		  <span class="btn-txt">{{ 'layout.product.quick_view_button' | t }}</span>
+		</a>
+	  {% endif %}
+	  <form method="post" action="/cart/add" class="add_to_cart_form">
+		{% if product_card_product.available %}
+		  {% if product_card_product.variants.size == 1 %}
+			<input type="hidden" name="id" value="{{ product_card_product.variants.first.id }}"/>
+			
+			<button class="add_to_cart_button" type="submit">
+								<span class="tooltip">
+									<span class="tooltiptext tooltip-top">{{ 'layout.product.add_to_cart' | t }}</span>
+								</span>
+			  {% render 'icon-cart' %}
+			  <span class="btn-txt">{{ 'layout.product.add_to_cart' | t }}</span>
+			</button>
+		  
+		  {% else %}
+			<a class="add_to_cart_button" href="{{ product_card_product.url }}">
+									<span class="tooltip">
+										<span class="tooltiptext tooltip-top">{{ 'layout.product.choose_variant_button' | t }}</span>
+									</span>
+			  {% render 'icon-cog' %}
+			  <span class="btn-txt">{{ 'layout.product.choose_variant_button' | t }}</span>
+			</a>
+		  {% endif %}
+		{% else %}
+		  <span class="tooltip">
+							<span class="tooltiptext tooltip-top">{{ 'layout.product.unavailable' | t }}</span>
+					  </span>
+		  <button class="add_to_cart_button" disabled>
+			{% render 'icon-cart' %}
+			<span class="btn-txt">{{ 'layout.product.unavailable' | t }}</span>
+		  </button>
+		{% endif %}
+	  </form>
+	
+	</div>
+  </div>
+</div>
+
+<div class="product_info">
+  <div class="list-middle">
+	
+	{% if product_card_options and product_card_product.featured_media.media_type == 'image' %}
+	  <div class="product_options">
+		{%- for product_option in product_card_product.options_with_values -%}
+		  {%- assign current_product_option = product_option.name | downcase -%}
+		  {% assign product_card_current_product_option = current_text_product_option | downcase %}
+		  {%- if current_product_option == product_card_current_product_option -%}
+			
+			{%- for value in product_option.values limit: 4 -%}
+			  {%- assign opt_imgs = '' -%}
+			  {%- assign opts1 = '' -%}
+			  {%- assign color_link = '' -%}
+			  
+			  {%- for variant in product_card_product.variants -%}
+				
+				{% if variant.options contains value and variant.image != null %}
+				  {%- assign opt_imgs = variant.image.src | product_img_url: 'small' -%}
+				{% endif %}
+				
+				{% if variant.options contains value and variant.featured_image != null %}
+				  {% assign color_link = variant.featured_image.src | product_img_url: 'large' %}
+				{% endif %}
+			  
+			  {%- endfor -%}
+			  
+			  {% if current_product_option contains 'colo' %}
+				<span
+					data-image="{{ color_link }}"
+					data-value="{{ value }}"
+					class="{% if product_option.selected_value == value %}selected{% endif %}{% if opt_type == 'image' %} image_option {% endif %} color_options options_clickable_js {% if color_link == blank and variant.featured_image == null %} d-none{% endif %}"
+					style="{% if opt_type == 'image' %}background-image: url({{ opt_imgs }}); {% else %} background-color: {{ value | downcase }}; {% endif %} {% if value == 'beige' or value == 'Beige' or value == 'white' or value == 'White' %} outline: 1px solid #f2f3f5;{% endif %}"
+					title="{{ value }}">
+						</span>
+			  {% else %}
+				
+				<span
+					data-image="{{ color_link }}"
+					data-value="{{ value }}"
+					class="{% if product_option.selected_value == value %}selected{% endif %}{% if opt_type == 'image' %} image_option {% else %} btn_option {% endif %} options_clickable_js {% if color_link == blank and variant.featured_image == null %} d-none{% endif %}"
+					{% if opt_type == 'image' %}style="background-image: url({{ opt_imgs }});"{% endif %}
+										title="{{ value }}">
+					  		{% if opt_type == 'btn' %}
+							  {{ value }}
+							{% endif %}
+						</span>
+			  
+			  {% endif %}
+			
+			{%- endfor -%}
+			{% comment %} 			
+				{% if product_option.values.size > 4 %}
+				<i class="color_options_info">+ {{ product_option.values.size | minus: 4 }}</i>
+				{% endif %}
+		 	{% endcomment %}
+		  {%- endif -%}
+		{%- endfor -%}
+	  </div>
+	{% endif %}
+	
+	{% if product_card_variants %}
+	  
+	  {%- unless product_card_product.has_only_default_variant -%}
+		
+		{% for product_option in product_card_product.options_with_values %}
+		  {%- assign current_variant_option = product_option.name | downcase -%}
+		  {%- assign current_size_variant_option = settings.text_variant_size | downcase -%}
+		  {%- assign current_color_variant_option = settings.text_variant_color | downcase -%}
+		  {%- assign current_color = false -%}
+		  {%- assign current_size = false -%}
+		  {%- assign product_card_variants_limit = product_card_variants_limit | plus: '0' -%}
+		  
+		  {% if current_size_variant_option == current_variant_option %}
+			{%- assign current_size = true -%}
+		  {% endif %}
+		  
+		  {% if current_color_variant_option == current_variant_option %}
+			{%- assign current_color = true -%}
+		  {% endif %}
+		  
+		  {% if current_color %}
+			{%- assign values_option = product_card_product.options_by_name['Color'].values -%}
+			{% elsif current_size %}
+			{%- assign values_option = product_card_product.options_by_name['Size'].values -%}
+		  {% else %}
+			{%- assign values_option = product_option.values -%}
+		  {% endif %}
+		  
+		  {% case variants_type_url %}
+		  {% when 'only_color' %}
+			{% if current_color %}
+			  <ul class="product_variants mt-1">
+				{%- for value in values_option limit: product_card_variants_limit -%}
+				  {%- for variant in product_card_product.variants -%}
+					{%- if variant.title contains value -%}
+					  {%- assign productOptionURL = product_card_product.url | append: "?variant=" | append: variant.id -%}
+					  {%- break -%}
+					{%- endif -%}
+				  {%- endfor -%}
+				  <li>
+					<a class="color_options" href="{{ productOptionURL }}" style="background-color: {{ value | downcase }}; {% if value == 'beige' or value == 'Beige' or value == 'white' or value == 'White' %} outline: 1px solid #f2f3f5;{% endif %}"></a>
+				  </li>
+				{%- endfor -%}
+				{% if values_option.size > product_card_variants_limit %}
+				  <li class="color_options_info">+ {{ values_option.size | minus: product_card_variants_limit }}</li>
+				{% endif %}
+			  </ul>
+			{% endif %}
+		  {% when 'only_size' %}
+			{% if current_size %}
+			  
+			  <ul class="product_variants">
+				{%- for value in values_option limit: product_card_variants_limit -%}
+				  {%- for variant in product_card_product.variants -%}
+					{%- if variant.title contains value -%}
+					  {%- assign productOptionURL = product_card_product.url | append: "?variant=" | append: variant.id -%}
+					  {%- break -%}
+					{%- endif -%}
+				  {%- endfor -%}
+				  <li>
+					<a class="btn_option" href="{{ productOptionURL }}">
+					  {{ value }}
+					</a>
+				  </li>
+				{%- endfor -%}
+				{% if values_option.size > product_card_variants_limit %}
+				  <li class="color_options_info">+ {{ values_option.size | minus: product_card_variants_limit }}</li>
+				{% endif %}
+			  </ul>
+			{% endif %}
+		  {% when 'only_size_color' %}
+			{% if current_color %}
+			  <ul class="product_variants">
+				{%- for value in values_option limit: product_card_variants_limit -%}
+				  {%- for variant in product_card_product.variants -%}
+					{%- if variant.title contains value -%}
+					  {%- assign productOptionURL = product_card_product.url | append: "?variant=" | append: variant.id -%}
+					  {%- break -%}
+					{%- endif -%}
+				  {%- endfor -%}
+				  <li>
+					<a class="color_options" href="{{ productOptionURL }}" style="background-color: {{ value | downcase }}; {% if value == 'beige' or value == 'Beige' or value == 'white' or value == 'White' %} outline: 1px solid #f2f3f5;{% endif %}"></a>
+				  </li>
+				{%- endfor -%}
+				{% if values_option.size > product_card_variants_limit %}
+				  <li class="color_options_info">+ {{ values_option.size | minus: product_card_variants_limit }}</li>
+				{% endif %}
+			  </ul>
+			{% endif %}
+			{% if current_size %}
+			  <ul class="product_variants">
+				{%- for value in values_option limit: product_card_variants_limit -%}
+				  {%- for variant in product_card_product.variants -%}
+					{%- if variant.title contains value -%}
+					  {%- assign productOptionURL = product_card_product.url | append: "?variant=" | append: variant.id -%}
+					  {%- break -%}
+					{%- endif -%}
+				  {%- endfor -%}
+				  <li>
+					<a class="btn_option" href="{{ productOptionURL }}">
+					  {{ value }}
+					</a>
+				  </li>
+				{%- endfor -%}
+				{% if values_option.size > product_card_variants_limit %}
+				  <li class="color_options_info">+ {{ values_option.size | minus: product_card_variants_limit }}</li>
+				{% endif %}
+			  </ul>
+			{% endif %}
+		  {% when 'all' %}
+			<ul class="product_variants mt-1">
+			  {%- for value in values_option limit: product_card_variants_limit -%}
+				{%- for variant in product_card_product.variants -%}
+				  {%- if variant.title contains value -%}
+					{%- assign productOptionURL = product_card_product.url | append: "?variant=" | append: variant.id -%}
+					{%- break -%}
+				  {%- endif -%}
+				{%- endfor -%}
+				<li>
+				  <a class="{% if current_color %} color_options {% else %} btn_option {% endif %}" href="{{ productOptionURL }}"
+					  {% if current_color %} style="background-color: {{ value | downcase }}; {% if value == 'beige' or value == 'Beige' or value == 'white' or value == 'White' %} outline: 1px solid #f2f3f5;{% endif %}{% endif %}"
+				  >
+					{% unless current_color %}
+					  {{ value }}
+					{% endunless %}
+				  </a>
+				</li>
+			  {%- endfor -%}
+			  {% if values_option.size > product_card_variants_limit %}
+				<li class="color_options_info">+ {{ values_option.size | minus: product_card_variants_limit }}</li>
+			  {% endif %}
+			</ul>
+		  {% endcase %}
+		{% endfor %}
+	  {%- endunless -%}
+	{% endif %}
+	
+	{%- if product_card_reviews and product_card_product.metafields.reviews.rating.value != blank -%}
+	  
+	  {% liquid
+		assign rating_decimal = 0
+		assign decimal = product_card_product.metafields.reviews.rating.value.rating | modulo: 1
+		if decimal >= 0.3 and decimal <= 0.7
+		assign rating_decimal = 0.5
+		elsif decimal > 0.7
+		assign rating_decimal = 1
+		endif %}
+	  
+	  <div class="rating product_reviews" role="img" aria-label="{{ 'layout.accessibility.star_reviews_info' | t: rating_value: product_card_product.metafields.reviews.rating.value, rating_max: product_card_product.metafields.reviews.rating.value.scale_max }}">
+		<span aria-hidden="true" class="rating-star color-accent-1" style="--rating: {{ product_card_product.metafields.reviews.rating.value.rating | floor }}; --rating-max: {{ product_card_product.metafields.reviews.rating.value.scale_max }}; --rating-decimal: {{ rating_decimal }};"></span>
+		<span class="spr-badge-count">({% if product_card_product.metafields.reviews.rating_count == blank %}0{% else %}{{ product_card_product.metafields.reviews.rating_count }}{% endif %})</span>
+	  </div>
+	
+	{%- endif -%}
+	
+	{% if product_card_vendor %}
+	  <p class="product_vendor">
+		{{ product_card_product.vendor | link_to_vendor }}
+	  </p>
+	{% endif %}
+	
+	<h2 class="product_name">
+	  <a href="{{ product_card_product.url | within: collection }}">{{ product_card_product.title | truncate: 35 | escape }}</a>
+	</h2> 
+	
+	{% if product_card_sku %}
+	  {% if current_variant.sku.size > 0 %}
+		<p class="single_product__sku">
+		  <b>{{ 'layout.product.sku' | t }}:</b>
+		  <span>{{ current_variant.sku }}</span>
+		</p>
+	  {% endif %}
+	{% endif %}
+	
+	{% if product_card_col %}
+	  {% if product_card_product.collections.size > 0 %}
+		<p class="single_product__collections">
+		  <b>{{ 'layout.product.collections' | t }}:</b>
+		  <a href="{{ product_card_product.collections.first.url }}">{{ product_card_product.collections.first.title }}</a>{% for collection in product_card_product.collections offset: 1 %}, <a href="{{ collection.url }}">{{ collection.title }}</a>{% endfor %}
+		</p>
+	  {% endif %}
+	{% endif %}
+	
+	{% if product_card_product.description.size > 0 %}
+	  <p class="product_desc">{{ product_card_product.description | strip_html | truncate: 200 }}</p>
+	{% endif %}
+  
+  </div>
+  <div class="list-right">
+	<div class="product-price-container{% if product_card_product.variants.size == 1 and on_sale %} with-discount{% endif %}">
+	  {% if product_card_product.available and settings.variants_money_toggle %}
+		{% if product_card_product.variants.size == 1 %}
+		  <span class="product-price">{{ product_card_product.price | money }}</span>
+		  {% if on_sale %}
+			<span class="product-regular-price">{{ product_card_product.compare_at_price | money }}</span>
+			<span class="product-percent-price">  {{ product_card_product.compare_at_price_max | minus: product_card_product.price | times: 100.0 | divided_by: product_card_product.compare_at_price_max | money_without_currency | times: 100 | remove: '.0' | append: "% OFF" }}</span>
+		  {% endif %}
+		{% else %}
+		  {% assign prices_sorted = product_card_product.variants | sort: 'price' %}
+		  {% comment %}<span class="product-price product-price-variant">{{ prices_sorted.first.price | money }}{% unless prices_sorted.first.price == prices_sorted.last.price %} – <span>{{ prices_sorted.last.price | money }}</span>{% endunless %}</span>    {% endcomment %}
+		  <span class="product-price product-price-variant"><span class="grid-block"><span>{{ prices_sorted.first.price | money }}</span>{% unless prices_sorted.first.price == prices_sorted.last.price %} – </span><span>{{ prices_sorted.last.price | money }}</span>{% endunless %}</span>
+		{% endif %}
+	  
+	  {% else %}
+		<span class="product-price {% if on_sale %} product-sale-price {% endif %}">{{ product_card_product.price | money }}</span>
+		{% if on_sale %}
+		  <span class="product-regular-price">{{ product_card_product.compare_at_price | money }}</span>
+		  <span class="product-percent-price">  {{ product_card_product.compare_at_price | minus: product_card_product.price | times: 100.0 | divided_by: product_card_product.compare_at_price | money_without_currency | times: 100 | remove: '.0' | append: "% OFF" }}</span>
+		{% endif %}
+	  {% endif %}
+	</div>
+	<div class="product-buttons--wrap">
+	  <div class="product-func-buttons">
+		
+		{% if settings.wishlist_toggle %}
+		  <button btn-wishlist-js type="button" aria-label="Add to wishlist" class="wishlist_btn icon-btn btn-wishlist-js" data-product-handle="{{ product_card_product.handle }}">
+					<span class="wishlist-icon">
+					{% render 'icon-heart' %}
+				</span>
+			<span class="action_add">
+				  <span class="tooltip">
+						<span class="tooltiptext {% if pc_grid_style == 'grid_style_2' or pc_grid_style == 'grid_style_3' %} tooltip-top{% else %} tooltip-left{% endif %}">{{ 'layout.wishlist.add_to_wishlist' | t }}</span>
+					</span>
+				</span>
+			
+			<span class="action_remove">
+				 	 <span class="tooltip">
+						<span class="tooltiptext {% if pc_grid_style == 'grid_style_2' or pc_grid_style == 'grid_style_3' %} tooltip-top{% else %} tooltip-left{% endif %}">{{ 'layout.wishlist.remove_from_wishlist' | t }}</span>
+					</span>
+				</span>
+		  </button>
+		{% endif %}
+		
+		{% if settings.show_compare %}
+		  <button type="button" btn-compare-js class="js-compare-btn compare_btn icon-btn" data-product-handle="{{ product_card_product.handle }}">
+			{% render 'icon-compare' %}
+			<span class="action_add">
+			  <span class="tooltip">
+				  <span class="tooltiptext {% if pc_grid_style == 'grid_style_2' or pc_grid_style == 'grid_style_3' %} tooltip-top{% else %} tooltip-left{% endif %}">{{ 'layout.compare.compareTitle' | t }}</span>
+			  </span>
+			</span>
+		 
+			<span class="action_remove">
+				<span class="tooltip">
+					<span class="tooltiptext {% if pc_grid_style == 'grid_style_2' or pc_grid_style == 'grid_style_3' %} tooltip-top{% else %} tooltip-left{% endif %}">{{ 'layout.wishlist.remove_from_wishlist' | t }}</span>
+				</span>
+			</span>
+		  </button>
+		{% endif %}
+	  </div>
+	  <div class="product-buttons">
+		{% if qw_modal %}
+			<a class="js_quick_view quick_view_icon icon-btn for-grid" href="{{ product_card_product.url }}" title="{{ 'layout.product.quick_view_button' | t }}">
+				   <span class="tooltip">
+						<span class="tooltiptext tooltip-top">{{ 'layout.product.quick_view_button' | t }}</span>
+				   </span>
+			  {% render 'icon-eye' %}
+			  <span class="btn-txt">{{ 'layout.product.quick_view_button' | t }}</span>
+			</a>
+		  {% endif %}
+		<form method="post" action="/cart/add" class="add_to_cart_form">
+		  {% if product_card_product.available %}
+			{% if product_card_product.variants.size == 1 %}
+			  <input type="hidden" name="id" value="{{ product_card_product.variants.first.id }}"/>
+			  
+			  <div class="quantity_box mb-2">
+				<input id="single_product__quantity-{{ product_card_product.id }}" class="form-control quantity_input" type="text" name="quantity" value="1">
+				<div class="quantity_modifier quantity_up">
+				  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M6.41699 6.41699V2.91699H7.58366V6.41699H11.0837V7.58366H7.58366V11.0837H6.41699V7.58366H2.91699V6.41699H6.41699Z" fill="#797B7E"/>
+				  </svg>
+				</div>
+				<div class="quantity_modifier quantity_down">
+				  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M2.91699 6.41699H11.0837V7.58366H2.91699V6.41699Z" fill="#797B7E"/>
+				  </svg>
+				</div>
+			  </div>
+			  
+			  <button class="add_to_cart_button link_add_to_cart" type="submit">
+							  <span class="svg-icon svg-icon--md mr-1">
+								{% render 'icon-cart' %}
+							  </span>
+				
+				<span class="btn-txt">{{ 'layout.product.add_to_cart' | t }}</span>
+			  </button>
+			
+			{% else %}
+			  <a class="add_to_cart_button link_add_to_cart" href="{{ product_card_product.url }}">
+							    <span class="svg-icon svg-icon--md mr-1">
+								{% render 'icon-cog' %}
+								</span>
+				<span class="btn-txt">{{ 'layout.product.choose_variant_button' | t }}</span>
+			  </a>
+			{% endif %}
+		  {% else %}
+			<button class="add_to_cart_button link_add_to_cart" disabled>
+				<span class="svg-icon svg-icon--md mr-1">
+					{% render 'icon-cog' %}
+					</span>
+			  <span class="btn-txt">{{ 'layout.product.unavailable' | t }}</span>
+			</button>
+		  {% endif %}
+		</form>
+	  </div>
+	</div>
+  </div>
+</div>
+</div>
+
+{% if qw_modal %}
+	<script>
+		var qvModal = {{ popup_content | json }}
+	</script>
+  {% endif %}

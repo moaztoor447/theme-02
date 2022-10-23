@@ -1,0 +1,495 @@
+{{ 'component-pagination.css' | asset_url | stylesheet_tag }}
+
+{%- assign item = section.settings -%}
+
+{% if item.sidebar_blog_toggle %}
+<div class="sidebar-enable row{% if item.sidebar_blog_position == 'sidebar_right' %} justify-content-between {% endif %}">
+{% endif %}
+	<div class="col-sm-12 {% if item.sidebar_blog_toggle %} sidebar_on col-md-7 col-lg-8 {% endif %} {% if item.sidebar_blog_toggle and item.sidebar_blog_position == 'sidebar_left' %} left-sidebar{% elsif sidebar_blog_toggle and item.sidebar_blog_position == 'sidebar_right' %} right-sidebar{% endif %}">
+		<article class="article_item">
+			<h1 class="h2 mb-3">{{ article.title }}</h1>
+			
+			{%- if item.blog_show_info -%}
+				<div class="article_info article_info_post">
+					{%- if item.blog_show_date -%}
+						<span class="d-flex align-items-center">
+                    		<time class="article_time" datetime="{{ article.published_at | date: '%Y-%m-%dT%H:%M' }}">
+                    		  {{ article.published_at | date: '%b %d, %Y' }}
+                    		</time>
+							<span class="divider">&#124;</span>
+                 		</span>
+					{%- endif -%}
+					
+					{%- if blog.comments_enabled? and item.show_comments -%}
+						<span class="post-comments">
+			    			<span class="comments_count">{{ article.comments_count }} {{ 'blog.articles.comments' | t }}</span>
+               		   	</span>
+					{%- endif -%}
+					
+					{%- if item.blog_show_author -%}
+						<span class="d-flex align-items-center ml-auto">{{ 'blog.articles.by_author' | t }} <em>{{ article.author }}</em> </span>
+					{%- endif -%}
+				</div>
+			{%- endif -%}
+			
+			{% if article.image %}
+				<div class="flexible_block">
+					{% if item.img_size == 'master' %}
+						{%- assign article_img = article.image | img_url: 'master' -%}
+					{% else %}
+						{%- assign article_img = article.image | img_url: '1170x', crop: item.img_alignment -%}
+					{% endif %}
+					
+					{% if item.text_position == 'normal' and item.img_size == 'master' %}
+						<div class="layer_1">
+							<img loading="lazy" src="{{ article_img }}" alt="{{ article_img.alt }}">
+						</div>
+					{% else %}
+						<div class="layer_1 img_wrapper__{{ item.img_size }} img_align__{{ item.img_alignment }}" style="background-image: url( {{ article_img }} );"></div>
+					{% endif %}
+				</div>
+			{% endif %}
+			
+			<div class="rte article_content my-4">
+				{{ article.content }}
+			</div>
+			
+			 {%- if article.tags.size > 0 and item.blog_show_tags -%}
+				<p class="article_tags">
+					<span class="label_tags">{{ 'blog.articles.post_tags' | t }}</span>
+					{% for tag in article.tags %}
+						<a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>
+					{% endfor %}
+				</p>
+			{% endif %}
+			
+			{% if blog.previous_article or blog.next_article %}
+				<div class="article_pagination">
+					{% if blog.previous_article %}
+						<a href="{{ blog.previous_article }}" class="article_pagination_image article_pagination__prev">
+							{% if blog.previous_article.image %}
+								<div>
+									<img loading="lazy" class="blur-up lazyload" src="{{ blog.previous_article.image.src | img_url: '100x75', crop: 'top' }}" data-src="{{ blog.previous_article.image.src | img_url: '100x75', crop: 'top' }}" alt="{{ blog.previous_article.image.alt | escape }}">
+								</div>
+							{% endif %}
+							<div class="ml-lg-2 article_pagination_descr">
+								<div class="article_info pt-0 mt-0">
+									<span class="d-flex align-items-center">
+                    					<time class="article_time" datetime="{{ blog.previous_article.published_at | date: '%Y-%m-%dT%H:%M' }}">
+                    					  {{ blog.previous_article.published_at | date: '%b %d, %Y' }}
+                    					</time>
+										<span class="divider">&#124;</span>
+                 					</span>
+									{%- if blog.comments_enabled? -%}
+										<span class="post-comments">
+			    							<span class="comments_count">{{ blog.previous_article.comments_count }} {{ 'blog.articles.comments' | t }}</span>
+               		  					</span>
+									{%- endif -%}
+								</div>
+								{% if blog.previous_article.title %}
+									<p class="m-0 d-sm-block d-none">{{ blog.previous_article.title }}</p>
+								{% endif %}
+								<span class="link link-primary mt-1">
+										<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M10.8273 11.9997L15.7773 7.04974L14.3633 5.63574L7.99934 11.9997L14.3633 18.3637L15.7773 16.9497L10.8273 11.9997Z" />
+						</svg>
+									<span>{{ 'blog.articles.previous_post' | t }}</span>
+								</span>
+							</div>
+						</a>
+					{% endif %}
+					
+					{% if blog.next_article %}
+						<a href="{{ blog.next_article }}" class="article_pagination_image article_pagination__next">
+							{% if blog.next_article.image %}
+								<div>
+									<img loading="lazy" class="blur-up lazyload" src="{{ blog.next_article.image.src | img_url: '100x75', crop: 'center' }}" data-src="{{ blog.next_article.image.src | img_url: '100x75', crop: 'center' }}" alt="{{ blog.next_article.image.alt | escape }}">
+								</div>
+							{% endif %}
+							<div class="mr-lg-2 article_pagination_descr">
+								<div class="article_info justify-content-end pt-0 mt-0">
+									<span class="d-flex align-items-center">
+                    					<time class="article_time" datetime="{{ blog.next_article.published_at | date: '%Y-%m-%dT%H:%M' }}">
+                    					  {{ blog.next_article.published_at | date: '%b %d, %Y' }}
+                    					</time>
+										<span class="divider">&#124;</span>
+                 					</span>
+									{%- if blog.comments_enabled? -%}
+										<span class="post-comments">
+			    							<span class="comments_count">{{ blog.next_article.comments_count }} {{ 'blog.articles.comments' | t }}</span>
+               		  					</span>
+									{%- endif -%}
+								</div>
+								{% if blog.next_article.title %}
+									<p class="m-0 d-sm-block d-none">{{ blog.next_article.title }}</p>
+								{% endif %}
+								<span class="link link-primary mt-1">
+									<span>{{ 'blog.articles.next_post' | t }}</span>
+									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M13.1727 11.9997L8.22266 7.04974L9.63666 5.63574L16.0007 11.9997L9.63666 18.3637L8.22266 16.9497L13.1727 11.9997Z" />
+									</svg>
+								</span>
+							</div>
+						</a>
+					{% endif %}
+				</div>
+			{% endif %}
+			
+			{% paginate article.comments by 50 %}
+			{% assign number_of_comments = article.comments_count %}
+			
+			{% comment %}If a comment was just submitted, and it has no blank fields.{% endcomment %}
+			{% if comment and comment.created_at %}
+				{% assign number_of_comments = article.comments_count | plus: 1 %}
+			{% endif %}
+			
+			<div class="article_comments__list mt-4">
+				<h4>{{ article.comments_count }} {{ 'blog.articles.comments' | t }}</h4>
+				
+				{% if number_of_comments > 0 %}
+					<ul>
+						{% for comment in article.comments %}
+							<li id="{{ comment.id }}">
+								<p class="comment_author">
+									<b>{{ 'blog.articles.by_author' | t }} {{ comment.author }}</b>
+									<span class="comment_date">
+										<span><time class="article_time" datetime="{{ article.published_at | date: '%Y-%m-%dT%H:%M' }}">{{ article.published_at | date: '%b %d, %Y' }}</time></span>
+									</span>
+								</p>
+								
+								<p class="comment_content">{{ comment.content | strip_html }}</p>
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+				
+				{% if paginate.pages > 1 %}
+				  {% liquid
+					assign pagination_items = 'layout.pagination.articles' | t
+				  %}
+				  {% render 'snippet-pagination', paginate: paginate, pagination_items: pagination_items %}
+				{% endif %}
+			</div>
+			
+			{% if blog.comments_enabled? %}
+				<div class="article_comments__form mx-0 px-0 mt-4">
+					{% form article %}
+					<h4 class="mb-3">{{ 'blog.articles.leave_comment' | t }}</h4>
+					
+					{% if form.errors %}
+						<div class="alert alert-danger">
+							<ul>
+								{% for field in form.errors %}
+									<li>{{ field | capitalize | replace: 'Body', 'Message' }} — {{ form.errors.messages[field] }}.</li>
+								{% endfor %}
+							</ul>
+						</div>
+					{% endif %}
+					
+					{% if form.posted_successfully? %}
+						<p class="alert alert-success">
+							{% if blog.moderated? %}
+								{{ 'blog.articles.comment_posted_moderate' | t }}
+							{% else %}
+								{{ 'blog.articles.comment_posted' | t }}
+							{% endif %}
+						</p>
+					{% endif %}
+					
+					<div class="form-group row">
+						<div class="col-12 text-left">
+							<label for="comment-body">{{ 'blog.articles.comment_message' | t }}</label>
+						</div>
+						<div class="form-control-content col-12">
+							<textarea class="form-control" name="comment[body]" id="comment-body">{{ form.body }}</textarea>
+						</div>
+					</div>
+					
+					{% if customer %}
+						<input type="hidden" name="comment[author]" class="form-control" value="{{ customer.first_name }} {{ customer.last_name }}">
+						<input type="hidden" name="comment[email]" class="form-control" value="{{ customer.email }}">
+					{% else %}
+						<div class="row">
+							<div class="col-12 col-md-6">
+								<div class="form-group row">
+									<div class="col-12 text-left">
+										<label for="comment_author">{{ 'blog.articles.comment_name' | t }}</label>
+									</div>
+									<div class="form-control-content col-12">
+										<input id="comment_author" class="form-control" type="text" name="comment[author]" value="{{ form.author }}" />
+									</div>
+								</div>
+							</div>
+							
+							
+							<div class="col-12 col-md-6">
+								<div class="form-group row">
+									<div class="col-12 text-left">
+										<label for="comment_email">Email</label>
+									</div>
+									<div class="form-control-content col-12">
+										<input id="comment_email" class="form-control" type="email" name="comment[email]" value="{{ form.email }}" />
+									</div>
+								</div>
+							</div>
+						</div>
+					{% endif %}
+					
+					<div class="form-group mt-3">
+						<button type="submit" class="btn btn-primary {% if settings.use_lg %} btn-gradient {% endif %}">{{ 'blog.articles.comment_submit' | t }}</button>
+					</div>
+					{% endform %}
+				</div>
+			{% endif %}
+			
+			{% endpaginate %}
+		
+		</article>
+	</div>
+{% if item.sidebar_blog_toggle %}
+	<div class="sidebar_small col-12 col-md-3">
+		{%- include 'sidebar-blog' -%}
+	</div>
+	</div>
+{% endif %}
+	
+	
+
+{% schema %}
+{
+	"name": "Article page",
+	"class": "section_template section_template__article",
+	"settings": [
+		{
+			"type": "select",
+			"id": "img_size",
+			"label": "Images size",
+			"options": [
+				{
+					"value": "small",
+					"label": "Small"
+				},
+				{
+					"value": "medium",
+					"label": "Medium"
+				},
+				{
+					"value": "large",
+					"label": "Large"
+				},
+				{
+					"value": "master",
+					"label": "Original"
+				}
+			]
+		},
+
+		{
+			"type": "checkbox",
+			"id": "blog_show_info",
+			"label": "Show info",
+			"default": true
+		},
+		
+		{
+			"type": "checkbox",
+			"id": "blog_show_author",
+			"label": "Show author",
+			"default": true
+		},
+		
+		{
+			"type": "checkbox",
+			"id": "blog_show_date",
+			"label": "Show date",
+			"default": true
+		},
+		
+		{
+			"type": "checkbox",
+			"id": "show_comments",
+			"label": "Show comments",
+			"default": true
+		},
+
+		{
+			"type": "checkbox",
+			"id": "blog_show_tags",
+			"label": "Show tags",
+			"default": true
+		},
+
+		{
+			"type": "checkbox",
+			"id": "sidebar_blog_toggle",
+			"label": "Sidebar post",
+			"default": false
+		},
+
+
+		{
+			"type": "radio",
+			"id": "sidebar_blog_position",
+			"label": "Sidebar blog position",
+				"options": [
+				{
+					"value": "sidebar_left",
+					"label": "Left position"
+				},
+				{
+					"value": "sidebar_right",
+					"label": "Right position"
+				}
+			]
+		},
+
+
+		{
+			"type": "select",
+			"id": "img_alignment",
+			"label": "Images alignment",
+			"options": [
+				{
+					"value": "top",
+					"label": "Top"
+				},
+				{
+					"value": "center",
+					"label": "Middle"
+				},
+				{
+					"value": "bottom",
+					"label": "Bottom"
+				}
+			]
+		}
+	],
+	"blocks": [
+	// BLOG SEARCH
+	{
+	"type": "blog_search",
+	"name": "Blog search",
+	"settings": [
+	{
+	"type": "text",
+	"id": "search_title",
+	"label": "Widget title",
+	"default": "Search blog"
+	}
+	]
+	},
+	
+	// LINK LISTS
+	{
+	"type": "link-list",
+	"name": "Link lists",
+	"settings": [
+	{
+	"type": "text",
+	"id": "block_title",
+	"label": "Widget title",
+	"default": "Link lists"
+	},
+	{
+	"type": "link_list",
+	"id": "links",
+	"label": "Choose linklist"
+	}
+	]
+	},
+	
+	// RECENT ARTICLES
+	{
+	"type": "resent_articles",
+	"name": "Resent articles",
+	"settings": [
+	{
+	"type": "text",
+	"id": "title",
+	"label": "Widget title",
+	"default": "Resent articles"
+	}
+	]
+	},
+	
+	// TAGS
+	{
+	"type": "blog_tags",
+	"name": "Blog tags",
+	"settings": [
+	{
+	"type": "text",
+	"id": "title",
+	"label": "Widget title",
+	"default": "Blog tags"
+	}
+	]
+	},
+	
+	// COMMENTS
+	{
+	"type": "blog_comments",
+	"name": "Blog comments",
+	"settings": [
+	{
+	"type": "text",
+	"id": "title",
+	"label": "Widget title",
+	"default": "Blog comments"
+	}
+	]
+	},
+	
+	// BANNER
+	{
+	"type": "widget_banner",
+	"name": "Banner",
+	"settings": [
+	{
+	"type": "image_picker",
+	"id": "image",
+	"label": "Image",
+	"info": "The image should be more than 280px wide to resize and crop properly"
+	},
+	
+	{
+	"type": "text",
+	"id": "title",
+	"label": "Heading",
+	"default": "Title"
+	},
+	{
+	"type": "text",
+	"id": "text",
+	"label": "Text",
+	"default": "Banner text"
+	},
+	{
+	"type": "url",
+	"id": "link",
+	"label": "Link"
+	},
+	{
+	"type": "select",
+	"id": "caption_position",
+	"label": "Caption position",
+	"options": [
+	{
+	"label": "Top",
+	"value": "top"
+	},
+	{
+	"label": "Bottom",
+	"value": "bottom"
+	},
+	{
+	"label": "Center",
+	"value": "center"
+	}
+	]
+	}
+	]
+	}
+	]
+}
+{% endschema %}

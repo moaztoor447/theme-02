@@ -1,0 +1,132 @@
+
+.list-menu--right {
+  right: 0;
+}
+
+.list-menu.header__submenu {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.list-menu.header__submenu .header__submenu {
+  padding: 0.5rem 0.5rem 0 0.5rem;
+}
+
+.header__menu-item {
+  padding: 0.6rem 1rem;
+  text-decoration: none;
+}
+
+
+.header__menu-item:after {
+  display: none;
+}
+
+.list-menu--disclosure {
+  position: absolute;
+  min-width: 100%;
+  width: 20rem;
+  border: 1px solid rgba(var(--color-grey-1), 0.2);
+  background-color: var(--color-white);
+}
+
+.list-menu--disclosure:focus {
+  outline: none;
+}
+
+.list-menu__item--active {
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+}
+
+.list-menu--disclosure.localization-selector {
+  max-height: 18rem;
+  overflow: auto;
+  width: 10rem;
+  padding: 0.5rem;
+}
+
+.header__inline-menu .icon-caret{
+  height: 0.375rem;
+  top: calc(50% - 0.1875rem);
+}
+
+@media (min-width: 1200px) {
+  .header__inline-menu .icon-caret {
+    top: 50%;
+    transform: translateY(-50%);
+    transform-origin: 50% 0;
+  }
+}
+
+
+.header__inline-menu details[open] > summary > .icon-caret{
+  transform: rotate(-90deg);
+}
+
+.list-menu details {
+  position: relative;
+}
+
+
+body .mobile-default-menu .list-menu--inline{
+  display: block;
+}
+
+body .mobile-default-menu .list-menu--disclosure{
+  position: static;
+}
+
+body .mobile-default-menu .list-menu.header__submenu{
+  padding: 0;
+  padding-left: 10px;
+}
+
+/* base-focus */
+/*
+  Focus ring - default (with offset)
+*/
+
+*:focus-visible {
+  outline: 0.2rem solid rgba( var(--color-primary), 0.5);
+outline-offset: 0.3rem;
+box-shadow: 0 0 0 0.3rem rgb(var(--color-background)),
+0 0 0.5rem 0.4rem rgba( var(--color-primary), 0.3);
+}
+
+/* Fallback - for browsers that don't support :focus-visible, a fallback is set for :focus */
+*:focus {
+  outline: 0.2rem solid rgba( var(--color-primary), 0.5);
+outline-offset: 0.3rem;
+box-shadow: 0 0 0 0.3rem rgb(var(--color-white), 0.5),
+0 0 0.5rem 0.4rem rgba(var(--color-primary), 0.3);
+}
+
+/* Negate the fallback side-effect for browsers that support :focus-visible */
+*:focus:not(:focus-visible) {
+  outline: 0;
+  box-shadow: none;
+}
+
+/*
+  Focus ring - inset
+*/
+
+.focus-inset:focus-visible {
+  outline: 0.2rem solid rgba( var(--color-primary), 0.5);
+outline-offset: -0.2rem;
+box-shadow: 0 0 0.2rem 0 rgba(var(--color-primary), 0.3);
+}
+
+/* Fallback */
+.focus-inset:focus {
+  outline: 0.2rem solid rgba( var(--color-primary), 0.5);
+outline-offset: -0.2rem;
+box-shadow: 0 0 0.2rem 0 rgba( var(--color-primary), 0.3);
+}
+
+.focus-inset:focus:not(:focus-visible) {
+  outline: 0;
+  box-shadow: none;
+}
+

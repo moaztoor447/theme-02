@@ -1,0 +1,16 @@
+{% capture newsletterForm %}
+	{% form 'customer' %}
+			{{ form.errors | default_errors }}
+			<p class="alert alert-success">{{ 'layout.footer.newsletter_success' | t }}</p>
+			<input type="hidden" name="contact[tags]" value="Newsletter subscriber">
+			<div class="form-wrapper {% if item.type_line == blank %} justify-content-center {% endif %}">
+				<div class="position-relative form-control-wrapper">
+					<input type="email" name="contact[email]" class="form-control input-group__field newsletter__input" required="required" placeholder="Email address">
+				</div>
+				<button class="btn btn-primary {% if settings.use_lg %} btn-gradient {% endif %}" type="submit">{{ 'layout.footer.subscribe_button' | t }}</button>
+			</div>
+	{% endform %}
+{% endcapture %}
+									
+	{% assign newsletterForm = newsletterForm | replace: "'", "&lsquo;" | replace: 'id="contact_form"', 'id="newsletter_form"' | strip_newlines %}
+{{ newsletterForm }}

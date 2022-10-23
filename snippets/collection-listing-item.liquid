@@ -1,0 +1,48 @@
+{% if collection_image %}
+	{% capture collection_img_url %}{{ collection_image_src | img_url: item_size, crop: img_alignment, format: 'pjpg' }}{% endcapture %}
+	{% capture collection_img_min_url %}{{ collection_image_src | img_url: '100x100', crop: img_alignment, format: 'pjpg' }}{% endcapture %}
+{% elsif collection.image %}
+	{% capture collection_img_url %}{{ collection | img_url: item_size, crop: img_alignment, format: 'pjpg' }}{% endcapture %}
+	{% capture collection_img_min_url %}{{ collection | img_url: '100x100', crop: img_alignment, format: 'pjpg' }}{% endcapture %}
+{% elsif collection.products.first %}
+	{% assign iteration_count = collection.products_count | minus: 1 %}
+
+	{% for i in (0..iteration_count) %}
+		{% if collection.products[i].images.size > 0 %}
+			{% capture collection_img_url %}{{ collection.products[i].images.first | img_url: item_size, crop: img_alignment, format: 'pjpg' }}{% endcapture %}
+			{% capture collection_img_min_url %}{{ collection.products[i].images.first | img_url: '100x100', crop: img_alignment, format: 'pjpg' }}{% endcapture %}
+
+			{% break %}
+		{% else %}
+			{% assign collection_img_url = 0 %}
+		{% endif %}
+	{% endfor %}
+{% else %}
+	{% assign collection_img_url = 0 %}
+{% endif %}
+
+<a class="collection_item" href="{{ collection.url }}">
+	<div class="collection_img">
+		{% if collection_img_url == 0 %}
+			<div class="img_placeholder__wrap">{{ 'collection-1' | placeholder_svg_tag }}</div>
+		{% else %}
+			<img class="blur-up lazyload img-fluid w-100" src="{{ collection_img_min_url }}" data-src="{{ collection_img_url }}" alt="{{ collection.title | escape }}">
+		{% endif %}
+	</div>
+
+	<div class="collection_caption">
+		<h6 class="collection_title mb-0">
+		  {{ collection.title }}
+		  {% assign countItems = collection.all_products_count | plus: 0 %}
+		  {% if countItems > 0 %}
+		  	<span class="items_count pt-1">{{ countItems }} {{ countItems | pluralize: ' product', ' products' }}</span>
+		  {% endif %}
+		</h6>
+		<p class="collection_desc d-none">{{ collection.description | strip_html | truncate: 85 }}</p>
+		{% if section.settings.style == 'type_1'  %}
+			<div class="text-center mt-2">
+				<span class="link link-primary">{{ 'layout.collection_listing.view_link' | t }}</span>
+			</div>
+		{% endif %}
+	</div>
+</a>

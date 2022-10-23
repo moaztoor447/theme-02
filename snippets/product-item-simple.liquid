@@ -1,0 +1,157 @@
+
+{%- liquid
+  assign on_sale = false
+  if product_card_product.compare_at_price_min > product_card_product.price_min
+  	assign on_sale = true
+  endif
+  
+  assign current_variant = product_card_product.selected_or_first_available_variant
+  assign qw_modal = false
+  assign productJSON = product_card_product | json
+  
+ for var in product_card_product.variants
+	assign varIDold = '"id": ' | append: var.id | append: ','
+	assign varQ = '"inventory_quantity": ' | append: var.inventory_quantity | append: ','
+	assign varIDnew = varIDold | append: varQ
+	
+	 if productJSONnew.size > 0
+		assign productJSONnew = productJSONnew | replace: varIDold, varIDnew
+	 else
+		 assign productJSONnew = productJSON | replace: varIDold, varIDnew
+	endif
+ endfor
+ 
+-%}
+
+<div class="product_item product_item_simple" id="product__{{ product_card_product.handle }}">
+	  <div class="product_img_wrap">
+		<div class="for-grid">
+		 	 {% render 'product-badge', product_card_product: product_card_product, on_sale: true %}
+		</div>
+		<div class="product_img">
+		  <a class="card-wrapper" href="{{ product_card_product.url | default: '#' }}"  data-image-id="{{ image.id }}">
+			<div class="card__inner">
+			  {%- if product_card_product.featured_image -%}
+				{%- liquid
+				  assign featured_media_aspect_ratio = product_card_product.featured_image.aspect_ratio
+				  if product_card_product.featured_image.aspect_ratio == nil
+				 	 assign featured_media_aspect_ratio = 1
+				  endif
+				-%}
+				<div class="card__media-full-spacer">
+				  <div class="media media--transparent media--{{ media_size }} media--hover-effect"
+					  {% if media_size == 'adapt' and product_card_product.featured_image %} style="padding-bottom: {{ 1 | divided_by: featured_media_aspect_ratio | times: 100 }}%;"{% endif %}
+				  >
+					<img data-image srcset="{%- if product_card_product.featured_media.width >= 288 -%}{{ product_card_product.featured_image | img_url: '288x' }} 288w,{%- endif -%}
+							  {%- if product_card_product.featured_image.width >= 360 -%}{{ product_card_product.featured_image | img_url: '360x' }} 360w,{%- endif -%}
+							  {%- if product_card_product.featured_image.width >= 533 -%}{{ product_card_product.featured_image | img_url: '533x' }} 533w,{%- endif -%}
+							  {%- if product_card_product.featured_image.width >= 720 -%}{{ product_card_product.featured_image | img_url: '720x' }} 720w,{%- endif -%}
+							  {%- if product_card_product.featured_image.width >= 940 -%}{{ product_card_product.featured_image | img_url: '940x' }} 940w,{%- endif -%}
+							  {%- if product_card_product.featured_image.width >= 1066 -%}{{ product_card_product.featured_image | img_url: '1066x' }} 1066w{%- endif -%}"
+						 src="{{ product_card_product.featured_image | img_url: '533x' }}"
+						 sizes="(min-width: 1100px) 535px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
+						 alt="{{ product_card_product.featured_image.alt | escape }}"
+						 loading="lazy"
+						 class="motion-reduce"
+						 width="{{ product_card_product.featured_image.width }}"
+						 height="{{ product_card_product.featured_image.height }}">
+				  </div>
+				</div>
+			  {%- else -%}
+				<div class="card__content"><h2 class="card__text h4">{{ product_card_product.title }}</h2></div>
+			  {%- endif -%}
+			</div>
+		  </a>
+		  {% if badge_card_toggle %}
+			{% render 'product-badge', product_card_product: product_card_product, on_sale: true %}
+		  {% endif %}
+	  	</div>
+		<div class="product-buttons">
+		  <form method="post" action="/cart/add" class="add_to_cart_form">
+			{% if product_card_product.available %}
+			  {% if product_card_product.variants.size == 1 %}
+				<input type="hidden" name="id" value="{{ product_card_product.variants.first.id }}" />
+				<button class="add_to_cart_button icon-btn icon-btn-type-2" type="submit">
+				  {% render 'icon-cart' %}
+				  <span class="btn-text">{{ 'layout.product.add_to_cart' | t }}</span> 
+				</button>
+			  {% else %}
+				<a class="add_to_cart_button icon-btn icon-btn-type-2" href="{{ product_card_product.url }}">
+				  {% render 'icon-cog' %}
+				  <span class="btn-text">{{ 'layout.product.choose_variant_button' | t }}</span>
+				</a>
+			  {% endif %}
+			{% else %}
+			  <button class="add_to_cart_button icon-btn icon-btn-type-2" disabled>
+				{% render 'icon-cart' %}
+				<span class="btn-text">{{ 'layout.product.unavailable' | t }}</span>
+			  </button>
+			{% endif %}
+		  </form>
+		</div>
+	  </div>
+
+	<div class="product_info mt-1">
+		
+		{% if template == 'index' %}
+			<a class="product_name" href="{{ product_card_product.url }}">{{ product_card_product.title | truncate: 35 }}</a>
+		{% else %}
+			<a class="product_name" href="{{ product_card_product.url | within: collection }}">{{ product_card_product.title | truncate: 35 }}</a>
+		{% endif %}
+	
+		<div class="product-price-container">
+			{% if product_card_product.available and settings.variants_money_toggle %}
+				{% if product_card_product.variants.size == 1 %}
+					<span class="product-price">{{ product_card_product.price | money }}</span>
+					{% if on_sale %}
+						<span class="product-regular-price">{{ product_card_product.compare_at_price | money }}</span>
+					{% endif %}
+				{% else %}
+					{% assign prices_sorted = product_card_product.variants | sort: 'price' %}
+					
+					{% comment %}
+					<span class="product-price product-price-variant">
+					  {{ prices_sorted.first.price | money }}
+						{% unless prices_sorted.first.price == prices_sorted.last.price %}
+						– <span>
+							{{ prices_sorted.last.price | money }}
+						</span>
+						{% endunless %}
+					</span>
+					{% endcomment %}
+					<span class="product-price product-price-variant">
+					  <span class="grid-block">
+						<span>
+						  {{ prices_sorted.first.price | money }}
+						</span>
+						{% unless prices_sorted.first.price == prices_sorted.last.price %}
+							– </span>
+						<span>
+							{{ prices_sorted.last.price | money }}
+						</span>
+						{% endunless %}
+					</span>
+				{% endif %}
+			{% else %}
+				<span class="product-price {% if on_sale %} product-sale-price {% endif %}">
+					{{ product_card_product.price | money }}
+				</span>
+				{% if on_sale %}
+					<span class="product-regular-price">
+						{{ product_card_product.compare_at_price | money }}
+					</span>
+				{% endif %}
+			{% endif %}
+		</div>
+	</div>
+</div>
+
+{% style %}
+	#product__{{ product_card_product.handle }} .card__media-full-spacer {
+        padding: {{ add_image_padding | append: 'px' }};
+        background-color: {{ add_wrapper_image_bg }}; 
+    }
+    #product__{{ product_card_product.handle }} .product_img img {
+        background-color: {{ add_image_bg }};
+    }
+{% endstyle %}

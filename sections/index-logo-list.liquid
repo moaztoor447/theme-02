@@ -1,0 +1,309 @@
+{{ 'section-logo-list.css' | asset_url | stylesheet_tag }}
+
+{%- if section.blocks.size > 0 -%}
+    <style>
+        .section-style-{{ section.id }} .logo_item {
+            min-height: {{ section.settings.mh_item | append: 'px' }};
+        }
+    </style>
+{%- endif -%}
+{% case section.settings.image_size %}
+    {% when 'xsmall' %}{%- assign img_size = '150x150' -%}
+    {% when 'small'  %}{%- assign img_size = '170x136' -%}
+    {% when 'medium' %}{%- assign img_size = '200x200' -%}
+    {% when 'large' %}{%- assign img_size = '270x270' -%}
+{% endcase %}
+<div class="section-style-{{ section.id }}">
+    {%- include 'section-style' -%}
+    <div class="{{ section.settings.container_width }}">
+        <div class="logo-list-wrap">
+    {% if section.settings.section_title.size > 0 %}
+        <h2 class="section_heading mb-3 text-left {% if section.settings.show_carousel %} swiper-title{% endif %}">
+            <span>{{ section.settings.section_title | escape }}</span>
+        </h2>
+    {% endif %}
+    <div class="{% if section.settings.show_carousel %}{% else %}{% if section.settings.reset_indent == 'true' %} gx-0{% endif %} row logo-listing-main logo-listing-size-{{ section.settings.logo_layout }}{% endif %}">
+        {% if section.settings.show_carousel %}
+                <div id="zmz-carousel-{{ section.id }}" class="swiper-container logo-swiper swiper-nav-wrapper swiper-nav-wrapper_mod zmz-swiper-container mt-lg-2"
+                     data-options='{
+						"observer": true,
+						"observeParents": true,
+						"pagination": {"el": "#pagination_{{ section.id }}", {% if section.settings.carousel_control_type == 'fraction' %}"type": "fraction"{% elsif section.settings.carousel_control_type == 'progressbar' %}"type": "progressbar"{% else %}"clickable": true{% endif %}},
+						"navigation": {"nextEl": "#next_{{ section.id }}", "prevEl": "#prev_{{ section.id }}"},
+						"spaceBetween": {% if section.settings.reset_indent == 'true' %}0{% else %}30{% endif %},
+						"slidesPerView": 2,
+						{% if section.settings.carousel_control_type == 'fraction' %}"slidesPerGroup": 2,{% endif %}
+						"breakpoints": {
+							"576": { "slidesPerView": 3{% if section.settings.carousel_control_type == 'fraction' %},"slidesPerGroup": 3 {% endif %} },
+							"768": { "slidesPerView": 4{% if section.settings.carousel_control_type == 'fraction' %},"slidesPerGroup": 4 {% endif %} },
+							"1200": {"slidesPerView": 6{% if section.settings.carousel_control_type == 'fraction' %},"slidesPerGroup": 6 {% endif %} }
+						}
+					}'>
+                <div class="swiper-wrapper logo-listing-main logo-listing-size-{{ section.settings.logo_layout }}">
+        {% endif %}
+        {% for block in section.blocks %}
+            <div class="col-6 col-sm-4 col-md-3 col-xl-2{% if section.settings.show_carousel %} swiper-slide{% else %} mb-3{% endif %}">
+                <div class="logo_item item_image">
+                         {% if block.settings.link.size > 0 %}
+                             <a href="{{ block.settings.link }}" class="logo-link d-block text-center">brand</a>
+                         {% endif %}
+                       {% if block.settings.image != blank %}
+                           <img loading="lazy" class="img-fluid" src="{{ block.settings.image | img_url: img_size, crop: section.settings.img_alignment }}" alt="{{ section.settings.image.alt }}">
+                       {% else %}
+                           <div class="img_placeholder__wrap img_placeholder__{{ section.settings.img_size }}">
+                               {{ 'logo' | placeholder_svg_tag: 'img_placeholder' }}
+                           </div>
+                       {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        {% if section.settings.show_carousel %}
+                </div>
+                 {% unless section.settings.off_carousel_pag %}
+                     <div id="pagination_{{ section.id }}" class="swiper-pagination"></div>
+                 {% endunless %}
+                 {% unless section.settings.off_carousel_nav %}
+                     <div id="prev_{{ section.id }}" class="swiper-button-prev"></div>
+                     <div id="next_{{ section.id }}" class="swiper-button-next"></div>
+                 {% endunless %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+    </div>
+</div>
+{% schema %}
+{
+    "name": "Logo list",
+    "class": "section section_homepage section_logo-list",
+    "max_blocks": 12,
+    "settings": [
+        {
+            "type":      "select",
+            "id":        "container_width",
+            "label":     "Container width",
+            "options": [
+                {
+                    "value": "container",
+                    "label": "Box"
+                },
+                {
+                    "value": "container-fluid",
+                    "label": "Container Fluid"
+                },
+                {
+                    "value": "full-width",
+                    "label": "Full"
+                }
+            ],
+            "default":   "container"
+        },
+        
+        {
+            "type": "checkbox",
+            "id": "reset_indent",
+            "label": "Remove indent",
+            "default":   false
+        },
+        {
+            "type": "text",
+            "id": "inset_section",
+            "label": "Inset Section",
+            "default": "0px 0px 0px 0px",
+            "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+        },
+        
+        {
+            "type": "text",
+            "id": "offset_section",
+            "label": "Offset Section",
+            "default": "0px 0px 0px 0px",
+            "info": "offset: Top Right Bottom Left"
+        },
+        
+        {
+            "type": "color",
+            "id": "bg_section",
+            "label": "Background Section",
+            "default": "#ffffff"
+        },
+        
+        {
+            "type": "text",
+            "id": "section_title",
+            "label": "Heading",
+            "default": "Logo list"
+        },
+       
+        {
+            "type": "select",
+            "id": "image_size",
+            "label": "Image size",
+            "options": [
+                {
+                    "value": "xsmall",
+                    "label": "Extra Small (150x150)"
+                },
+                {
+                    "value": "small",
+                    "label": "Small (170x136)"
+                },
+                {
+                    "value": "medium",
+                    "label": "Medium (200x200)"
+                },
+                {
+                    "value": "large",
+                    "label": "Large (270x270)"
+                }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "img_alignment",
+            "label": "Image alignment",
+            "options": [
+                {
+                    "value": "top",
+                    "label": "Top"
+                },
+                {
+                    "value": "center",
+                    "label": "Middle"
+                },
+                {
+                    "value": "bottom",
+                    "label": "Bottom"
+                }
+            ]
+        },
+    
+        {
+            "type":    "range",
+            "id":      "mh_item",
+            "min":    30,
+            "max":     270,
+            "step":    5,
+            "unit":    "px",
+            "label":   "Items height",
+            "default": 140
+        },
+       
+        {
+            "type": "checkbox",
+            "id": "show_carousel",
+            "label": "Blocks in carousel",
+            "info": "Max viewing 6 items"
+        },
+        {
+            "type": "checkbox",
+            "id": "off_carousel_nav",
+            "label": "Disable carousel navigation",
+            "default":  false
+        },
+        {
+            "type": "checkbox",
+            "id": "off_carousel_pag",
+            "label": "Disable carousel pagination",
+            "default":  false
+        },
+        {
+        "type": "select",
+        "id": "carousel_control_type",
+        "label": "Pagination type",
+        "options": [
+                {
+                    "value": "pagination",
+                    "label": "Bullets"
+                },
+                {
+                    "value": "fraction",
+                    "label": "Fraction"
+                },
+                {
+                    "value": "progressbar",
+                    "label": "Progressbar"
+                }
+            ],
+            "default": "pagination"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "logo_image",
+            "name": "Logo",
+            "settings": [
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Image"
+                },
+                {
+                    "type": "url",
+                    "id": "link",
+                    "label": "Link",
+                    "info": "Optional"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Logo list",
+            "category": "Image",
+            "blocks": [
+                {
+                    "type": "logo_image"
+                },
+                {
+                    "type": "logo_image"
+                },
+                {
+                    "type": "logo_image"
+                },
+                {
+                    "type": "logo_image"
+                },
+                {
+                    "type": "logo_image"
+                },
+                {
+                    "type": "logo_image"
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}
+
+{% javascript %}
+jQuery(document).ready(function($) {
+    $('.logo-swiper').each(function(i) {
+
+        var sliderId = '#' + $(this).attr('id');
+
+
+        var swiperVar = new Swiper( sliderId, {
+            speed: 500,
+            effect: 'slide',
+            slidesPerView: 2,
+            slidesPerColumn: 1,
+            navigation: {
+                 nextEl: $(this).parent().find('.swiper-button-next'),
+                 prevEl: $(this).parent().find('.swiper-button-prev')
+            },
+            breakpoints: {
+                576: {
+                    slidesPerView: 3
+                },
+                768: {
+                    slidesPerView: 4
+                },
+                1200: {
+                    slidesPerView: 6
+                }
+            }
+        });
+    });
+});
+{% endjavascript %}

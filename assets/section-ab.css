@@ -1,0 +1,50 @@
+/**
+ * Section announcement bar
+*/
+
+
+#announcement-bar .ab-style{
+    padding: 10px 15px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    z-index: 3;
+}
+
+#announcement-bar .link_banner{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+#announcement-bar .img_bg__wrap{
+    background-size: cover;
+}
+
+#announcement-bar .des {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+#announcement-bar .des em{
+    color: var(--color-primary);
+    font-style: normal;
+}
+#announcement-bar .accept_cookies_link {
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+}
+
+#announcement-bar .accept_cookies_link:hover {
+    opacity: .7;
+}
+
+
+

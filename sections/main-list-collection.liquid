@@ -1,0 +1,214 @@
+
+<style>
+	.collection_listing__main .collection_caption {
+		background-color: {{ section.settings.caption_bg_color | color_modify: 'alpha', section.settings.caption_bg_color_opacity }};
+	}
+</style>
+
+<div class="page_header">
+	<h1 class="page_heading h2">{{ page_title }}</h1>
+	{% if section.settings.page_description.size > 0 %}
+		<span class="page_description text d-inline-block">{{ section.settings.page_description }}</span>
+	{% endif %}
+</div>
+{% case section.settings.size %}
+	{% when '2'  %}
+	  {% if section.settings.image_ratio == 'portrait' %}
+		  {%- assign item_size = '570x680' -%}
+	  {% else %}
+		  {%- assign item_size = '570x680' -%}
+	  {% endif %}
+	{%- assign item_class = 'col-12 col-xsm-6 col-md-4 col-lg-3 col-xl-6' -%}
+	{% when '3'  %}
+	   {% if section.settings.image_ratio == 'portrait' %}
+		   {%- assign item_size = '340x479' -%}
+	   {% else %}
+		   {%- assign item_size = '479x479' -%}
+	   {% endif %}
+	{%- assign item_class = 'col-12 col-xsm-6 col-md-4 col-lg-3' -%}
+	{% when '4'  %}
+	   {% if section.settings.image_ratio == 'portrait' %}
+		   {%- assign item_size = '340x479' -%}
+	   {% else %}
+		   {%- assign item_size = '479x479' -%}
+	   {% endif %}
+
+	{%- assign item_class = 'col-12 col-xsm-6 col-md-4' -%}
+	{% when '5'  %}
+	  {% if section.settings.image_ratio == 'portrait' %}
+		  {%- assign item_size = '270x350' -%}
+	  {% else %}
+		  {%- assign item_size = '350x350' -%}
+	  {% endif %}
+	
+	{%- assign item_class = 'col-12 col-xsm-6 col-md-4 col-lg-3 col-xl-2-5' -%}
+	{% when '6'  %}
+	  {% if section.settings.image_ratio == 'portrait' %}
+		  {%- assign item_size = '270x340' -%}
+	  {% else %}
+		  {%- assign item_size = '270x270' -%}
+	  {% endif %}
+	{%- assign item_class = 'col-12 col-xsm-6 col-md-4 col-xl-2' -%}
+	{% endcase %}
+	
+	{%- assign img_alignment = section.settings.img_alignment -%}
+
+<div class="row collection_listing__main collection_listing__main_{{ section.settings.style }}  {% if section.settings.inverted %} inverted{% endif %}">
+	{% for collection in collections %}
+		{% assign collection_image = false %}
+		{% for block in section.blocks %}
+			{% if collection.handle == collections[block.settings.collection].handle %}
+				{% assign collection_image = true %}
+				{% assign collection_image_src = block.settings.image %}
+			{% endif %}
+		{% endfor %}
+
+		<div class="{{ item_class }} item--{{ section.settings.style }}">
+			{% include 'collection-listing-item' with item_size, img_alignment, collection_image, collection_image_src, custom_collection_class %}
+		</div>
+	{% endfor %}
+</div>
+	
+{% schema %}
+{
+	"name": "Collection listing",
+	"class": "section_template section_template__collections-listing",
+	"settings": [
+		{
+			"type": "text",
+			"id": "page_description",
+			"label": "Page Description"
+		},
+		{
+			"type": "select",
+			"id": "size",
+			"label": "Item per row",
+  			"default": "3",
+			"options": [
+  				{
+  					"value": "2",
+  					"label": "2 in row"
+  				},
+				{
+					"value": "3",
+					"label": "4 in row"
+				},
+				{
+					"value": "4",
+					"label": "3 in row"
+				},
+  				{
+  					"value": "5",
+  					"label": "5 in row"
+  				},
+  				{
+  					"value": "6",
+  					"label": "6 in row"
+  				}
+			]
+		},
+  
+  		{
+  			"type": "select",
+  			"id": "style",
+  			"label": "Item style",
+  				"options": [
+  				{
+  					"value": "type_1",
+  					"label": "Style 1"
+  				},
+  				{
+  					"value": "type_2",
+  					"label": "Style 2"
+  				}
+  			]
+  		},
+  
+  		{
+  			"type": "color",
+  			"id": "caption_bg_color",
+  			"label": "Background Caption",
+  			"default": "#ffffff"
+  		},
+  
+  		{
+  			"type":      "select",
+  			"id":        "image_ratio",
+  			"label":     "Image ratio",
+  			"options": [
+  				{
+  					"value": "square",
+  					"label": "Square"
+  				},
+  				{
+  					"value": "portrait",
+  					"label": "Portrait"
+  				}
+  			],
+  			"default":   "portrait"
+  		},
+  
+  		{
+  			"type":      "range",
+  			"id":        "caption_bg_color_opacity",
+  			"min":       0,
+  			"max":        1,
+  			"step":       0.1,
+  			"label":     "Background opacity caption",
+  			"default":   0.5
+  		},
+  
+  		{
+  			"type": "checkbox",
+  			"id": "inverted",
+  			"label": "Inverted Caption (Set white color)",
+  			"default": false
+  		},
+  
+		{
+			"type": "select",
+			"id": "img_alignment",
+			"label": "Image alignment",
+			"options": [
+				{
+					"value": "top",
+					"label": "Top"
+				},
+				{
+					"value": "center",
+					"label": "Middle"
+				},
+				{
+					"value": "bottom",
+					"label": "Bottom"
+				}
+			]
+		}
+	],
+	"blocks": [
+		{
+			"type": "image",
+			"name": "Collection Image",
+			"settings": [
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Collection image"
+				},
+				{
+					"type": "collection",
+					"id": "collection",
+					"label": "Collection name"
+				},
+				{
+					"type": "text",
+					"id": "custom_collection_class",
+					"label": "Custom collection class"
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+

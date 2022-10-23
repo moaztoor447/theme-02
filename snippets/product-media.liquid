@@ -1,0 +1,71 @@
+
+{% if display_as_preview %}
+  <style>
+    .single_product__img .media > img {
+      object-position: center {{ pr_img_align }};
+    }
+  </style>
+  <div class="media media-type-{{ media.media_type }} media--{{ pr_media_size }}" {% if pr_media_size == 'adapt' %} style="padding-top: {{ 1 | divided_by: image_media_aspect_ratio | times: 100 }}%;" {% endif %} data-media-id="{{ media.id }}">
+    {% render 'product-gallery-image', image: media.preview_image, pr_img_min_size: pr_img_min_size %}
+  </div>
+{% else %}
+  {% case media.media_type %}
+  {% when 'image' %}
+    <style>
+      .single_product__img .media > img {
+        object-position: center {{ pr_img_align }};
+      }
+    </style>
+    {% if pg_modalgallery %}
+     <span data-button-id="btnImgGallery" class="product__img_zoom">
+		<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+			 <path d="M18 7H22V9H16V3H18V7ZM8 9H2V7H6V3H8V9ZM18 17V21H16V15H22V17H18ZM8 15V21H6V17H2V15H8Z" fill="black"/>
+		</svg>
+	 </span>
+      {%- assign mediaHref = media | product_img_url: product_image_zoom_size, crop: pr_img_align -%}
+      <a rel="gallery"
+         data-href="{{ mediaHref }}"
+         data-thumbnail="{{ mediaHref }}"
+         href="{{ mediaHref }}" class="media-gallery fancybox media {% if is_zoom %} {{ zoomImage }}{% endif %} media-type-{{ media.media_type }} media--{{ pr_media_size }}" {% if pr_media_size == 'adapt' %} style="padding-top: {{ 1 | divided_by: image_media_aspect_ratio | times: 100 }}%;" {% endif %} data-media-id="{{ media.id }}">
+        {% render 'product-gallery-image', image: media, use_filter_color_thumbs: use_filter_color_thumbs, imageId: imageId, pr_img_min_size: pr_img_min_size, product_image_zoom_size: product_image_zoom_size, is_zoom: is_zoom, product_image_scale: product_image_scale %}
+      </a>
+      {% else %}
+        <div class="media{% if is_zoom %} {{ zoomImage }}{% endif %} media-type-{{ media.media_type }} media--{{ pr_media_size }}" {% if pr_media_size == 'adapt' %} style="padding-top: {{ 1 | divided_by: image_media_aspect_ratio | times: 100 }}%;" {% endif %} data-media-id="{{ media.id }}">
+          {% render 'product-gallery-image', image: media, use_filter_color_thumbs: use_filter_color_thumbs, imageId: imageId, pr_img_min_size: pr_img_min_size, product_image_zoom_size: product_image_zoom_size, is_zoom: is_zoom, product_image_scale: product_image_scale %}
+        </div>
+    {% endif %}
+    
+  {% when 'external_video' %}
+    <div class="product-single__media media media-type-{{ media.media_type }} media--{{ pr_media_size }}" {% if pr_media_size == 'adapt' %} style="padding-top: {{ 1 | divided_by: image_media_aspect_ratio | times: 100 }}%;" {% endif %} data-media-id="{{ media.id }}">
+      {% if media.host == "youtube" %}
+        {{ media | external_video_url: controls: 0, color: "white" | external_video_tag: class: "youtube_video" }}
+      {% else %}
+        {{ media | external_video_url: loop: 1, muted: 1 | external_video_tag: class: "vimeo_video" }}
+      {% endif %}
+    </div>
+  {% when 'video' %}
+    <div class="product-single__video media media-type-{{ media.media_type }} media--{{ pr_media_size }}" {% if pr_media_size == 'adapt' %} style="padding-top: {{ 1 | divided_by: image_media_aspect_ratio | times: 100 }}%;" {% endif %} data-media-id="{{ media.id }}">
+  	{{ media | video_tag: loop: true, controls: true, controlslist:"nodownload", disablepictureinpicture: true, image_size: "1024x" }}
+    </div>
+  {% when 'model' %}
+    <div class="product-single__media media media-type-{{ media.media_type }} media--{{ pr_media_size }} model-viewer--action-js" {% if pr_media_size == 'adapt' %} style="padding-top: {{ 1 | divided_by: image_media_aspect_ratio | times: 100 }}%;" {% endif %} data-media-id="{{ media.id }}">
+      {{ media | model_viewer_tag: image_size: '1024x',
+      reveal: 'interaction',
+      class: 'model-viewer',
+      data-model-id: media.id,
+      toggleable: true,
+      auto-rotate: true
+      }}
+    </div>
+    <div class="icon-media-viewer">
+      <div class="model-viewer--action_btn" aria-label="Load">
+        {% render 'icon-3d_model' %}
+      </div>
+    </div>
+    {% else %}
+    <div class="product-single__media media media-type-{{ media.media_type }} media--{{ pr_media_size }}" {% if pr_media_size == 'adapt' %} style="padding-top: {{ 1 | divided_by: image_media_aspect_ratio | times: 100 }}%;" {% endif %} data-media-id="{{ media.id }}">
+  	{{ media | media_tag }}
+    </div>
+  {% endcase %}
+{% endif %}
+

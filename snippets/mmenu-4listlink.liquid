@@ -1,0 +1,85 @@
+{% if blm_it.links_1.size > 0 or blm_it.links_2.size > 0 or blm_it.links_3.size > 0 or blm_it.links_4.size > 0 %}
+    <ul id="menu_{{ block.id }}" class="level_2 is-megamenu py-0 submenu-js"
+        style="display: none; {% if blm_it.image_bg_control %} background-image: url( {{ blm_it.bg_image | img_url: '2048x500', crop: section.settings.img_alignment }} );{% endif %}" {{ block.shopify_attributes }}>
+
+        <li class="item_{{ block.type }}">
+            <div class="row">
+                {% for i in (1..4) %}
+                    {% capture list %}links_{{ i }}{% endcapture %}
+                    {% capture item_image %}image_{{ i }}{% endcapture %}
+                    {%- assign list = blm_it[list] -%}
+                    {%- assign item_image = blm_it[item_image] -%}
+
+                    <div class="megamenu_col__item col-12 col-md-6 col-xl-3 mt-1 mb-2 my-xl-4">
+                      {% if item_image != blank %}
+                       <div class="image-item-container position-relative mb-2 d-xl-block d-none">
+                          <div class="image-item-wrapper" style="padding-top:{{ 1 | divided_by: item_image.aspect_ratio | times: 100 }}%;">
+                            {% assign img_url = item_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+                            <img loading="lazy" class="image-content__image lazyload"
+                                 src="{{ item_image | img_url: '300x300' }}"
+                                 data-src="{{ img_url }}"
+                                 data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 1944, 2048]"
+                                 data-aspectratio="{{ item_image.aspect_ratio }}"
+                                 data-sizes="auto"
+                                 alt="{{ item_image.alt | escape }}">
+                          </div>
+                        </div> 
+                      {% endif %}
+                        <div class="megamenu_linklist">
+                            <div class="h6 {% if blm_it.show_title == blank %} d-xl-none mb-0{% endif %} d-flex mb-2">{{ linklists[list].title }}
+                                <i class="level_2__trigger megamenu_trigger" data-submenu="menu_{{ block.id }}-{{ i }}"></i>
+                            </div>
+                            <ul class="level_3 link-list" id="menu_{{ block.id }}-{{ i }}">
+                                {% for link in linklists[list].links %}
+                                    <li class="level_3__item">
+                                        {% if link.title contains '[new]' %}
+                                            {%- assign link_text = link.title | replace: '[new]', '' -%}
+                                            {%- assign link_badge = 'new' -%}
+                                            {% elsif link.title contains '[hot]' %}
+                                            {%- assign link_text = link.title | replace: '[hot]', '' -%}
+                                            {%- assign link_badge = 'hot' -%}
+                                            {% elsif link.title contains '[featured]' %}
+                                            {%- assign link_text = link.title | replace: '[featured]', '' -%}
+                                            {%- assign link_badge = 'featured' -%}
+                                            {% elsif link.title contains '[comming soon]' %}
+                                            {%- assign link_text = link.title | replace: '[comming soon]', '' -%}
+                                            {%- assign link_badge = 'comming_soon' -%}
+                                            {% elsif link.title contains '[heading]' %}
+                                            {%- assign link_text = link.title | replace: '[heading]', '' -%}
+                                            {%- assign link_badge = false -%}
+                                            {%- assign heading_text = 'custom_heading' -%}
+                                        {% else %}
+                                            {%- assign link_text = link.title -%}
+                                            {%- assign link_badge = false -%}
+                                        {% endif %}
+
+                                        {% if link_text contains '[ld]' %}
+                                            {%- assign link_text = link_text | replace: '[ld]', '' -%}
+                                        {% endif %}
+
+                                        <a class="level_3__link{% if link.title contains '[heading]' %} {{ heading_text }}{% endif %}"
+                                           href="{{ link.url }}">
+                                           <span class="wrap {% if link_badge %} link_badge_wrap {% endif %}">
+												<span class="pr-1">{{ link_text }}</span>
+                                                {% if link_badge %}
+                                                    <span class=" badge badge_{{ link_badge }}">
+															{{ link_badge }}
+														</span>
+                                                {% endif %}
+                                                {% if link.title contains '[ld]' %}
+                                                    {% assign link_image = link_text | handle | append: '.jpg' %}
+                                                    <img loading="lazy" class="lazyload {{ link_image_check }}"
+                                                         data-src="{{ link_image | file_img_url: "200x700" }}" alt="{{ link_image.alt | escape }}">
+                                                {% endif %}
+											</span>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </li>
+    </ul>
+{% endif %}

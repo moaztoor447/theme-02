@@ -1,0 +1,63 @@
+<script src="{{ 'lazysizes.min.js' | asset_url }}" async="async"></script>
+
+{%- if request.page_type contains 'product' -%}
+  <script src="{{ 'option_selection.js' | shopify_asset_url }}" defer="defer"></script>
+  <script src="{{ 'jquery.elevatezoom.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+<script>
+  (function ($) {
+     jQuery(document).on('change', '.swatch :radio', function() { 
+        var optionIndex = jQuery(this).closest('.swatch').data('option-index');
+         var optionValue = jQuery(this).val(); 
+    
+              jQuery(this)
+                  .closest('form')
+                  .find('.single-option-selector')
+                  .eq(optionIndex)
+                  .val(optionValue)
+                  .trigger('change');
+    });
+  })(jQuery); 
+</script>
+
+
+{%- if content_for_layout contains 'parallax_block-js' or content_for_layout contains 'parallax-scene' -%}
+  <script src="{{ 'parallax.min.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+
+{%- if request.page_type contains 'blog' -%}
+  <script src="{{ 'imagesLoaded.min.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- unless template == 'password' or template == 'page.password' -%}
+    <script src="{{ 'header-script.js' | asset_url }}" defer="defer"></script>
+{%- endunless -%}
+
+<script src="{{ 'assets.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'responsive.js' | asset_url }}" defer="defer"></script>
+
+{%- if content_for_layout contains 'slide-video-js' -%}
+  <script src="{{ 'YTPlayer.min.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- if settings.show_compare -%}
+  <script src="{{ 'compare.js' | asset_url }}" defer="defer"></script> 
+{%- endif -%}
+
+{%- if settings.wishlist_toggle -%}
+  <script src="{{ 'wishlist.js' | asset_url }}" defer="defer"></script>
+{% endif %}
+
+{% capture popup_addtocart_content %}
+  {% render 'cart_modal' %}
+{% endcapture %}
+
+<script>var cartModal = {{ popup_addtocart_content | json }};</script>
+
+{% if settings.just_bought_toggle %}
+  {% render 'just_bought_popup' %}  
+{% endif %}
+
+<script src="{{ 'shop.js' | asset_url }}" defer="defer"></script>

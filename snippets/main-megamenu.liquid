@@ -1,0 +1,52 @@
+<nav id="megamenu" class="default-menu{% if settings.header_layout == '2' or menu_burger %} column-menu{% else %} horizontal-menu{% endif %} position-static">
+	<ul id="megamenu_level__1" class="megamenu level_1 mb-0 submenu-js">
+		{% for block in section.blocks %}
+			{% assign blm_it = block.settings %}
+			{% assign canonical_url_trim = canonical_url | replace: shop.url %}
+			{% assign block_url_trim = blm_it.link | replace: shop.url %}
+			
+			<li class="level_1__item{% case block.type %}{% when 'link-linklist' %} simple{% endcase %}">
+				{% if blm_it.link.size > 0 %}
+				<a class="level_1__link{% if block_url_trim == canonical_url_trim and blm_it.link != default %} current {% endif %}  {{ blm_it.custom_item_class }}" href="{{ blm_it.link }}">
+					{% else %}
+					<span class="level_1__link{% if block_url_trim == canonical_url_trim and blm_it.link != default %} current {% endif %}  {{ blm_it.custom_item_class }}" >
+												{% endif %}
+						<span class="link_text {% if blm_it.badge_text.size > 0 %} badge-enable{% endif %}">
+							 {{ blm_it.title }}
+							{% if blm_it.badge_text.size > 0 %}
+							<span class="menu_badge" style="color: {{ blm_it.badge_color }}; background-color: {{ blm_it.bg_color }};">
+								<span style="background-color: {{ blm_it.bg_color }}"></span>
+							  {{ blm_it.badge_text }}
+							</span>
+							{% endif %}
+						    </span>
+						{% if blm_it.links.size > 0 or blm_it.links_1.size > 0 or blm_it.links_2.size > 0 or blm_it.links_3.size > 0 or blm_it.links_4.size > 0 or blm_it.products.size > 0 or blm_it.blog.size > 0 or blm_it.banner_image_1.size > 0 %}
+							<span class="level_1__trigger megamenu_trigger" data-submenu="menu_{{ block.id }}">
+								<svg viewBox="0 0 12 7" xmlns="http://www.w3.org/2000/svg" ><path fill-rule="evenodd" clip-rule="evenodd" d="M0.575684 1.4247L1.42421 0.576172L5.99995 5.15191L10.5757 0.576172L11.4242 1.4247L5.99995 6.84896L0.575684 1.4247Z" /></svg>
+							</span>
+						{% endif %}
+						{% if blm_it.link.size > 0 %}
+				</a>
+			{% else %}
+				</span>
+				{% endif %}
+				
+				{% case block.type %}
+				{% when 'link-linklist' %}
+					{% include 'mmenu-link-list' %}
+				
+				{% when '3link-2banners' %}
+					{% include 'mmenu-3listlink-2banners' %}
+				
+				{% when '3link-2prod-2ban' %}
+					{% include 'mmenu-3listlink-2prod-2ban' %}
+				
+				{% when '4link' %}
+					{% include 'mmenu-4listlink' %}
+				{% endcase %}
+			</li>
+		{% endfor %}
+	</ul>
+</nav>
+
+

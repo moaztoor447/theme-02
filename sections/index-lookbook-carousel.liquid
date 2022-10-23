@@ -1,0 +1,451 @@
+{{ 'section-lookbook.css' | asset_url | stylesheet_tag }}
+
+{%- assign item = section.settings -%}
+
+{%- if section.blocks.size > 0 -%}
+	<style>
+		{%- for block in section.blocks -%}
+			.section_lookbook .section-style-{{ section.id }} .item-{{ block.id }} {
+				margin-top: {{ block.settings.offset_block_top }};
+			}
+		{%- endfor -%}
+	</style>
+{%- endif -%}
+
+<div class="section-style-{{ section.id }}">
+	{%- include 'section-style' -%}
+	<div class="{{ section.settings.container_width }}">
+			{% if item.section_title.size > 0 or item.text_title.size > 0 %}
+				<div class="text-center container-md mb-5">
+					<h2 class="section_heading mb-0">
+						{% if item.section_title.size > 0 %}
+							<span>{{ item.section_title }}</span>
+						{% endif %}
+					</h2>
+					{% if item.text_title.size > 0 %}
+						<div class="text text-default mt-1"><span>{{ item.text_title }}</span></div>
+					{% endif %}	
+				</div>
+			{% endif %}
+	  
+			{%- if section.blocks.size > 0 -%}
+			{%- for block in section.blocks -%}
+				{%- assign bl_it = block.settings -%}
+				<div class="row item-{{ block.id }} item-lookbook-carousel {% if block.settings.reverse_block %} flex-row-reverse justify-flex-end{% endif %}" {{ block.shopify_attributes }}>
+					<div class="col-md-7">
+						<div  class="lookbook_item_wrap">
+							<div class="lookbook_img">
+								{%- if bl_it.image != blank -%}
+									<div class="image-item-wrapper" style="padding-top:{{ 1 | divided_by: bl_it.image.aspect_ratio | times: 100 }}%;">
+										{% assign img_url = bl_it.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+										<img loading="lazy" class="image-content__image lazyload"
+											 src="{{ bl_it.image | img_url: '300x300' }}"
+											 data-src="{{ img_url }}"
+											 data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 1944, 2048]"
+											 data-aspectratio="{{ bl_it.image.aspect_ratio }}"
+											 data-sizes="auto"
+											 data-parent-fit="cover"
+											 alt="{{ bl_it.image.alt | escape }}"/>
+									</div>
+								{%- else -%}
+									<div class="img_placeholder__wrap" style="padding-top: 73.6%;">
+										{{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+									</div>
+								{%- endif -%}
+							</div>
+
+							{%- for i in (1..5) -%}
+								{%- assign spotX = 'item_x_' | append: i -%}{%- assign spotX = bl_it[spotX] -%}
+								{%- assign spotY = 'item_y_' | append: i -%}{%- assign spotY = bl_it[spotY] -%}
+								{%- assign spotProduct = 'item_product_' | append: i -%}
+								{%- assign spotProduct = bl_it[spotProduct] -%}
+								{%- unless spotProduct == blank -%}
+								{%- assign itemProduct = all_products[spotProduct] -%}
+									<div class="lookbook_container">
+										<div class="lookbook_item {% if forloop.first == true %} active{% endif %}" data-class="{{ spotProduct }}"  data-index="{{ i }}" style="left: {{ spotX }}%;top: {{ spotY }}%;">
+											{%- if itemProduct.id.size > 0 -%}
+												<span class="lookbook_item__bullet">
+													<i aria-hidden="true">{% render 'icon-plus' %}</i>
+												</span>
+											{%- endif -%}
+										</div>
+									</div>
+								{%- endunless -%}
+							{%- endfor -%}
+						</div>
+					</div>
+					<div class="col-md-4 mx-md-2">
+						<div id="{{ section.id }}_{{ block.id }}" class="swiper-container lb_products_carousel px-3 px-md-3 px-xl-5 text-center mt-4 swiper-nav-wrapper">
+							<div class="swiper-wrapper">
+								{%- for i in (1..5) -%}
+									{%- assign spotProduct = 'item_product_' | append: i -%}
+									{%- assign spotProduct = bl_it[spotProduct] -%}
+									{%- unless spotProduct == blank -%}
+									  {%- assign itemProduct = all_products[spotProduct] -%}
+										 {%- if itemProduct.id.size > 0 -%}
+											  <div class="swiper-slide lookbook_product product" data-class="{{ spotProduct }}">
+												<div class="product_listing__main product_listing__grid d-md-block d-none">
+												  <div class="product_item_wrap px-0">
+													{% render 'product-listing-item',
+													  product_card_product: itemProduct,
+													  pc_grid_style: "grid_style_1",
+													  media_size: settings.image_ratio
+													%}
+												  </div>
+												</div>
+												
+												<div class="product_item_wrap list_products product_listing__list d-md-none">
+												  {% render 'product-item-simple',
+													product_card_product: itemProduct,
+													media_size: settings.image_ratio %}
+												</div>
+											  </div>
+										 {%- endif -%}
+									  {%- else -%}
+									  {%- if forloop.index == 1 -%}
+										<div class="swiper-slide lookbook_product product">
+										  <div class="product_item_wrap px-0">
+											{% render 'product-item-placeholder' %}
+										  </div>
+										</div>
+									  {%- endif -%}
+									{%- endunless -%}
+								{%- endfor -%}
+							</div>
+							<div id="prev_{{ block.id }}" class="swiper-button-prev"></div>
+							<div id="next_{{ block.id }}" class="swiper-button-next"></div>
+						</div>
+
+					</div>
+				</div>
+			{%- endfor -%}
+			{%- else -%}
+				<span style="display: flex; justify-content: center;">This section doesn’t currently include any content. Add block to this section using the sidebar.</span>
+			{%- endif -%}
+	</div>
+</div>
+
+
+{% schema %}
+{
+	"name": "Lookbook Carousel",
+	"class": "section section_homepage section_lookbook section_lookbook_carousel",
+	"max_blocks": 7,
+	"settings": [
+		{
+			"type":      "select",
+			"id":        "container_width",
+			"label":     "Container width",
+			"options": [
+				{
+					"value": "container",
+					"label": "Box"
+				},
+				{
+					"value": "container-fluid",
+					"label": "Container Fluid"
+				},
+				{
+					"value": "full-width",
+					"label": "Full"
+				}
+			],
+				"default":   "container"
+		},
+
+		{
+			"type": "text",
+			"id": "section_title",
+			"label": "Section Title"
+		},
+		{
+			"type": "text",
+			"id": "text_title",
+			"label": "Text Title"
+		},
+		{
+			"type": "text",
+			"id": "inset_section",
+			"label": "Inset Section",
+			"default": "0px 0px 0px 0px",
+			"info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+		},
+		
+		{
+			"type": "text",
+			"id": "offset_section",
+			"label": "Offset Section",
+			"default": "0px 0px 0px 0px",
+			"info": "offset: Top Right Bottom Left"
+		},
+		
+		{
+			"type": "color",
+			"id": "bg_section",
+			"label": "Background Section",
+			"default": "#ffffff"
+		}
+	],
+	"blocks": [
+		{
+			"type": "lookbook",
+			"name": "Lookbook product",
+			"settings": [
+
+				{
+					"type": "checkbox",
+					"id": "reverse_block",
+					"label": "Reverse block",
+					"default":   false
+				},
+
+				{
+					"type": "text",
+					"id": "offset_block_top",
+					"label": "Top Offset block(px/%/rem/em)",
+					"default": "0",
+					"info": "Default 0"
+				},
+	
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Image"
+				},
+				{
+					"type": "header",
+					"content": "Product 1"
+				},
+				{
+					"type": "product",
+					"id": "item_product_1",
+					"label": "Select Product"
+				},
+
+				{
+					"type":    "range",
+					"id":      "item_x_1",
+					"min":     1,
+					"max":     100,
+					"step":    1,
+					"unit":    "%",
+					"label":   "Horizontal position",
+					"default": 50
+				},
+				{
+					"type":    "range",
+					"id":      "item_y_1",
+					"min":     1,
+					"max":     100,
+					"step":    1,
+					"unit":    "%",
+					"label":   "Vertical position",
+					"default": 50
+				},
+
+				{
+					"type": "header",
+					"content": "Product 2"
+				},
+				{
+					"type": "product",
+					"id": "item_product_2",
+					"label": "Select Product"
+				},
+
+				{
+					"type":    "range",
+					"id":      "item_x_2",
+					"min":     1,
+					"max":     100,
+					"step":    1,
+					"unit":    "%",
+					"label":   "Horizontal position",
+					"default": 50
+				},
+				{
+					"type":    "range",
+					"id":      "item_y_2",
+					"min":     1,
+					"max":     100,
+					"step":    1,
+					"unit":    "%",
+					"label":   "Vertical position",
+					"default": 50
+				},
+
+				{
+					"type": "header",
+					"content": "Product 3"
+				},
+				{
+					"type": "product",
+					"id": "item_product_3",
+					"label": "Select Product"
+				},
+
+				{
+					"type":    "range",
+					"id":      "item_x_3",
+					"min":     1,
+					"max":     100,
+					"step":    1,
+					"unit":    "%",
+					"label":   "Horizontal position",
+					"default": 50
+				},
+				{
+					"type":    "range",
+					"id":      "item_y_3",
+					"min":     1,
+					"max":     100,
+					"step":    1,
+					"unit":    "%",
+					"label":   "Vertical position",
+					"default": 50
+				},
+
+
+				{
+					"type": "header",
+					"content": "Product 4"
+				},
+				{
+					"type": "product",
+					"id": "item_product_4",
+					"label": "Select Product"
+				},
+
+				{
+					"type":    "range",
+					"id":      "item_x_4",
+					"min":     1,
+					"max":     100,
+					"step":    1,
+					"unit":    "%",
+					"label":   "Horizontal position",
+					"default": 50
+				},
+				{
+					"type":    "range",
+					"id":      "item_y_4",
+					"min":     1,
+					"max":     100,
+					"step":    1,
+					"unit":    "%",
+					"label":   "Vertical position",
+					"default": 50
+				},
+			  
+			  {
+				"type": "header",
+				"content": "Product 5"
+			  },
+			  {
+				"type": "product",
+				"id": "item_product_5",
+				"label": "Select Product"
+			  },
+			  
+			  {
+				"type":    "range",
+				"id":      "item_x_5",
+				"min":     1,
+				"max":     100,
+				"step":    1,
+				"unit":    "%",
+				"label":   "Horizontal position",
+				"default": 50
+			  },
+			  {
+				"type":    "range",
+				"id":      "item_y_5",
+				"min":     1,
+				"max":     100,
+				"step":    1,
+				"unit":    "%",
+				"label":   "Vertical position",
+				"default": 50
+			  }
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "Lookbook Carousel",
+			"category": "Products",
+			"blocks": [
+				{
+					"type": "lookbook"
+				},
+				{
+					"type": "lookbook"
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+{% javascript %}
+  $(document).ready(function() {
+	  SwiperCarousel();
+	  
+	  if (Shopify.designMode) {
+		  $(document)
+			  .on('shopify:section:load', SwiperCarousel)
+			  .on('shopify:section:unload', SwiperCarousel)
+			  .on('shopify:section:select', SwiperCarousel)
+			  .on('shopify:section:deselect', SwiperCarousel)
+			  .on('shopify:section:reorder', SwiperCarousel)
+			  .on('shopify:block:select', SwiperCarousel)
+			  .on('shopify:block:deselect', SwiperCarousel);
+	  }
+  
+	  function SwiperCarousel() {
+		  $('.item-lookbook-carousel').each(function () {
+			  $('.lb_products_carousel').each(function () {
+				  var lbSliderId = '#' + $(this).attr('id');
+				  var spotPagWrap = $(this).parent().siblings().find('.lookbook_item_wrap');
+  
+				  var lbSwiper = new Swiper (lbSliderId, {
+					  spaceBetween: 0,
+					  slidesPerView: 1,
+					  effect: 'fade',
+					  fadeEffect: {
+						  crossFade: true
+					  },
+					  loop: true,
+					  navigation: {
+						  nextEl: '.swiper-button-next',
+						  prevEl: '.swiper-button-prev'
+					  },
+  
+					  on: {
+						  transitionEnd: function() {
+							  spotPagWrap.each(function () {
+								  var spotItem = $(this).find(".lookbook_item");
+  
+								  spotItem.on('mouseover', function(){
+									  var target = $(this).data('index');
+									  lbSwiper.slideTo(target);
+									  return;
+								  });
+  
+								  spotItem.hover(function() {
+									  spotItem.removeClass("active");
+									  $(this).addClass("active");
+								  });
+  
+								  spotItem.removeClass('active');
+								  var active_lbSlide = $(this).parent().siblings().find('.swiper-slide-active').attr('data-class');
+								  $(this).find('.lookbook_item[data-class = '+active_lbSlide+']').addClass('active');
+							  });
+						  }
+					  }
+				  });
+			  });
+		  });
+	  }
+  });
+{% endjavascript %}

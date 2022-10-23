@@ -1,0 +1,289 @@
+
+
+{% if section.blocks.size > 0 %}
+	<style>
+		{% for block in section.blocks %}
+			.section-style-{{ section.id }} .item-{{ block.id }} .counter-title {
+				color: {{ block.settings.color_title }};
+			}
+			
+			.section-style-{{ section.id }} .item-{{ block.id }} .counter-value {
+				color: {{ block.settings.color_number }};
+			}
+			.section-style-{{ section.id }} .item-{{ block.id }} {
+				padding: {{ block.settings.inset_block }};
+				background-color: {{ block.settings.bg_block }};
+			}
+		{% endfor %}
+	</style>
+{% endif %}
+
+
+
+<div class="section-style-{{ section.id }}">
+	{%- include 'section-style' -%}
+	<div class="{{ section.settings.container_width }}">
+		<div class="col-12 text-center mb-4">
+			{% if section.settings.section_title != blank %}
+				<h2 class="section_heading mb-0">{{ section.settings.section_title }}</h2>
+			{% endif %}
+			
+			{% if section.settings.desc != blank %}
+				<div class="text text-default my-0">{{ section.settings.desc }}</div>
+			{% endif %}
+		</div>
+		
+		<div class="row counter-wrapper justify-content-between {% if section.settings.reset_indent %}gx-0{% endif %}">
+			{% for block in section.blocks %}
+				<div class="col-md-{{ block.settings.width }} col-12">
+					{% case block.type %}
+						{% when 'item' %}
+							{% if block.settings.number.size > 0 or block.settings.title.size > 0 %}
+								<div class="counter-boxed d-flex justify-content-{{ block.settings.text_pos }} item-{{ block.id }}">
+									<div class="text-{{ block.settings.text_align }}">
+										{% if block.settings.number.size > 0 %}
+											<div class="counter-value h1 mb-0">{{ block.settings.number }}</div>
+										{% endif %}
+										{% if block.settings.title.size > 0 %}
+											<p class="text block-text">{{ block.settings.title }}</p>
+										{% endif %}
+									</div>
+								</div>
+						{% endif %}
+					{% endcase %}
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+
+{% schema %}
+{
+	"name": "Counter section",
+	"class": "section section_homepage section_counter",
+	"max_blocks": 12,
+	"settings": [
+		{
+			"type": "header",
+			"content": "Section settings"
+		},
+		{
+			"type": "text",
+			"id": "section_title",
+			"label": "Section Title",
+			"default": "Block counter"
+		},
+		{
+			"type": "html",
+			"id": "desc",
+			"label": "HTML / Description"
+		},
+	
+		{
+			"type":      "select",
+			"id":        "container_width",
+			"label":     "Container width",
+			"options": [
+				{
+					"value": "container",
+					"label": "Box"
+				},
+				{
+					"value": "container-fluid",
+					"label": "Container Fluid"
+				},
+				{
+					"value": "full-width",
+					"label": "Full"
+				}
+			],
+			"default":   "container"
+		},
+		{
+			"type": "checkbox",
+			"id": "reset_indent",
+			"label": "Remove indent",
+			"default":   false
+		},
+		{
+			"type": "color",
+			"id": "bg_section",
+			"label": "Background Section",
+			"default": "#ffffff"
+		},
+		{
+			"type": "text",
+			"id": "inset_section",
+			"label": "Inset Section",
+			"default": "0px 0px 0px 0px",
+			"info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+		},
+		{
+			"type": "text",
+			"id": "offset_section",
+			"label": "Offset Section",
+			"default": "0px 0px 0px 0px",
+			"info": "offset: Top Right Bottom Left"
+		}
+	],
+	"blocks": [
+		{
+			"type": "item",
+			"name": "Counter",
+			"settings": [
+				{
+					"type": "select",
+					"id": "width",
+					"label": "Width",
+					"default": "6",
+					"options": [
+						{
+							"value": "2",
+							"label": "16.67%"
+						},
+						{
+							"value": "3",
+							"label": "25%"
+						},
+						{
+							"value": "4",
+							"label": "33.33%"
+						},
+						{
+							"value": "5",
+							"label": "41.67%"
+						},
+						{
+							"value": "6",
+							"label": "50%"
+						},
+						{
+							"value": "7",
+							"label": "58.33%"
+						},
+						{
+							"value": "8",
+							"label": "66.67%"
+						},
+						{
+							"value": "9",
+							"label": "75%"
+						},
+						{
+							"value": "10",
+							"label": "83.33%"
+						},
+						{
+							"value": "12",
+							"label": "100%"
+						}
+					]
+				},
+	
+				{
+					"type": "color",
+					"id": "bg_block",
+					"label": "Background Block",
+					"default": "#ffffff"
+				},
+				{
+					"type": "text",
+					"id": "inset_block",
+					"label": "Inset Block",
+					"default": "0px 0px 0px 0px",
+					"info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+				},
+	
+				{
+					"type":      "select",
+					"id":        "text_pos",
+					"label":     "Text position",
+					"options": [
+						{
+							"value": "start",
+							"label": "Left"
+						},
+						{
+							"value": "center",
+							"label": "Center"
+						},
+						{
+							"value": "end",
+							"label": "Right"
+						}
+					],
+					"default":   "start"
+				},
+	
+				{
+					"type":      "select",
+					"id":        "text_align",
+					"label":     "Text align",
+					"options": [
+						{
+							"value": "left",
+							"label": "Left"
+						},
+						{
+							"value": "center",
+							"label": "Center"
+						},
+						{
+							"value": "right",
+							"label": "Right"
+						}
+					],
+					"default":   "left"
+				},
+	
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Title",
+					"default": "Counter"
+				},
+	
+				{
+					"type": "color",
+					"id": "color_title",
+					"label": "Color title",
+					"default": "#797b7e"
+				},
+	
+				{
+					"type": "text",
+					"id": "number",
+					"label": "Counter",
+					"default": "100"
+				},
+				{
+					"type": "color",
+					"id": "color_number",
+					"label": "Color_number",
+					"default": "#121212"
+				}
+			]
+		}
+	],
+
+	"presets": [
+		{
+			"name": "Counter section",
+			"category": "Text",
+			"blocks": [
+				{
+					"type": "item"
+				},
+				{
+					"type": "item"
+				},
+				{
+					"type": "item"
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+

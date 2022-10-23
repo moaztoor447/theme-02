@@ -1,0 +1,90 @@
+<style>
+  {% if settings.use_bg_breadcrumbs %}
+    .breadcrumbs > div{
+        background-color: {{ settings.bg_breadcrumbs_color }};
+	}
+  {% endif %}
+   {% if settings.use_full_bg_breadcrumbs %}
+   	 .breadcrumbs:before,
+   	 .breadcrumbs:after {
+   	 	background-color:{{ settings.bg_breadcrumbs_color }};
+   	 }
+   {% endif %}
+  .breadcrumbs ul > li a, .breadcrumbs ul > li span{
+      color: {{ settings.breadcrumbs_color }};
+  }
+  .breadcrumbs ul > li a:hover,
+  .breadcrumbs ul > li:last-child a,
+  .breadcrumbs ul > li:last-child span {
+      color: {{ settings.breadcrumbs_color_active }};
+  }
+</style>
+
+
+<div class="breadcrumbs {% if settings.use_full_bg_breadcrumbs != blank %} full-bg{% endif %}">
+	<div class="container">
+		<div class="row">
+		<ul class="col-12 {% if settings.use_bg_breadcrumbs %}{% unless settings.use_full_bg_breadcrumbs %}ml-2{% endunless %}{% endif %}">
+		  <li><a href="/">{{ 'layout.breadcrumbs.home' | t }}</a></li>
+  
+		  {% if template contains 'list-collections' %}
+			 <li><span>{{ 'layout.breadcrumbs.collections' | t }}</span></li>
+			
+			{% elsif template contains 'collections' and collection.handle %}
+			  {% if current_tags %}
+				{% capture url %}/collections/{{ collection.handle }}{% endcapture %}
+				<li> <a href="{{ url }}">{{ collection.title }}</a></li>
+				<li><span>{{ current_tags }}</span></li>
+			  {% else %}
+				<li><a href="/collections/">{{ 'layout.breadcrumbs.collections' | t }}</a></li>
+				<li><span>{{ collection.title }}</span></li>
+			  {% endif %}
+			
+			{% elsif template contains 'product' %}
+			  {% assign current_collection = null %}
+			  {% assign is_in_collection = false %}
+			
+			  {% if collection %}
+				{% assign current_collection = collection %}
+				{% assign is_in_collection = true %}
+			  {% elsif product and product.collections.size > 0 %}
+					{% assign current_collection = product.collections.first %}
+			  {% endif %}
+			  {% if current_collection %}
+				{% if current_collection.handle %}
+				  {% capture url %}/collections/{{ current_collection.handle }}{% endcapture %}
+				  <li><a href="{{ url }}">{{ current_collection.title }}</a></li>
+				{% endif %}
+			  {% endif %}
+			<li><span>{{ product.title }}</span></li>
+			
+			{% elsif template contains 'blog' %}
+			  {% if canonical_url contains 'tagged' %}
+				<li><a href="{{ blog.url }}">{{ blog.title }}</a></li>
+				<li><span>{{ current_tags }}</span></li>
+			  {% else %}
+				<li><span>{{ blog.title }}</span></li>
+			  {% endif %}
+			
+			{% elsif template contains 'article' %}
+			<li><a href="{{ blog.url }}">{{ blog.title }}</a></li>
+			<li><span>{{ article.title }}</span></li>
+			
+			{% elsif template contains 'search' %}
+			<li><span>{{ 'layout.breadcrumbs.search' | t }}{% if search.terms %}: {{ search.terms }}{% endif %}</span></li>
+			
+			{% elsif template contains 'customers/addresses' or template contains 'customers/order' %}
+			<li><a href="/account">{{ 'layout.breadcrumbs.account' | t }}</a></li>
+			<li><span>{{ page_title }}</span></li>
+			{% comment %}
+			
+			{% elsif template contains 'page', 'page.contact', 'cart' %}
+			<li><span>{{ page_title }}</span></li>
+			{% endcomment %}
+		  {% else %}
+			<li><span>{{ page_title }}</span></li>
+		  {% endif %}
+		</ul>
+		</div>
+	</div>
+</div>

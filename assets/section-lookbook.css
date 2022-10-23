@@ -1,0 +1,260 @@
+/** * Lookbook block */
+
+.section_lookbook {
+    padding: 0;
+}
+
+.section_lookbook .hidden {
+    opacity: 0;
+}
+
+.section_lookbook .container{
+  position: relative;
+}
+
+.section_lookbook .image-item-wrapper {
+    display: block;
+    margin: 0 auto;
+    position: relative;
+}
+
+.lookbook_item_wrap {
+    position: relative;
+}
+
+.lookbook_container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.lookbook_container .lookbook_item {
+    position: absolute;
+    z-index: 1;
+}
+
+.lookbook_item__bullet {
+    width: 16px;
+    height: 16px;
+    display: block;
+    cursor: pointer;
+    text-align: center;
+    min-width: unset;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0px 0px 0px 3px rgba(255,255,255,.3);
+}
+
+.lookbook_item__bullet i {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    z-index: 2;
+    background: rgba(255, 255, 255, .7);
+}
+
+.lookbook_item__bullet i svg {
+    width: 9px;
+    transition: all 0.3s ease;
+}
+
+.lookbook_item__bullet i svg path{
+    fill: var(--color-black);
+}
+
+
+.lookbook_item__caption {
+    background: var(--color-white);
+    box-shadow: 0 1px 9px 3px rgba(204, 204, 204, 0.11);
+    transition: all 0.3s ease-in-out;
+    z-index: 5;
+}
+
+.lookbook_item__caption.style_1 {
+    width: 180px;
+    padding: 10px 10px 20px;
+}
+
+.lookbook_item__caption.style_2 {
+    width: 200px;
+    padding: 10px;
+}
+
+.section_lookbook .list_products .product_info {
+    padding-top: 0;
+    align-self: center;
+}
+
+body .lookbook_item__caption.style_1 .product_listing__grid .product_item_wrap {
+    margin-bottom: 0;
+    padding: 0;
+}
+
+.lookbook_item:hover,
+.lookbook_item.active {
+    z-index: 2;
+}
+
+.lookbook_item:hover .lookbook_item__bullet,
+.lookbook_item.active .lookbook_item__bullet,
+.lookbook_item .lookbook_item__bullet.is-active{
+    z-index: 2;
+    box-shadow: 0px 0px 0px 5px rgba(255,255,255,.3);
+}
+
+
+.lookbook_item:hover .lookbook_item__bullet i,
+.lookbook_item .lookbook_item__bullet.is-active i,
+.lookbook_item.active .lookbook_item__bullet i{
+    background: var(--color-black);
+}
+
+.lookbook_item:hover .lookbook_item__bullet i svg path,
+.lookbook_item .lookbook_item__bullet.is-active i svg path,
+.lookbook_item.active .lookbook_item__bullet i svg path{
+    fill: white;
+}
+
+/* .lookbook_item:hover .lookbook_item__bullet i svg,
+.lookbook_item.active .lookbook_item__bullet i svg,
+.lookbook_item .lookbook_item__bullet.is-active i svg{
+    transform: rotate(135deg);
+} */
+
+.section_lookbook .item-lookbook-carousel {
+    align-items: center;
+}
+
+.section_lookbook .item-lookbook-carousel .lookbook_item_wrap {
+    margin-bottom: 0;
+}
+
+
+
+.lookbook-products-list .lookbook_item__product{
+    max-width: 300px;
+}
+
+
+
+@media (max-width: 767px) {
+    .section_lookbook_carousel .lb_products_carousel {
+        max-width: 370px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .section_lookbook_carousel .item-lookbook-carousel .product_item .product_info {
+        text-align: left;
+    }
+
+    .section_lookbook_carousel .item-lookbook-carousel .product_item .product_info .link_add_to_cart {
+        justify-content: flex-start;
+    }
+}
+
+
+@media (min-width: 480px) {
+    .lookbook_item__bullet {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+@media (min-width: 992px) {
+
+    .large-elements .lookbook_item__bullet {
+        box-shadow: 0px 0px 0px 5px rgba(255, 255, 255, .6);
+    }
+    .section_lookbook .item-lookbook-carousel .swiper-nav-wrapper .swiper-button-prev {
+        left: 1.563rem;
+    }
+
+    .section_lookbook .item-lookbook-carousel .swiper-nav-wrapper .swiper-button-next {
+        right: 1.563rem;
+    }
+
+    .section_lookbook .zmz-swiper-container.large-elements.swiper-container-horizontal > .swiper-pagination-bullets {
+        bottom: 60px;
+        margin-top: 0;
+        position: absolute;
+    }
+
+    .lookbook_item__caption.style_1 {
+        width: 210px;
+    }
+
+    .lookbook_item__caption.style_2 {
+        width: 250px;
+    }
+
+    .lookbook_item__bullet {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+  .section_lookbook .swiper-button-prev.slider-button.out-swiper-button-prev {
+      left: 15px;
+    }
+
+   .section_lookbook  .swiper-button-next.slider-button.out-swiper-button-next {
+      right: 15px;
+    }
+
+
+.section_lookbook .zmz-swiper-container.showed_product_list.swiper-container-horizontal > .swiper-pagination-bullets,
+.section_lookbook .zmz-swiper-container:not(.large-elements).swiper-container-horizontal > .swiper-pagination-bullets{
+    position: static;
+    margin: 15px auto;
+}
+
+@media (min-width: 992px) {
+.section_lookbook .zmz-swiper-container.showed_product_list.swiper-container-horizontal > .swiper-pagination-bullets,
+.section_lookbook .zmz-swiper-container:not(.large-elements).swiper-container-horizontal > .swiper-pagination-bullets{
+    position: static;
+    margin: 15px auto;
+}
+
+   .section_lookbook .swiper-button-prev.slider-button.out-swiper-button-prev {
+      left: -20px;
+    }
+
+   .section_lookbook  .swiper-button-next.slider-button.out-swiper-button-next {
+      right: -20px;
+    }
+}
+
+@media (min-width: 1200px) {
+
+   .lookbook_item__bullet i svg {
+     width:14px;
+   }
+    .lookbook_item__caption.style_1 {
+        width: 240px;
+    }
+
+    .lookbook_item__caption.style_2 {
+        width: 300px;
+    }
+
+   .section_lookbook .swiper-button-prev.slider-button.out-swiper-button-prev {
+      left: -40px;
+    }
+
+    .section_lookbook .swiper-button-next.slider-button.out-swiper-button-next {
+      right: -40px;
+    }
+}
+

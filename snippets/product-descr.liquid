@@ -1,0 +1,441 @@
+<div class="single_product__details">
+  <form action="/cart/add" method="post" enctype="multipart/form-data" data-section="{{ section.id }}">
+	<div class="details_wrapper">
+    	  {%- if product.has_only_default_variant -%}
+				 <div class="single_product__options d-none">
+					<select name="id" id="product_select_{{ section.id }}" class="custom-select">
+						 {% for variant in product.variants %}
+						<option
+							{% if variant == product.selected_or_first_available_variant %}selected="selected"{% endif %}
+							{% if variant.available == false %}disabled{% endif %}
+							value="{{ variant.id }}">{{ variant.title | escape }}
+                           </option>
+						  {% endfor %}
+						</select>
+					  </div>
+			{%- endif -%}
+	  {% for block in section.blocks %}
+		{%- assign pb_set = block.settings -%}
+		{% case block.type %}
+		
+		{% when '@app' %}
+		  <div class="pr--block">
+			{% render block %}
+		  </div>
+		  
+		{%- when 'pr_text' -%}
+		  <div class="pr--block">
+			<p class="{% if pb_set.text_style == 'uppercase' %} h6 {% elsif pb_set.text_style == 'subtitle' %} h5 {% else %} text {% endif %}" {{ block.shopify_attributes }}>
+			  {{ pb_set.text_custom }}
+			</p>
+		  </div>
+		  
+		{% when 'pr_avalreview' %}
+		  <div class="flex-wrapper pr--block" {{ block.shopify_attributes }}>
+			{% if pb_set.product_available %}
+			  <div class="single_product__availability">
+				<span id="single_product__availability-{{ section.id }}"></span>
+			  </div>
+			{% endif %}
+			
+			{% if pb_set.product_reviews %}
+			  {% liquid
+				
+				assign rating_decimal = 0
+				assign rating_scalemax = 0
+				assign rating_exist = product.metafields.reviews.rating.value.rating
+				assign decimal = product.metafields.reviews.rating.value.rating | modulo: 1
+				
+				if decimal >= 0.3 and decimal <= 0.7
+					assign rating_decimal = 0.5
+				elsif decimal > 0.7
+					assign rating_decimal = 1
+				endif
+			 
+				if rating_exist == nil
+					assign rating_scalemax = 1
+				else
+				    assign rating_scalemax = product.metafields.reviews.rating.value.scale_max
+				endif
+				
+			  %}
+			  <div class="rating product_reviews" role="img" aria-label="{{ 'layout.accessibility.star_reviews_info' | t: rating_value: product.metafields.reviews.rating.value, rating_max: rating_scalemax }}">
+				<span aria-hidden="true" class="rating-star color-accent-1" style="--rating: {{ product.metafields.reviews.rating.value.rating | floor }}; --rating-max: {{ rating_scalemax }}; --rating-decimal: {{ rating_decimal }};"></span>
+				<span class="spr-badge-count">{% if product.metafields.reviews.rating_count == blank %}0{% else %}{{ product.metafields.reviews.rating_count }}{% endif %} {{ product.reviews_count | pluralize: 'review', 'reviews' }}</span>
+			  </div>
+			{% endif %}
+		  </div>
+		
+		
+		{% when 'pr_available' %}
+		  <div class="pr--block">
+			<div class="single_product__availability" {{ block.shopify_attributes }}>
+			  <span id="single_product__availability-{{ section.id }}"></span>
+			</div>
+		  </div>
+		 
+		{% when 'pr_title' %}
+		  <h1 itemprop="name" class="single_product__title pr--block h4" {{ block.shopify_attributes }}>{{ product.title }}</h1>
+		  
+		{% when 'pr_price' %}
+		  <div class="pr--block">
+			<div id="single_product__price-{{ section.id }}" class="single_product__price" {{ block.shopify_attributes }}>
+			  <span class="product-price money">{{ product.price | money }}</span>
+			</div>
+		  </div>
+		
+		
+		{% when 'pr_variant_picker' %}
+		  <div class="pr--block{% if pb_set.show_size_chart != blank %} product_variants_picker{% endif %}">
+			
+			{% if pb_set.show_size_chart != blank %}
+			  {% assign pageSG = pages.size-guide %}
+			  {% if pageSG != blank %}
+				<div class="product_sizechart {% if product.has_only_default_variant %} position-static{% endif %}">
+				  <a class="link item_popup__link_js" href="{{ pageSG.url }}">
+					<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+					  <path
+						  d="M5.28698 10.5908L3.69698 12.1823L5.81798 14.3033L14.3027 5.81777L12.1817 3.69752L10.5895 5.28752L11.6507 6.34802L10.5895 7.41002L9.52898 6.34877L8.46848 7.41002L9.52898 8.47052L8.46848 9.53102L7.40798 8.47052L6.34673 9.53102L7.40798 10.5915L6.34673 11.6528L5.28698 10.59V10.5908ZM12.712 2.10602L15.8935 5.28752C16.0341 5.42817 16.1131 5.6189 16.1131 5.81777C16.1131 6.01664 16.0341 6.20738 15.8935 6.34802L6.34748 15.894C6.20683 16.0346 6.0161 16.1136 5.81723 16.1136C5.61836 16.1136 5.42763 16.0346 5.28698 15.894L2.10548 12.7125C1.96488 12.5719 1.88589 12.3811 1.88589 12.1823C1.88589 11.9834 1.96488 11.7927 2.10548 11.652L11.6515 2.10602C11.7921 1.96542 11.9829 1.88643 12.1817 1.88643C12.3806 1.88643 12.5713 1.96542 12.712 2.10602ZM10.5895 13.7723L11.6507 12.7118L13.3322 14.394H14.3927V13.3335L12.7112 11.6513L13.7717 10.5908L15.7495 12.5678V15.75H12.568L10.5902 13.7723H10.5895ZM4.22648 7.40852L2.10473 5.28752C2.035 5.21787 1.97968 5.13515 1.94194 5.0441C1.90419 4.95305 1.88477 4.85546 1.88477 4.7569C1.88477 4.65833 1.90419 4.56074 1.94194 4.46969C1.97968 4.37864 2.035 4.29593 2.10473 4.22627L4.22648 2.10527C4.36713 1.96467 4.55786 1.88568 4.75673 1.88568C4.9556 1.88568 5.14633 1.96467 5.28698 2.10527L7.40948 4.22627L6.34748 5.28752L4.75673 3.69602L3.69623 4.75727L5.28698 6.34727L4.22648 7.40852Z"
+						  fill="#797B7E"/>
+					</svg>
+					<span>{{ 'layout.product.size_chart' | t }}</span>
+				  </a>
+				</div>
+			  {% endif %}
+			{% endif %}
+			
+			{%- unless product.has_only_default_variant -%}
+			  {% if pb_set.swatch_type == 'swatch_buttons' %}
+				{% assign is_sw_bi = false %}
+				{% if pb_set.sw_c_type == 'sw_bi' %}
+				  {% assign is_sw_bi = true %}
+				  <style>
+                      .swatch-element.color input + label {
+                          background-repeat: no-repeat;
+                          height: 45px;
+                          width: 45px;
+                          background-position: center;
+                          background-size: cover;
+                      }
+				  </style>
+				{% endif %}
+				{% if product.available and product.variants.size > 0 %}
+				  {% for option in product.options %}
+					<div class="product__options {{ option.name }}">
+					  {% render 'swatch' with option, product: product, is_sw_bi: is_sw_bi, sw_c_type: pb_set.sw_c_type %}
+					  <div class="clearfix"></div>
+					</div>
+				  {% endfor %}
+				{% endif %}
+			  {% endif %}
+			  
+			  <div class="single_product__options">
+				{% if product.options.size <= 1 %}
+				  <label for="id" class="mt-1">{{ product.options.first }}</label>
+				{% endif %}
+				<select name="id" id="product_select_{{ section.id }}" class="custom-select">
+				  {% for variant in product.variants %}
+					<option
+						{% if variant == product.selected_or_first_available_variant %}selected="selected"{% endif %}
+						{% if variant.available == false %}disabled{% endif %}
+						value="{{ variant.id }}">{{ variant.title | escape }}</option>
+				  {% endfor %}
+				</select>
+			  </div>
+			  
+			{%- endunless -%}
+		  </div>
+		
+		{% when 'pr_current_viewing' %}
+		  <div id="current_viewing" class="pr--block">
+			<div class="current_viewing">
+			  <div class="d_flex">
+				<div class="icon">
+				  {% if block.settings.icon_viewing != blank %}
+					<img loading="lazy" src="{{ block.settings.icon_viewing | img_url }}" alt="{{ block.settings.icon_viewing.alt | escape }}"/>
+				  {% else %}
+					<img src="https://cdn.shopify.com/s/files/1/0869/8196/files/eye_big.png?v=1645536203" alt="eye"/>
+				  {% endif %}
+				</div>
+				<div class="text">
+                          <span class="num">
+                            <span class="total"></span>
+                          </span>
+				  {{ block.settings.text_viewing }}
+				</div>
+			  </div>
+			</div>
+			<script>
+                function autoViewing() {
+                    let $current_viewing = $(".current_viewing"),
+                        $min = Math.ceil("{{ block.settings.min_viewing }}"),
+                        $max = Math.floor("{{ block.settings.max_viewing }}");
+                    $current_viewing.find(".total").text(Math.floor(Math.random() * ($max - $min + 1)) + $min);
+                }
+
+                autoViewing();
+				{% if block.settings.autoViewing == false %}
+                autoViewing();
+				{% else %}
+                setInterval(function () {
+                    autoViewing();
+                }, {{ block.settings.autoViewingInterval }});
+				{% endif %}
+                //autoViewing
+                //autoViewingInterval
+			</script>
+		  </div>
+		
+		 
+		{% when 'pr_recently_bought' %}
+		  {% if product.available %}
+		  	<div id="recently_bought" class="pr--block">
+			  <div class="recently_bought">
+				<div class="d_flex">
+				  <div class="icon">
+					{% if block.settings.icon_bought != blank %}
+					  <img src="{{ block.settings.icon_bought | img_url }}" alt="{{ block.settings.icon_bought.alt | escape }}"/>
+					{% else %}
+					  <img src="https://cdn.shopify.com/s/files/1/0869/8196/files/fire_big.png?v=1645536203" alt="fire"/>
+					{% endif %}
+				  </div>
+				  <div class="text">
+						<span class="num">
+						  <span class="total"></span>
+						</span>
+					{{ block.settings.text_bought }}
+				  </div>
+				</div>
+			  </div>
+			  
+			  <script>
+				  let $just_bought = $(".recently_bought"),
+					  $min_b = Math.ceil("{{ block.settings.min_bought }}"),
+					  $max_b = Math.floor("{{ block.settings.max_bought }}");
+  
+				  $just_bought.find(".total").text(Math.floor(Math.random() * ($max_b - $min_b + 1)) + $min_b);
+			  </script>
+		    </div>
+		  {% endif %}
+		
+		{% when 'pr_short_descriprtion' %}
+		  <p class="single_product__short_desc pr--block">
+			{{ product.description | strip_html | truncate: 180 }}
+		  </p>
+		  
+		{% when 'pr_quantity_and_btn' %}
+		  <div class="pr--block">
+			<div class="single_product__quantity">
+			  <div>
+				<label for="single_product__quantity-{{ section.id }}">{{ 'layout.product.quantity' | t }}: </label>
+				<div class="quantity_box">
+				  <input id="single_product__quantity-{{ section.id }}" class="form-control quantity_input" type="text" name="quantity" value="1">
+				  <div class="quantity_modifier quantity_up">
+					<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+					  <path d="M6.41699 6.41699V2.91699H7.58366V6.41699H11.0837V7.58366H7.58366V11.0837H6.41699V7.58366H2.91699V6.41699H6.41699Z" fill="#797B7E"/>
+					</svg>
+				  </div>
+				  <div class="quantity_modifier quantity_down">
+					<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+					  <path d="M2.91699 6.41699H11.0837V7.58366H2.91699V6.41699Z" fill="#797B7E"/>
+					</svg>
+				  </div>
+				</div>
+			  </div>
+			  
+			  <div class="single_product__wishlist">
+				{% if  pb_set.show_wishlist_button and settings.wishlist_toggle %}
+					<button btn-wishlist-js type="button" aria-label="Add to wishlist" class="wishlist_btn icon-btn btn-wishlist-js" data-product-handle="{{ product.handle }}">
+					  <span class="wishlist-icon">
+						  {% render 'icon-heart' %}
+					  </span>
+					  <span class="action_add">
+						{% comment %}
+							<span class="wishlist-txt ml-1">
+							 {{ 'layout.wishlist.add_to_wishlist' | t }}
+							</span>
+						{% endcomment %}
+					  </span>
+					  
+					  <span class="action_remove">
+						{% comment %}
+						  <span class="wishlist-txt ml-1">
+							  {{ 'layout.wishlist.remove_from_wishlist' | t }}
+						  </span>
+						{% endcomment %}
+					  </span>
+					</button>
+				{% endif %}
+				{% if settings.show_compare and pb_set.show_compare_button %}
+				  <button type="button" btn-compare-js class="js-compare-btn compare_btn icon-btn" data-product-handle="{{ product.handle }}">
+					{% render 'icon-compare' %}
+				  </button>
+				{% endif %}
+			  </div>
+			</div>
+		  </div>
+		  
+		{% when 'pr_add_to_cart' %}
+		  <div class="single_product__cartbutton pr--block">
+			<div class="product-add-to-cart-wrapper">
+			  <button type="submit" name="add" class="btn btn-primary {% if settings.use_lg %} btn-gradient {% endif %} btn-lg icon-svg mr-1 btn-add-to-cart w-100" id="single_product__addtocart-{{ section.id }}">
+				{% comment %}
+				  <span class="svg-icon svg-icon--md">
+					 {% render 'icon-cart' %}
+				  </span>
+				{% endcomment %}
+				<span>
+              	 	{{ 'layout.product.add_to_cart' | t }}
+              	  </span>
+			  </button>
+			  
+			  {% if pb_set.show_bit_button %}
+				<div class="buyoneclick w-100 mt-2">
+				  {% form 'product', product, id: "oldID", class: 'old-class' %}
+					{{ form | payment_button }}
+				  {% endform %}
+				</div>
+			  {% endif %}
+			</div>
+		  </div>
+		  
+		  
+		{% when 'pr_notify_button' %}
+		  
+		  <div class="pr--block">
+			<span class="link notify_btn" id="notify_trigger_button">
+			  <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+				  <path fill-rule="evenodd" clip-rule="evenodd" d="M9.24243 13.7576L0.593892 9.91379C-0.233734 9.54595 -0.185159 8.35531 0.66968 8.05612L20.6488 1.06342C20.6778 1.05258 20.7071 1.04313 20.7368 1.03507C21.1026 0.933522 21.4556 1.0491 21.6953 1.28127C21.6993 1.2851 21.7032 1.28896 21.7071 1.29287C21.7114 1.29715 21.7156 1.30146 21.7198 1.30579C21.9512 1.54546 22.0663 1.89783 21.965 2.26291C21.9569 2.2927 21.9474 2.32219 21.9366 2.35127L14.9439 22.3303C14.6447 23.1852 13.4541 23.2337 13.0862 22.4061L9.24243 13.7576ZM17.1943 4.39145L3.71111 9.11058L9.77856 11.8072L17.1943 4.39145ZM11.1928 13.2214L18.6086 5.80566L13.8894 19.2889L11.1928 13.2214Z"/>
+			  </svg>
+			  {{ 'layout.product.notify_button' | t }}
+		  	</span>
+		  </div>
+		  
+		{% when 'pr_info' %}
+		  <div class="single_product_list pr--block" {{ block.shopify_attributes }}>
+			
+			{% if pb_set.show_sku %}
+			  <p class="single_product__sku mr-2">
+				<b>{{ 'layout.product.sku' | t }}:</b>
+				<span id="single_product__sku-{{ section.id }}"></span>
+			  </p>
+			{% endif %}
+			
+			{% if pb_set.show_vendor %}
+			  <p class="single_product__vendor">
+				<b>{{ 'layout.product.vendor' | t }}:</b>
+				<a class="link" href="{{ product.vendor | url_for_vendor }}">{{ product.vendor }}</a>
+			  </p>
+			{% endif %}
+			
+			{% if pb_set.show_product_types %}
+			  <p class="single_product__type">
+				<b>{{ 'layout.product.product_type' | t }}:</b>
+				  {% if product.type.size > 0 %}
+					<a class="link" href="{{ product.type | url_for_type }}">{{ product.type }}</a>
+				  {% else %}
+				  <span> — </span>
+				  {% endif %}
+			  </p>
+			{% endif %}
+			
+			{% if pb_set.show_barcode %}
+			  <p class="single_product__barcode">
+				<b>{{ 'layout.product.barcode' | t }}:</b>
+				<span id="single_product__barcode-{{ section.id }}"></span>
+			  </p>
+			{% endif %}
+			
+			{% if pb_set.show_weight %}
+			  <p class="single_product__weight">
+				<b>{{ 'layout.product.weight' | t }}:</b>
+				<span id="single_product__weight-{{ section.id }}"></span>
+			  </p>
+			{% endif %}
+			
+			{% if pb_set.show_tags %}
+			  <p class="single_product__tags">
+				<b>{{ 'layout.product.tags' | t }}:</b>
+				{% if product.tags.size > 0 %}
+				  {% for tag in product.tags %}{{ tag | link_to_tag: tag }}{% endfor %}
+				{% else %}
+				  —
+				{% endif %}
+			  </p>
+			{% endif %}
+			
+			{% if pb_set.show_collections %}
+			  <p class="single_product__collections">
+				<b>{{ 'layout.product.collections' | t }}:</b>
+				{% if product.collections.size > 0 %}
+				  <a href="{{ product.collections.first.url }}">{{ product.collections.first.title | append: ' ' }}</a>{% for collection in product.collections offset: 1 %}, <a class="ml-1" href="{{ collection.url }}">{{ collection.title | append: ' ' }}</a>{% endfor %}
+				{% else %}
+				  —
+				{% endif %}
+			  </p>
+			{% endif %}
+		  </div>
+		
+		{% when 'pr_share' %}
+		  <div class="product-social-sharing mt-4">
+			<div class="rte">
+			  {%- assign product_image = product.featured_image -%}
+			  {%- render 'widget-social-sharing', share_title: product.title, share_link: product.url, share_image: product_image -%}
+			</div>
+		  </div>
+		
+		{% when 'pr_modal_windows' %}
+		  <div class="single_product__popup pr--block" {{ block.shopify_attributes }}>
+			
+			{% case pb_set.design_popup_link_type %}
+				{% when 'link' %}
+			  		{% assign urltype = 'link link-primary' %}
+				{% when 'btn' %}
+					{% assign urltype = 'btn btn-sm btn-default py-1' %}
+				{% when 'full_btn' %}
+					{% assign urltype = 'btn btn-sm btn-default w-100 py-1' %}
+			{% endcase %}
+			
+			<a id="single_product__popup-{{ block.id }}"
+			   class="item_popup__link_js {{ urltype }}"
+			   href="{{ pb_set.url_page }}">
+			   <span>{{ pb_set.svg_icon }}</span>
+			   <span>{{ pb_set.url_text }}</span>
+			</a>
+		  </div>
+		
+		{% when 'custom_liquid' %}
+			{% if pb_set.custom_liquid != blank %}
+				<div class="pr--block">
+					{{ pb_set.custom_liquid }}
+				</div>
+			{% endif %}
+		{% endcase %}
+	  {% endfor %}
+	</div>
+  </form>
+  <div id="product_notify" class="px-sm-2 product_notify">
+	{% form 'contact', id: 'contact-form-ask', class: 'notify_form container container-sm' %}
+	  {{ form.errors | default_errors }}
+	  <p class="h5 text-center mb-2 mt-2">{{ 'layout.product.notify_text' | t }}</p>
+	  <input type="hidden" name="contact[product]" value="{{ product.title }}" />
+	  <input type="hidden" name="contact[product url]" value="{{ shop.url }}{{ product.url }}" />
+	  
+	  <div class="form_wrapper row">
+		<div class="col-12 col-sm-6">
+		  <input type="text" class="form-control mb-2" name="contact[name]" placeholder="{{ 'customer.account.account_info_name' | t }} *" />
+		</div>
+		<div class="col-12 col-sm-6">
+		  <input type="email" name="contact[email]" class="notify__input form-control mb-2" placeholder="{{ 'customer.account.account_info_email'| t }} *" />
+		</div>
+		<div class="col-12">
+		  <input type="text" class="form-control mb-2" name="contact[phone]" placeholder="{{ 'customer.account.account_info_phone' | t }}">
+		  <textarea name="contact[question]" class="notify__input form-control" placeholder="{{ 'layout.accessibility.product_notify_placeholder' | t }}"></textarea>
+		  <div class="text-center">
+			<button type="submit" class="btn btn-primary {% if settings.use_lg %} btn-gradient {% endif %} mx-auto mt-2">{{ 'layout.product.notify_send' | t }}</button>
+		  </div>
+		</div>
+	  </div>
+	{% endform %}
+  </div>
+</div>

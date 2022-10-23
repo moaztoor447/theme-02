@@ -1,0 +1,54 @@
+
+<div class="pagination">
+  
+	  {% liquid
+		 assign A = paginate.current_offset | plus: 1
+		 assign B = paginate.items
+		 assign C = paginate.current_offset | plus: paginate.page_size
+	 %}
+
+		{% if paginate.current_page == paginate.pages %}
+			{% if A == B %}
+				<p>{{ A }} {{ pagination_items }} {{ paginate.items }}</p>
+			{% else %}
+				<p>{{ A }} – {{ B }} {{ pagination_items }} {{ paginate.items }}</p>
+			{% endif %}
+		{% else %}
+			<p>{{ A }} – {{ C }} {{ pagination_items }} {{ paginate.items }}</p>
+		{% endif %}
+
+		<ul>
+			{% if paginate.previous.is_link %}
+				<li class="pagination_prev">
+					<a class="d-inline-flex align-items-center" href="{{ paginate.previous.url }}" title="{{ 'layout.pagination.previous' | t }}" >
+						<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M12.9416 2.89107C13.1857 3.13514 13.1857 3.53087 12.9416 3.77495L6.71689 9.99967L12.9416 16.2244C13.1857 16.4685 13.1857 16.8642 12.9416 17.1083C12.6975 17.3524 12.3018 17.3524 12.0577 17.1083L5.39107 10.4416C5.14699 10.1975 5.14699 9.80181 5.39107 9.55773L12.0577 2.89107C12.3018 2.64699 12.6975 2.64699 12.9416 2.89107Z" fill="#A1A3A6"/>
+						</svg>
+						{% comment %}<span class="d-none d-md-block">{{ 'layout.pagination.previous' | t }}</span>{% endcomment %}
+					</a>
+				</li>
+			{% endif %}
+
+			{% for part in paginate.parts %}
+				{% if part.is_link %}
+					<li class="pagination_el"><a href="{{ part.url }}">{{ part.title }}</a></li>
+				{% else %}
+					{% if part.title == paginate.current_page %}
+						<li class="pagination_current pagination_el"><span>{{ part.title }}</span></li>
+					{% else %}
+						<li class="pagination_el"><span>{{ part.title }}</span></li>
+					{% endif %}
+				{% endif %}
+			{% endfor %}
+			{% if paginate.next.is_link %}
+				<li class="pagination_next">
+					<a class="d-inline-flex align-items-center" href="{{ paginate.next.url }}" title="{{ 'layout.pagination.next' | t }}">
+						{% comment %}<span class="d-none d-md-block">{{ 'layout.pagination.next' | t }}</span>{% endcomment %}
+						<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M7.05806 2.89107C7.30214 2.64699 7.69787 2.64699 7.94194 2.89107L14.6086 9.55773C14.7258 9.67494 14.7917 9.83391 14.7917 9.99968C14.7917 10.1654 14.7258 10.3244 14.6086 10.4416L7.94194 17.1083C7.69786 17.3524 7.30214 17.3524 7.05806 17.1083C6.81398 16.8642 6.81398 16.4685 7.05806 16.2244L13.2828 9.99968L7.05806 3.77495C6.81398 3.53087 6.81398 3.13514 7.05806 2.89107Z" />
+						</svg>
+					</a>
+				</li>
+			{% endif %}
+			</ul>
+</div>

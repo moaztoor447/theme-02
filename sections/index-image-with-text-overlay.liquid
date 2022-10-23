@@ -1,0 +1,2647 @@
+{{ 'section-image-text-overlay.css' | asset_url | stylesheet_tag }}
+
+
+{% style %}
+  
+  {% if section.settings.parallax %}
+ 	 @media only screen and (max-width: 1199px) {
+      /* Height background image by padding */
+      .section-style-{{ section.id }} .img_bg__wrap, .section-style-{{ section.id }} .img_placeholder_wrapper {
+          padding: {{ section.settings.padding_desktop | append: 'px' }} 0;
+      }
+
+      @media (max-width: 991px) {
+          .section-style-{{ section.id }} .img_bg__wrap, .section-style-{{ section.id }} .img_placeholder_wrapper {
+              padding: {{section.settings.padding_mobile | append: 'px' }} 0;
+          }
+      }
+
+      /* Style background overlay */
+		{% if section.settings.use_bgo %}
+			.section-style-{{ section.id }} .img_bg__wrap:before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				display: block;
+				z-index: 1;
+				background-color: {{ section.settings.bg_color | color_modify: 'alpha', section.settings.bg_color_opacity }};
+				transition: .3s;
+			}
+		
+		{% endif %}
+  }
+
+  @media only screen and (min-width: 1200px) {
+      /* Height slide by paddings */
+      .section-style-{{ section.id }} .section_wrap {
+          padding: {{section.settings.padding_desktop | append: 'px' }} 0;
+      }
+
+      @media (max-width: 991px) {
+          .section-style-{{ section.id }} .section_wrap {
+              padding: {{ section.settings.padding_mobile | append: 'px' }} 0;
+          }
+      }
+
+      /* Style background overlay */
+  {% if section.settings.use_bgo %}
+      .section-style-{{ section.id }} .section_wrap:before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          display: block;
+          z-index: 1;
+          background-color: {{ section.settings.bg_color | color_modify: 'alpha', section.settings.bg_color_opacity }};
+          transition: .3s;
+      }
+  
+  {% endif %}
+
+      /* Height parallax by padding */
+      .section-style-{{ section.id }} .img_bg__wrap, .section-style-{{ section.id }} .img_placeholder_wrapper {
+          padding: {{ section.settings.padding_parallax_desktop | append: 'px' }} 0;
+          position: absolute;
+          top: 0;
+          right: 0;
+          left: 0;
+      }
+  }
+  
+  {% else %}
+  /* Height background image by padding */
+  .section-style-{{ section.id }} .img_bg__wrap, .section-style-{{ section.id }} .img_placeholder_wrapper {
+      padding: {{ section.settings.padding_desktop | append: 'px' }} 0;
+  }
+
+  @media (max-width: 991px) {
+      .section-style-{{ section.id }} .img_bg__wrap, .section-style-{{ section.id }} .img_placeholder_wrapper {
+          padding: {{ section.settings.padding_mobile | append: 'px' }} 0;
+      }
+  }
+
+  /* Style background overlay */
+  {% if section.settings.use_bgo %}
+  .section-style-{{ section.id }} .img_bg__wrap:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: block;
+      z-index: 1;
+      background-color: {{ section.settings.bg_color | color_modify: 'alpha', section.settings.bg_color_opacity }};
+      transition: .3s;
+  }
+  {% endif %}
+  
+  {% endif %}
+
+
+  /* Style background position -x on mobile */
+  @media (max-width: 575px) {
+      .section-style-{{ section.id }} .img_bg__wrap {
+          background-position-x: {{ section.settings.bg_pos_mobile | append: '%' }};
+      }
+  }
+
+  /* Style inset caption */
+
+  .section-style-{{ section.id }} .caption_text {
+      padding: {{ section.settings.inset_caption }};
+      margin: {{ section.settings.offset_caption }};
+  }
+  
+  {% if section.blocks.size > 0 %}
+	{% for block in section.blocks %}
+
+			.section-style-{{ section.id }} .item-{{ block.id }} {
+				margin: {{ block.settings.offset_block }};
+				text-indent: {{ block.settings.indent_block }};
+			}
+
+
+			.section-style-{{ section.id }} .item-{{ block.id }} .caption-item,
+			.section-style-{{ section.id }} .item-{{ block.id }}.block-timer {
+				padding: {{ block.settings.inset_block }};
+				font-weight: {{ block.settings.font_weight }};
+			}
+
+			@media (max-width: 575px) {
+				.section-style-{{ section.id }} .item-{{ block.id }} {
+					margin-left: 0;
+					text-indent: 0;
+				}
+			}
+
+			.section-style-{{ section.id }} .item-{{ block.id }} .caption-item,
+			.section-style-{{ section.id }} .item-{{ block.id }}.block-timer {
+				color: {{ block.settings.color }};
+				{% if block.settings.use_bgi %} 
+					background-color: {{ block.settings.bgc_color | color_modify: 'alpha', block.settings.bgc_color_opacity }};
+				{% endif %}
+			}
+
+			@media screen and (min-width: 1200px) { 
+				.section-style-{{ section.id }} .item-{{ block.id }}.item-fz{
+					font-size: {{ block.settings.heading_size | append: 'px' }};   
+				}
+  			}
+	
+	{% endfor %}
+  {% endif %}
+{% endstyle %}
+
+<div class="section-style-{{ section.id }}">
+  {%- render 'section-style' -%}
+  
+  <div class="{{ section.settings.container_width }}">
+	
+	<div class="section_wrap {% if section.settings.parallax %} parallax_block-js{% endif %}">
+	  {% if section.settings.image.size > 0 %}
+		<div class="img_bg__wrap lazyload {% if section.settings.parallax %} parallax_layer-js{% endif %} wow {{ section.settings.bg_animation }}"
+			 data-bgset="{%- render 'bgset', image: section.settings.image -%}"
+			 data-sizes="auto"
+			 data-parent-fit="contain"
+		></div>
+	  {% else %}
+		<div class="img_placeholder_wrapper {% if section.settings.parallax %} parallax_layer-js{% endif %}">
+		  {{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+		</div>
+	  {% endif %} 
+	  
+	  <div class="section_txt align_{{ section.settings.caption_align }} {{ section.settings.section_view }} {{ section.settings.custom_class }}" {% if section.settings.vertical_alignment == 'top' %}style="bottom: auto;" {% elsif section.settings.vertical_alignment == 'bottom' %} style="top: auto;" {% endif %}>
+		<div class="container">
+		  <div class="caption_text text-{{ section.settings.text_align }} {% if section.settings.inverted %} inverted{% endif %} wow {{ section.settings.caption_animation }}" {% if section.settings.caption_bg_color.size > 0 %}style="background-color: {{ section.settings.caption_bg_color | color_modify: 'alpha', section.settings.caption_bg_color_opacity }}"{% endif %}>
+			{% for block in section.blocks %}
+			  {% case block.type %}
+			  {% when 'custom_heading' %}
+				{% if block.settings.custom_heading != blank %}
+				  <div class="item-fz custom_large_title item-{{ block.id }} wow {{ block.settings.title_animation }}">
+					<div class="caption-item">{{ block.settings.custom_heading }}</div>
+				  </div>
+				{% endif %}
+			  {% when 'heading_h1' %}
+				{% if block.settings.heading_h1 != blank %}
+				  <h1 class="item-fz item-{{ block.id }} wow {{ block.settings.title_animation }}">
+					<span class="caption-item">{{ block.settings.heading_h1 }}</span>
+				  </h1>
+				{% endif %}
+			  {% when 'heading_h2' %}
+				{% if block.settings.heading_h2 != blank %}
+				  <h2 class="item-fz item-{{ block.id }} wow {{ block.settings.title_animation }}">
+					<span class="caption-item" >{{ block.settings.heading_h2 }}</span>
+				  </h2>
+				{% endif %}
+			  {% when 'heading_h3' %}
+				{% if block.settings.heading_h3 != blank %}
+				  <h3 class="item-fz item-{{ block.id }} wow {{ block.settings.title_animation }}">
+					<span class="caption-item">{{ block.settings.heading_h3 }}</span>
+				  </h3>
+				{% endif %}
+			  {% when 'heading_h4' %}
+				{% if block.settings.heading_h4 != blank %}
+				  <h4 class="item-fz item-{{ block.id }} wow {{ block.settings.title_animation }}">
+					<span class="caption-item">{{ block.settings.heading_h4 }}</span>
+				  </h4>
+				{% endif %}
+			  {% when 'heading_h5' %}
+				{% if block.settings.heading_h5 != blank %}
+				  <h5 class="item-fz item-{{ block.id }} wow {{ block.settings.title_animation }}">
+					<span class="caption-item">{{ block.settings.heading_h5 }}</span>
+				  </h5>
+				{% endif %}
+			  {% when 'heading_h6' %}
+				{% if block.settings.heading_h6 != blank %}
+				  <h6 class="item-fz item-{{ block.id }} wow {{ block.settings.title_animation }}">
+					<span class="caption-item">{{ block.settings.heading_h6 }}</span>
+				  </h6>
+				{% endif %}
+			  {% when 'richtext' %}
+				{% if block.settings.subtitle != blank %}
+				  <div class="item-fz item-{{ block.id }} wow {{ block.settings.title_animation }}">
+					<div class="caption-item">{{ block.settings.subtitle }}</div>
+				  </div>
+				{% endif %}
+			  {% when 'text' %}
+				{% if block.settings.text != blank %}
+				  <div class="item-fz item-{{ block.id }}">
+					<span class="caption-item">{{ block.settings.text }}</span>
+				  </div>
+				{% endif %}
+			  {% when 'timer' %}
+				{%- if block.settings.time != blank -%}
+				  <div class="item-fz js-countdown h5 block-timer item-{{ block.id }}" data-time="{{ block.settings.time }}"></div>
+				{%- endif -%}
+			  {% when 'button' %}
+					{% if block.settings.button_label.size > 0 and block.settings.button_link.size > 0 %}
+					  <a href="{{ block.settings.button_link }}" class="{% if block.settings.use_button %}btn {{ block.settings.btn_style }} {{ block.settings.btn_size }}{% else %}link link-primary {% endif %}" style="margin: {{ block.settings.offset_block }};">{{ block.settings.button_label }}</a>
+					{% endif %}
+			  {% when 'groupButtons' %}
+				
+				<div class="groupButtons" style="display: table-caption;margin: {{ block.settings.offset_block_general }};width: {{ block.settings.block_width }}%;">
+				  <ul style="column-count: {{ block.settings.column_count }};">
+					
+					{% if block.settings.button_label_1.size > 0 and block.settings.button_link_1.size > 0 %}
+					  <li>
+						<a href="{{ block.settings.button_link_1 }}" class="{% if block.settings.use_button_1 %}btn {{ block.settings.btn_style_1 }} {{ block.settings.btn_size_1 }}{% else %}link link-primary {% endif %}" style="margin: {{ block.settings.offset_block_1 }};">{{ block.settings.button_label_1 }}</a>
+					  </li>
+					{% endif %}
+					
+					{% if block.settings.button_label_2.size > 0 and block.settings.button_link_2.size > 0 %}
+					  <li>
+						<a href="{{ block.settings.button_link_2 }}" class="{% if block.settings.use_button_2 %}btn {{ block.settings.btn_style_2 }} {{ block.settings.btn_size_2 }}{% else %}link link-primary {% endif %}" style="margin: {{ block.settings.offset_block_2 }};">{{ block.settings.button_label_2 }}</a>
+					  </li>
+					{% endif %}
+					
+					{% if block.settings.button_label_3.size > 0 and block.settings.button_link_3.size > 0 %}
+					  <li>
+						<a href="{{ block.settings.button_link_3 }}" class="{% if block.settings.use_button_3 %}btn {{ block.settings.btn_style_3 }} {{ block.settings.btn_size_3 }}{% else %}link link-primary {% endif %}" style="margin: {{ block.settings.offset_block_3 }};">{{ block.settings.button_label_3 }}</a>
+					  </li>
+					{% endif %}
+					
+					{% if block.settings.button_label_4.size > 0 and block.settings.button_link_4.size > 0 %}
+					  <li>
+						<a href="{{ block.settings.button_link_4 }}" class="{% if block.settings.use_button_4 %}btn {{ block.settings.btn_style_4 }} {{ block.settings.btn_size_4 }}{% else %}link link-primary {% endif %}" style="margin: {{ block.settings.offset_block_4 }};">{{ block.settings.button_label_4 }}</a>
+					  </li>
+					{% endif %}
+					
+					{% if block.settings.button_label_5.size > 0 and block.settings.button_link_5.size > 0 %}
+					  <li>
+						<a href="{{ block.settings.button_link_5 }}" class="{% if block.settings.use_button_5 %}btn {{ block.settings.btn_style_5 }} {{ block.settings.btn_size_5 }}{% else %}link link-primary {% endif %}" style="margin: {{ block.settings.offset_block_5 }};">{{ block.settings.button_label_5 }}</a>
+					  </li>
+					{% endif %}
+					
+					{% if block.settings.button_label_6.size > 0 and block.settings.button_link_6.size > 0 %}
+					  <li>
+						<a href="{{ block.settings.button_link_6 }}" class="{% if block.settings.use_button_6 %}btn {{ block.settings.btn_style_6 }} {{ block.settings.btn_size_6 }}{% else %}link link-primary {% endif %}" style="margin: {{ block.settings.offset_block_6 }};">{{ block.settings.button_label_6 }}</a>
+					  </li>
+					{% endif %}
+					{% if block.settings.button_label_7.size > 0 and block.settings.button_link_7.size > 0 %}
+					  <li>
+						<a href="{{ block.settings.button_link_7 }}" class="{% if block.settings.use_button_7 %}btn {{ block.settings.btn_style_7 }} {{ block.settings.btn_size_7 }}{% else %}link link-primary {% endif %}" style="margin: {{ block.settings.offset_block_7 }};">{{ block.settings.button_label_7 }}</a>
+					  </li>
+					{% endif %}
+					{% if block.settings.button_label_8.size > 0 and block.settings.button_link_8.size > 0 %}
+					  <li>
+						<a href="{{ block.settings.button_link_8 }}" class="{% if block.settings.use_button_8 %}btn {{ block.settings.btn_style_8 }} {{ block.settings.btn_size_8 }}{% else %}link link-primary {% endif %}" style="margin: {{ block.settings.offset_block_8 }};">{{ block.settings.button_label_8 }}</a>
+					  </li>
+					{% endif %}
+				  </ul>
+				</div>
+			  
+			  {% when 'link_list' %}
+			   {%- assign list = block.settings.links -%}
+				<div class="linklist item-{{ block.id }}">
+				  <ul class="linklist--inner">
+					{% for link in list.links %}
+					  <li class="d-inline-block mt-1 mr-1">
+						<a class="{% if block.settings.use_button %}btn {{ block.settings.btn_style }} {{ block.settings.btn_size }}{% else %}link link-primary {% endif %}" href="{{ link.url }}">
+						  <span>{{ link.title }}</span>
+						</a>
+					  </li>
+					{% endfor %}
+				  </ul>
+				</div>
+			  {% when 'html' %}
+					{% if block.settings.code.size != blank %}
+						{{ block.settings.code }}
+					{% endif %}
+				{% when 'custom_liquid' %}
+					{% if block.settings.custom_liquid != blank %}
+						<div class="custom_liquid item-{{ block.id }}">
+							{{ block.settings.custom_liquid }}
+						</div>
+					{% endif %}
+			  {% endcase %}
+			{% endfor %}
+		  </div>
+		</div>
+	  </div>
+	</div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Image with text overlay",
+  "tag": "section",
+  "class": "section section_homepage section_image-with-text-overlay",
+  "max_blocks": 6,
+  "settings": [
+	{
+	  "type": "header",
+	  "content": "Section sittings"
+	},
+	{
+	  "type": "select",
+	  "id": "container_width",
+	  "label": "Container width",
+	  "options": [
+		{
+		  "value": "container",
+		  "label": "Box"
+		},
+		{
+		  "value": "container-fluid",
+		  "label": "Container Fluid"
+		},
+		{
+		  "value": "full-width",
+		  "label": "Full"
+		}
+	  ],
+	  "default": "container"
+	},
+	{
+	  "type": "text",
+	  "id": "inset_section",
+	  "label": "Inset Section",
+	  "default": "0px 0px 0px 0px",
+	  "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+	},
+	{
+	  "type": "text",
+	  "id": "offset_section",
+	  "label": "Offset Section",
+	  "default": "0px 0px 0px 0px",
+	  "info": "offset: Top Right Bottom Left"
+	},
+	{
+	  "type": "color",
+	  "id": "bg_section",
+	  "label": "Background Section",
+	  "default": "#ffffff"
+	},
+	{
+	  "type": "header",
+	  "content": "Height background image"
+	},
+	{
+	  "type": "range",
+	  "id": "padding_desktop",
+	  "min": 200,
+	  "max": 520,
+	  "step": 5,
+	  "unit": "px",
+	  "label": "Padding desktop",
+	  "default": 300,
+	  "info": "Value is multiplied by 2 (x2). Example: you need height 600px, in this case you need to select value 300px"
+	},
+	{
+	  "type": "range",
+	  "id": "padding_mobile",
+	  "min": 150,
+	  "max": 250,
+	  "step": 5,
+	  "unit": "px",
+	  "label": "Padding mobile",
+	  "default": 175,
+	  "info": "Value is multiplied by 2 (x2). Example: you need height 600px, in this case you need to select value 300px"
+	},
+	{
+	  "type": "image_picker",
+	  "id": "image",
+	  "label": "Image",
+	  "info": "The image should be more than 2048px wide to resize and crop properly"
+	},
+	{
+	  "type": "range",
+	  "id": "bg_pos_mobile",
+	  "min": 0,
+	  "max": 100,
+	  "step": 1,
+	  "unit": "%",
+	  "label": "Horizontal background position on mobile",
+	  "default": 50
+	},
+	{
+	  "type": "checkbox",
+	  "id": "use_bgo",
+	  "label": "Use background overlay",
+	  "default": false
+	},
+	{
+	  "type": "color",
+	  "id": "bg_color",
+	  "label": "Color background overlay"
+	},
+	{
+	  "type": "range",
+	  "id": "bg_color_opacity",
+	  "min": 0,
+	  "max": 1,
+	  "step": 0.1,
+	  "label": "Background opacity overlay",
+	  "default": 0.5
+	},
+	{
+	  "type": "header",
+	  "content": "Parallax Settings"
+	},
+	{
+	  "type": "checkbox",
+	  "id": "parallax",
+	  "label": "Use Parallax Desktop",
+	  "default": false
+	},
+	{
+	  "type": "range",
+	  "id": "padding_parallax_desktop",
+	  "min": 200,
+	  "max": 800,
+	  "step": 10,
+	  "unit": "px",
+	  "label": "Height Parallax desktop",
+	  "default": 500,
+	  "info": "Height Parallax must be more height background image. Value is multiplied by 2 (x2). Example: you need height 600px, in this case you need to select value 300px"
+	},
+	{
+	  "type": "header",
+	  "content": "Background Animation Settings"
+	},
+	{
+	  "type": "select",
+	  "id": "bg_animation",
+	  "label": "Background animation",
+	  "options": [
+		{
+		  "value": "none",
+		  "label": "Don't use animation"
+		},
+		{
+		  "value": "bg-pan-br",
+		  "label": "Style 1"
+		},
+		{
+		  "value": "bg-pan-tl",
+		  "label": "Style 2"
+		},
+		{
+		  "value": "kenburns-top",
+		  "label": "Style 3"
+		},
+		{
+		  "value": "kenburns-bottom",
+		  "label": "Style 4"
+		}
+	  ],
+	  "default": "none"
+	},
+	{
+	  "type": "header",
+	  "content": "Caption Settings"
+	},
+	{
+	  "type": "select",
+	  "id": "caption_align",
+	  "label": "Caption align",
+	  "default": "center",
+	  "options": [
+		{
+		  "label": "Center",
+		  "value": "center"
+		},
+		{
+		  "label": "Right",
+		  "value": "right"
+		},
+		{
+		  "label": "Left",
+		  "value": "left"
+		}
+	  ]
+	},
+	{
+	  "type": "select",
+	  "id": "text_align",
+	  "label": "Text align",
+	  "default": "center",
+	  "options": [
+		{
+		  "label": "Center",
+		  "value": "center"
+		},
+		{
+		  "label": "Right",
+		  "value": "right"
+		},
+		{
+		  "label": "Left",
+		  "value": "left"
+		}
+	  ]
+	},
+	{
+	  "type": "select",
+	  "id": "vertical_alignment",
+	  "label": "Vertical alignment",
+	  "options": [
+		{
+		  "value": "top",
+		  "label": "Top"
+		},
+		{
+		  "value": "center",
+		  "label": "Center"
+		},
+		{
+		  "value": "bottom",
+		  "label": "Bottom"
+		}
+	  ],
+	  "default": "top"
+	},
+	{
+	  "type": "checkbox",
+	  "id": "inverted",
+	  "label": "Inverted",
+	  "default": false
+	},
+	{
+	  "type": "checkbox",
+	  "id": "use_bgc",
+	  "label": "Use background caption",
+	  "default": false
+	},
+	{
+	  "type": "color",
+	  "id": "caption_bg_color",
+	  "label": "Caption background"
+	},
+	{
+	  "type": "range",
+	  "id": "caption_bg_color_opacity",
+	  "min": 0,
+	  "max": 1,
+	  "step": 0.1,
+	  "unit": "px",
+	  "label": "Background caption opacity",
+	  "default": 0.5
+	},
+	{
+	  "type": "text",
+	  "id": "inset_caption",
+	  "label": "Inset Caption",
+	  "default": "6% 7% 6% 7%",
+	  "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+	},
+	{
+	  "type": "text",
+	  "id": "offset_caption",
+	  "label": "Offset Caption",
+	  "default": "0 0 0 0",
+	  "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+	},
+	{
+	  "type": "header",
+	  "content": "Caption Animation Settings"
+	},
+	{
+	  "type": "select",
+	  "id": "caption_animation",
+	  "label": "Caption animation",
+	  "options": [
+		{
+		  "value": "none",
+		  "label": "Don't use animation"
+		},
+		{
+		  "value": "scale-up-ver-center",
+		  "label": "Style 1"
+		},
+		{
+		  "value": "slide-in-left",
+		  "label": "Style 2"
+		},
+		{
+		  "value": "scale-in-hor-center",
+		  "label": "Style 3"
+		},
+		{
+		  "value": "scale-in-hor-left",
+		  "label": "Style 4"
+		},
+		{
+		  "value": "fade-in-bottom",
+		  "label": "Style 5"
+		},
+		{
+		  "value": "fade-in-right",
+		  "label": "Style 6"
+		},
+		{
+		  "value": "swirl-in-fwd",
+		  "label": "Style 7"
+		}
+	  ],
+	  "default": "none"
+	}
+  ],
+  "blocks": [
+	// CUSTOM HEADING //////////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "custom_heading",
+	  "name": "Custom Heading",
+	  "settings": [
+		{
+		  "type": "text",
+		  "id": "custom_heading",
+		  "label": "Custom size heading",
+		  "default": "Custom Heading"
+		},
+		{
+			"type": "range",
+			"id": "heading_size",
+			"min": 14,
+			"max": 150,
+			"step": 2,
+			"label": "Heading font size",
+			"default": 120
+		}, 
+		{
+			"type": "range",
+			"id": "font_weight",
+			"min": 300,
+			"max": 900,
+			"step": 100,
+			"label": "Font weight",
+			"default": 400,
+			"info": "The boldness of the font depends on the selected font type."
+		},
+		{
+		  "type": "color",
+		  "id": "color",
+		  "label": "Color",
+		  "default": "#121212"
+		},
+		{
+		  "type": "text",
+		  "id": "indent_block",
+		  "label": "Indent Block",
+		  "default": "0",
+		  "info": "Text indent: negative or positive value (px or %)"
+		},
+		{
+		  "type": "text",
+		  "id": "inset_block",
+		  "label": "Inset Block",
+		  "default": "0 0 0 0",
+		  "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_bgi",
+		  "label": "Use background caption item",
+		  "default": false
+		},
+		{
+		  "type": "color",
+		  "id": "bgc_color",
+		  "label": "Color background caption item"
+		},
+		{
+		  "type": "range",
+		  "id": "bgc_color_opacity",
+		  "min": 0,
+		  "max": 1,
+		  "step": 0.1,
+		  "label": "Background opacity caption item",
+		  "default": 0.5
+		},
+		{
+		  "type": "header",
+		  "content": "Animation Settings"
+		},
+		{
+		  "type": "select",
+		  "id": "title_animation",
+		  "label": "Animation",
+		  "options": [
+			{
+			  "value": "none",
+			  "label": "Don't use animation"
+			},
+			{
+			  "value": "tracking-in-expand",
+			  "label": "Style 1"
+			},
+			{
+			  "value": "tracking-in-contract-bck-top",
+			  "label": "Style 2"
+			},
+			{
+			  "value": "focus-in-contract",
+			  "label": "Style 3"
+			},
+			{
+			  "value": "text-focus-in",
+			  "label": "Style 4"
+			},
+			{
+			  "value": "tracking-in-contract-bck",
+			  "label": "Style 5"
+			},
+			{
+			  "value": "text-shadow-drop-bottom",
+			  "label": "Style 6"
+			}
+		  ],
+		  "default": "none"
+		}
+	  ]
+	},
+	// HEADER H1 //////////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "heading_h1",
+	  "name": "Heading H1",
+	  "settings": [
+		{
+		  "type": "text",
+		  "id": "heading_h1",
+		  "label": "H1",
+		  "default": "Heading"
+		},
+		{
+			"type": "range",
+			"id": "heading_size",
+			"min": 16,
+			"max": 80,
+			"step": 2,
+			"label": "Heading font size",
+			"default": 72
+		},
+		{
+			"type": "range",
+			"id": "font_weight",
+			"min": 300,
+			"max": 900,
+			"step": 100,
+			"label": "Font weight",
+			"default": 400,
+			"info": "The boldness of the font depends on the selected font type."
+		},
+		{
+		  "type": "color",
+		  "id": "color",
+		  "label": "Color",
+		  "default": "#121212"
+		},
+		
+		{
+		  "type": "text",
+		  "id": "indent_block",
+		  "label": "Indent Block",
+		  "default": "0",
+		  "info": "Text indent: negative or positive value (px or %)"
+		},
+		{
+		  "type": "text",
+		  "id": "inset_block",
+		  "label": "Inset Block",
+		  "default": "0 0 0 0",
+		  "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_bgi",
+		  "label": "Use background caption item",
+		  "default": false
+		},
+		{
+		  "type": "color",
+		  "id": "bgc_color",
+		  "label": "Color background caption item"
+		},
+		{
+		  "type": "range",
+		  "id": "bgc_color_opacity",
+		  "min": 0,
+		  "max": 1,
+		  "step": 0.1,
+		  "label": "Background opacity caption item",
+		  "default": 0.5
+		},
+		{
+		  "type": "header",
+		  "content": "Animation Settings"
+		},
+		{
+		  "type": "select",
+		  "id": "title_animation",
+		  "label": "Animation",
+		  "options": [
+			{
+			  "value": "none",
+			  "label": "Don't use animation"
+			},
+			{
+			  "value": "tracking-in-expand",
+			  "label": "Style 1"
+			},
+			{
+			  "value": "tracking-in-contract-bck-top",
+			  "label": "Style 2"
+			},
+			{
+			  "value": "focus-in-contract",
+			  "label": "Style 3"
+			},
+			{
+			  "value": "text-focus-in",
+			  "label": "Style 4"
+			},
+			{
+			  "value": "tracking-in-contract-bck",
+			  "label": "Style 5"
+			},
+			{
+			  "value": "text-shadow-drop-bottom",
+			  "label": "Style 6"
+			}
+		  ],
+		  "default": "none"
+		}
+	  ]
+	},
+	// HEADER H2 //////////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "heading_h2",
+	  "name": "Heading H2",
+	  "settings": [
+		{
+		  "type": "text",
+		  "id": "heading_h2",
+		  "label": "H2",
+		  "default": "Heading"
+		},
+		{
+			"type": "range",
+			"id": "heading_size",
+			"min": 16,
+			"max": 80,
+			"step": 2,
+			"label": "Heading font size",
+			"default": 56
+		},
+		{
+			"type": "range",
+			"id": "font_weight",
+			"min": 300,
+			"max": 900,
+			"step": 100,
+			"label": "Font weight",
+			"default": 400,
+			"info": "The boldness of the font depends on the selected font type."
+		},
+		{
+		  "type": "color",
+		  "id": "color",
+		  "label": "Color",
+		  "default": "#121212"
+		},
+		{
+		  "type": "text",
+		  "id": "indent_block",
+		  "label": "Indent Block",
+		  "default": "0",
+		  "info": "Text indent: negative or positive value (px or %)"
+		},
+		{
+		  "type": "text",
+		  "id": "inset_block",
+		  "label": "Inset Block",
+		  "default": "0 0 0 0",
+		  "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_bgi",
+		  "label": "Use background caption item",
+		  "default": false
+		},
+		{
+		  "type": "color",
+		  "id": "bgc_color",
+		  "label": "Color background caption item"
+		},
+		{
+		  "type": "range",
+		  "id": "bgc_color_opacity",
+		  "min": 0,
+		  "max": 1,
+		  "step": 0.1,
+		  "label": "Background opacity caption item",
+		  "default": 0.5
+		},
+		{
+		  "type": "header",
+		  "content": "Animation Settings"
+		},
+		{
+		  "type": "select",
+		  "id": "title_animation",
+		  "label": "Animation",
+		  "options": [
+			{
+			  "value": "none",
+			  "label": "Don't use animation"
+			},
+			{
+			  "value": "tracking-in-expand",
+			  "label": "Style 1"
+			},
+			{
+			  "value": "tracking-in-contract-bck-top",
+			  "label": "Style 2"
+			},
+			{
+			  "value": "focus-in-contract",
+			  "label": "Style 3"
+			},
+			{
+			  "value": "text-focus-in",
+			  "label": "Style 4"
+			},
+			{
+			  "value": "tracking-in-contract-bck",
+			  "label": "Style 5"
+			},
+			{
+			  "value": "text-shadow-drop-bottom",
+			  "label": "Style 6"
+			}
+		  ],
+		  "default": "none"
+		}
+	  ]
+	},
+	// HEADER H3 //////////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "heading_h3",
+	  "name": "Heading H3",
+	  "settings": [
+		{
+		  "type": "text",
+		  "id": "heading_h3",
+		  "label": "H3",
+		  "default": "Heading"
+		},
+		{
+			"type": "range",
+			"id": "heading_size",
+			"min": 16,
+			"max": 80,
+			"step": 2,
+			"label": "Heading font size",
+			"default": 44
+		},
+		{
+			"type": "range",
+			"id": "font_weight",
+			"min": 300,
+			"max": 900,
+			"step": 100,
+			"label": "Font weight",
+			"default": 400,
+			"info": "The boldness of the font depends on the selected font type."
+		},
+		{
+		  "type": "color",
+		  "id": "color",
+		  "label": "Color",
+		  "default": "#121212"
+		},
+		{
+		  "type": "text",
+		  "id": "indent_block",
+		  "label": "Indent Block",
+		  "default": "0",
+		  "info": "Text indent: negative or positive value (px or %)"
+		},
+		{
+		  "type": "text",
+		  "id": "inset_block",
+		  "label": "Inset Block",
+		  "default": "0 0 0 0",
+		  "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_bgi",
+		  "label": "Use background caption item",
+		  "default": false
+		},
+		{
+		  "type": "color",
+		  "id": "bgc_color",
+		  "label": "Color background caption item"
+		},
+		{
+		  "type": "range",
+		  "id": "bgc_color_opacity",
+		  "min": 0,
+		  "max": 1,
+		  "step": 0.1,
+		  "label": "Background opacity caption item",
+		  "default": 0.5
+		},
+		{
+		  "type": "header",
+		  "content": "Animation Settings"
+		},
+		{
+		  "type": "select",
+		  "id": "title_animation",
+		  "label": "Animation",
+		  "options": [
+			{
+			  "value": "none",
+			  "label": "Don't use animation"
+			},
+			{
+			  "value": "tracking-in-expand",
+			  "label": "Style 1"
+			},
+			{
+			  "value": "tracking-in-contract-bck-top",
+			  "label": "Style 2"
+			},
+			{
+			  "value": "focus-in-contract",
+			  "label": "Style 3"
+			},
+			{
+			  "value": "text-focus-in",
+			  "label": "Style 4"
+			},
+			{
+			  "value": "tracking-in-contract-bck",
+			  "label": "Style 5"
+			},
+			{
+			  "value": "text-shadow-drop-bottom",
+			  "label": "Style 6"
+			}
+		  ],
+		  "default": "none"
+		}
+	  ]
+	},
+	// HEADER H4 //////////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "heading_h4",
+	  "name": "Heading H4",
+	  "settings": [
+		{
+		  "type": "text",
+		  "id": "heading_h4",
+		  "label": "H4",
+		  "default": "Heading"
+		},
+		{
+			"type": "range",
+			"id": "heading_size",
+			"min": 16,
+			"max": 80,
+			"step": 2,
+			"label": "Heading font size",
+			"default": 30
+		},
+		{
+			"type": "range",
+			"id": "font_weight",
+			"min": 300,
+			"max": 900,
+			"step": 100,
+			"label": "Font weight",
+			"default": 400,
+			"info": "The boldness of the font depends on the selected font type."
+		},
+		{
+		  "type": "color",
+		  "id": "color",
+		  "label": "Color",
+		  "default": "#121212"
+		},
+		{
+		  "type": "text",
+		  "id": "inset_block",
+		  "label": "Inset Block",
+		  "default": "0 0 0 0",
+		  "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_bgi",
+		  "label": "Use background caption item",
+		  "default": false
+		},
+		{
+		  "type": "color",
+		  "id": "bgc_color",
+		  "label": "Color background caption item"
+		},
+		{
+		  "type": "range",
+		  "id": "bgc_color_opacity",
+		  "min": 0,
+		  "max": 1,
+		  "step": 0.1,
+		  "label": "Background opacity caption item",
+		  "default": 0.5
+		},
+		{
+		  "type": "header",
+		  "content": "Animation Settings"
+		},
+		{
+		  "type": "select",
+		  "id": "title_animation",
+		  "label": "Animation",
+		  "options": [
+			{
+			  "value": "none",
+			  "label": "Don't use animation"
+			},
+			{
+			  "value": "tracking-in-expand",
+			  "label": "Style 1"
+			},
+			{
+			  "value": "tracking-in-contract-bck-top",
+			  "label": "Style 2"
+			},
+			{
+			  "value": "focus-in-contract",
+			  "label": "Style 3"
+			},
+			{
+			  "value": "text-focus-in",
+			  "label": "Style 4"
+			},
+			{
+			  "value": "tracking-in-contract-bck",
+			  "label": "Style 5"
+			},
+			{
+			  "value": "text-shadow-drop-bottom",
+			  "label": "Style 6"
+			}
+		  ],
+		  "default": "none"
+		}
+	  ]
+	},
+	// HEADER H5 //////////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "heading_h5",
+	  "name": "Heading H5",
+	  "settings": [
+		{
+		  "type": "text",
+		  "id": "heading_h5",
+		  "label": "H5",
+		  "default": "Heading"
+		},
+		{
+			"type": "range",
+			"id": "heading_size",
+			"min": 16,
+			"max": 80,
+			"step": 2,
+			"label": "Heading font size",
+			"default": 20
+		},
+		{
+			"type": "range",
+			"id": "font_weight",
+			"min": 300,
+			"max": 900,
+			"step": 100,
+			"label": "Font weight",
+			"default": 400,
+			"info": "The boldness of the font depends on the selected font type."
+		},
+		{
+		  "type": "color",
+		  "id": "color",
+		  "label": "Color",
+		  "default": "#121212"
+		},
+		{
+		  "type": "text",
+		  "id": "inset_block",
+		  "label": "Inset Block",
+		  "default": "0 0 0 0",
+		  "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_bgi",
+		  "label": "Use background caption item",
+		  "default": false
+		},
+		{
+		  "type": "color",
+		  "id": "bgc_color",
+		  "label": "Color background caption item"
+		},
+		{
+		  "type": "range",
+		  "id": "bgc_color_opacity",
+		  "min": 0,
+		  "max": 1,
+		  "step": 0.1,
+		  "label": "Background opacity caption item",
+		  "default": 0.5
+		},
+		{
+		  "type": "header",
+		  "content": "Animation Settings"
+		},
+		{
+		  "type": "select",
+		  "id": "title_animation",
+		  "label": "Animation",
+		  "options": [
+			{
+			  "value": "none",
+			  "label": "Don't use animation"
+			},
+			{
+			  "value": "tracking-in-expand",
+			  "label": "Style 1"
+			},
+			{
+			  "value": "tracking-in-contract-bck-top",
+			  "label": "Style 2"
+			},
+			{
+			  "value": "focus-in-contract",
+			  "label": "Style 3"
+			},
+			{
+			  "value": "text-focus-in",
+			  "label": "Style 4"
+			},
+			{
+			  "value": "tracking-in-contract-bck",
+			  "label": "Style 5"
+			},
+			{
+			  "value": "text-shadow-drop-bottom",
+			  "label": "Style 6"
+			}
+		  ],
+		  "default": "none"
+		}
+	  ]
+	},
+	// HEADER H6 //////////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "heading_h6",
+	  "name": "Heading H6",
+	  "settings": [
+		{
+		  "type": "text",
+		  "id": "heading_h6",
+		  "label": "H6",
+		  "default": "Heading"
+		},
+		{
+			"type": "range",
+			"id": "heading_size",
+			"min": 16,
+			"max": 50,
+			"step": 2,
+			"label": "Heading font size",
+			"default": 16
+		},
+		{
+			"type": "range",
+			"id": "font_weight",
+			"min": 300,
+			"max": 900,
+			"step": 100,
+			"label": "Font weight",
+			"default": 400,
+			"info": "The boldness of the font depends on the selected font type."
+		},
+		{
+		  "type": "color",
+		  "id": "color",
+		  "label": "Color",
+		  "default": "#121212"
+		},
+		{
+		  "type": "text",
+		  "id": "inset_block",
+		  "label": "Inset Block",
+		  "default": "0 0 0 0",
+		  "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_bgi",
+		  "label": "Use background caption item",
+		  "default": false
+		},
+		{
+		  "type": "color",
+		  "id": "bgc_color",
+		  "label": "Color background caption item"
+		},
+		{
+		  "type": "range",
+		  "id": "bgc_color_opacity",
+		  "min": 0,
+		  "max": 1,
+		  "step": 0.1,
+		  "label": "Background opacity caption item",
+		  "default": 0.5
+		},
+		{
+		  "type": "header",
+		  "content": "H6 Animation Settings"
+		},
+		{
+		  "type": "select",
+		  "id": "title_animation",
+		  "label": "Animation",
+		  "options": [
+			{
+			  "value": "none",
+			  "label": "Don't use animation"
+			},
+			{
+			  "value": "tracking-in-expand",
+			  "label": "Style 1"
+			},
+			{
+			  "value": "tracking-in-contract-bck-top",
+			  "label": "Style 2"
+			},
+			{
+			  "value": "focus-in-contract",
+			  "label": "Style 3"
+			},
+			{
+			  "value": "text-focus-in",
+			  "label": "Style 4"
+			},
+			{
+			  "value": "tracking-in-contract-bck",
+			  "label": "Style 5"
+			},
+			{
+			  "value": "text-shadow-drop-bottom",
+			  "label": "Style 6"
+			}
+		  ],
+		  "default": "none"
+		}
+	  ]
+	},
+	// SUBTITLE  //////////////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "richtext",
+	  "name": "Richtext",
+	  "settings": [
+		{
+		  "type": "richtext",
+		  "id": "subtitle",
+		  "label": "Richtext",
+		  "default": "<p>Use overlay text to give your customers insight into your brand. Select imagery and text that relates to your style and story.<p>"
+		},
+		{
+			"type": "range",
+			"id": "heading_size",
+			"min": 12,
+			"max": 20,
+			"step": 1,
+			"label": "Text font size",
+			"default": 14
+		},
+		{
+			"type": "range",
+			"id": "font_weight",
+			"min": 300,
+			"max": 900,
+			"step": 100,
+			"label": "Font weight",
+			"default": 400,
+			"info": "The boldness of the font depends on the selected font type."
+		},
+		{
+		  "type": "color",
+		  "id": "color",
+		  "label": "Color",
+		  "default": "#797B7E"
+		},
+		{
+		  "type": "text",
+		  "id": "inset_block",
+		  "label": "Inset Block",
+		  "default": "0 0 0 0",
+		  "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_bgc",
+		  "label": "Use background caption item",
+		  "default": false
+		},
+		{
+		  "type": "color",
+		  "id": "bgc_color",
+		  "label": "Color background caption item"
+		},
+		{
+		  "type": "range",
+		  "id": "bgc_color_opacity",
+		  "min": 0,
+		  "max": 1,
+		  "step": 0.1,
+		  "label": "Background opacity caption item",
+		  "default": 0.5
+		},
+		{
+		  "type": "header",
+		  "content": "Animation Settings"
+		},
+		{
+		  "type": "select",
+		  "id": "title_animation",
+		  "label": "Animation",
+		  "options": [
+			{
+			  "value": "none",
+			  "label": "Don't use animation"
+			},
+			{
+			  "value": "tracking-in-expand",
+			  "label": "Style 1"
+			},
+			{
+			  "value": "tracking-in-contract-bck-top",
+			  "label": "Style 2"
+			},
+			{
+			  "value": "focus-in-contract",
+			  "label": "Style 3"
+			},
+			{
+			  "value": "text-focus-in",
+			  "label": "Style 4"
+			},
+			{
+			  "value": "tracking-in-contract-bck",
+			  "label": "Style 5"
+			},
+			{
+			  "value": "text-shadow-drop-bottom",
+			  "label": "Style 6"
+			}
+		  ],
+		  "default": "none"
+		}
+	  ]
+	},
+	// TEXT  //////////////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "text",
+	  "name": "Text",
+	  "settings": [
+		{
+		  "type": "text",
+		  "id": "text",
+		  "label": "Text",
+		  "default": "WRITE YOUR TEXT HERE"     
+		},
+		{
+			"type": "range",
+			"id": "heading_size",
+			"min": 12,
+			"max": 20,
+			"step": 1,
+			"label": "Text font size",
+			"default": 14
+		},
+		{
+			"type": "range",
+			"id": "font_weight",
+			"min": 300,
+			"max": 900,
+			"step": 100,
+			"label": "Font weight",
+			"default": 400,
+			"info": "The boldness of the font depends on the selected font type."
+		},
+		{
+		  "type": "color",
+		  "id": "color",
+		  "label": "Color",
+		  "default": "#797B7E"
+		},
+		{
+		  "type": "text",
+		  "id": "inset_block",
+		  "label": "Inset Block",
+		  "default": "0 0 0 0",
+		  "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_bgc",
+		  "label": "Use background caption item",
+		  "default": false
+		},
+		{
+		  "type": "color",
+		  "id": "bgc_color",
+		  "label": "Color background caption item"
+		},
+		{
+		  "type": "range",
+		  "id": "bgc_color_opacity",
+		  "min": 0,
+		  "max": 1,
+		  "step": 0.1,
+		  "label": "Background opacity caption item",
+		  "default": 0.5
+		}
+	  ]
+	},
+	// TIMER //////////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "timer",
+	  "name": "Countdown (timer)",
+	  "settings": [
+		{
+		  "type": "text",
+		  "id": "time",
+		  "label": "Time Deal",
+		  "default": "2023-05-30T00:00:00"
+		},
+
+		{
+			"type": "range",
+			"id": "heading_size",
+			"min": 16,
+			"max": 80,
+			"step": 2,
+			"label": "Heading font size",
+			"default": 30
+		},
+		{
+			"type": "range",
+			"id": "font_weight",
+			"min": 300,
+			"max": 900,
+			"step": 100,
+			"label": "Font weight",
+			"default": 400,
+			"info": "The boldness of the font depends on the selected font type."
+		},
+
+		{
+		  "type": "color",
+		  "id": "color",
+		  "label": "Color",
+		  "default": "#121212"
+		},
+		{
+		  "type": "text",
+		  "id": "inset_block",
+		  "label": "Inset Block",
+		  "default": "0 0 0 0",
+		  "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_bgi",
+		  "label": "Use background caption item",
+		  "default": false
+		},
+		{
+		  "type": "color",
+		  "id": "bgc_color",
+		  "label": "Color background caption item"
+		},
+		{
+		  "type": "range",
+		  "id": "bgc_color_opacity",
+		  "min": 0,
+		  "max": 1,
+		  "step": 0.1,
+		  "label": "Background opacity caption item",
+		  "default": 0.5
+		}
+	  ]
+	},
+	// BUTTON  //////////////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "button",
+	  "name": "Button",
+	  "settings": [
+		{
+		  "type": "text",
+		  "id": "button_label",
+		  "label": "Button label"
+		},
+		{
+		  "type": "url",
+		  "id": "button_link",
+		  "label": "Button link"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_button",
+		  "label": "Use type button",
+		  "default": true
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_style",
+		  "label": "Button style",
+		  "default": "btn-primary",
+		  "options": [
+			{
+			  "value": "btn-default",
+			  "label": "Default"
+			},
+			{
+			  "value": "btn-primary",
+			  "label": "Primary"
+			},
+			{
+			  "value": "btn-secondary",
+			  "label": "Secondary"
+			},
+			{
+			  "value": "btn-alternate",
+			  "label": "Alternate"
+			},
+			{
+			  "value": "btn-gradient",
+			  "label": "Gradient 1"
+			}
+		  ]
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_size",
+		  "label": "Button size",
+		  "default": "btn-lg",
+		  "options": [
+			{
+			  "value": "btn-sm",
+			  "label": "Small"
+			},
+			{
+			  "value": "btn-md",
+			  "label": "Medium"
+			},
+			{
+			  "value": "btn-lg",
+			  "label": "Large"
+			}
+		  ]
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		}
+	  ]
+	},
+	// CUSTOM HTML ////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "html",
+	  "name": "Custom HTML",
+	  "settings": [
+		{
+		  "type": "text",
+		  "id": "custom_class",
+		  "label": "Custom class"
+		}, 
+		{
+		  "type": "html",
+		  "id": "code",
+		  "label": "HTML"
+		}
+	  ]
+	},
+ 
+	// Menu link ////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "link_list",
+	  "name": "Menu links",
+	  "settings": [
+		{
+		  "type": "link_list",
+		  "id": "links",
+		  "label": "Linklist"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_button",
+		  "label": "Use type button",
+		  "default": true
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_style",
+		  "label": "Button style",
+		  "default": "btn-primary",
+		  "options": [
+			{
+			  "value": "btn-default",
+			  "label": "Default"
+			},
+			{
+			  "value": "btn-primary",
+			  "label": "Primary"
+			},
+			{
+			  "value": "btn-secondary",
+			  "label": "Secondary"
+			},
+			{
+			  "value": "btn-alternate",
+			  "label": "Alternate"
+			},
+			{
+			  "value": "btn-gradient",
+			  "label": "Gradient 1"
+			}
+		  ]
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_size",
+		  "label": "Button size",
+		  "default": "btn-lg",
+		  "options": [
+			{
+			  "value": "btn-sm",
+			  "label": "Small"
+			},
+			{
+			  "value": "btn-md",
+			  "label": "Medium"
+			},
+			{
+			  "value": "btn-lg",
+			  "label": "Large"
+			}
+		  ]
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		}
+	  ]
+	},
+	
+	// Group of buttons ////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "groupButtons",
+	  "name": "Group of buttons",
+	  "limit": 6,
+	  "settings": [
+		{
+		  "type": "header",
+		  "content": "General settings",
+		  "info": "------------------------------"
+		},
+		{
+		  "type": "select",
+		  "id": "column_count",
+		  "label": "Column count",
+		  "options": [
+			{
+			  "value": "1",
+			  "label": "1"
+			},
+			{
+			  "value": "2",
+			  "label": "2"
+			},
+			{
+			  "value": "3",
+			  "label": "3"
+			}
+		  ],
+		  "default": "2"
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block_general",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		},
+		{
+		  "type": "range",
+		  "id": "block_width",
+		  "min": 80,
+		  "max": 100,
+		  "step": 1,
+		  "unit": "%",
+		  "label": "Font size",
+		  "default": 100
+		},
+		{
+		  "type": "header",
+		  "content": "Settings for button 1",
+		  "info": "------------------------------"
+		},
+		{
+		  "type": "text",
+		  "id": "button_label_1",
+		  "label": "Button label"
+		},
+		{
+		  "type": "url",
+		  "id": "button_link_1",
+		  "label": "Button link"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_button_1",
+		  "label": "Use type button",
+		  "default": true
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_style_1",
+		  "label": "Button style",
+		  "default": "btn-primary",
+		  "options": [
+			{
+			  "value": "btn-default",
+			  "label": "Default"
+			},
+			{
+			  "value": "btn-primary",
+			  "label": "Primary"
+			},
+			{
+			  "value": "btn-secondary",
+			  "label": "Secondary"
+			},
+			{
+			  "value": "btn-alternate",
+			  "label": "Alternate"
+			},
+			{
+			  "value": "btn-gradient",
+			  "label": "Gradient"
+			}
+		  ]
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_size_1",
+		  "label": "Button size",
+		  "default": "btn-lg",
+		  "options": [
+			{
+			  "value": "btn-sm",
+			  "label": "Small"
+			},
+			{
+			  "value": "btn-md",
+			  "label": "Medium"
+			},
+			{
+			  "value": "btn-lg",
+			  "label": "Large"
+			}
+		  ]
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block_1",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		},
+		{
+		  "type": "header",
+		  "content": "Settings for button 2",
+		  "info": "------------------------------"
+		},
+		{
+		  "type": "text",
+		  "id": "button_label_2",
+		  "label": "Button label"
+		},
+		{
+		  "type": "url",
+		  "id": "button_link_2",
+		  "label": "Button link"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_button_2",
+		  "label": "Use type button",
+		  "default": true
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_style_2",
+		  "label": "Button style",
+		  "default": "btn-primary",
+		  "options": [
+			{
+			  "value": "btn-default",
+			  "label": "Default"
+			},
+			{
+			  "value": "btn-primary",
+			  "label": "Primary"
+			},
+			{
+			  "value": "btn-secondary",
+			  "label": "Secondary"
+			},
+			{
+			  "value": "btn-alternate",
+			  "label": "Alternate"
+			},
+			{
+			  "value": "btn-gradient",
+			  "label": "Gradient"
+			}
+		  ]
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_size_2",
+		  "label": "Button size",
+		  "default": "btn-lg",
+		  "options": [
+			{
+			  "value": "btn-sm",
+			  "label": "Small"
+			},
+			{
+			  "value": "btn-md",
+			  "label": "Medium"
+			},
+			{
+			  "value": "btn-lg",
+			  "label": "Large"
+			}
+		  ]
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block_2",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		},
+		{
+		  "type": "header",
+		  "content": "Settings for button 3",
+		  "info": "------------------------------"
+		},
+		{
+		  "type": "text",
+		  "id": "button_label_3",
+		  "label": "Button label"
+		},
+		{
+		  "type": "url",
+		  "id": "button_link_3",
+		  "label": "Button link"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_button_3",
+		  "label": "Use type button",
+		  "default": true
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_style_3",
+		  "label": "Button style",
+		  "default": "btn-primary",
+		  "options": [
+			{
+			  "value": "btn-default",
+			  "label": "Default"
+			},
+			{
+			  "value": "btn-primary",
+			  "label": "Primary"
+			},
+			{
+			  "value": "btn-secondary",
+			  "label": "Secondary"
+			},
+			{
+			  "value": "btn-alternate",
+			  "label": "Alternate"
+			},
+			{
+			  "value": "btn-gradient",
+			  "label": "Gradient"
+			}
+		  ]
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_size_3",
+		  "label": "Button size",
+		  "default": "btn-lg",
+		  "options": [
+			{
+			  "value": "btn-sm",
+			  "label": "Small"
+			},
+			{
+			  "value": "btn-md",
+			  "label": "Medium"
+			},
+			{
+			  "value": "btn-lg",
+			  "label": "Large"
+			}
+		  ]
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block_3",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		},
+		{
+		  "type": "header",
+		  "content": "Settings for button 4",
+		  "info": "------------------------------"
+		},
+		{
+		  "type": "text",
+		  "id": "button_label_4",
+		  "label": "Button label"
+		},
+		{
+		  "type": "url",
+		  "id": "button_link_4",
+		  "label": "Button link"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_button_4",
+		  "label": "Use type button",
+		  "default": true
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_style_4",
+		  "label": "Button style",
+		  "default": "btn-primary",
+		  "options": [
+			{
+			  "value": "btn-default",
+			  "label": "Default"
+			},
+			{
+			  "value": "btn-primary",
+			  "label": "Primary"
+			},
+			{
+			  "value": "btn-secondary",
+			  "label": "Secondary"
+			},
+			{
+			  "value": "btn-alternate",
+			  "label": "Alternate"
+			},
+			{
+			  "value": "btn-gradient",
+			  "label": "Gradient"
+			}
+		  ]
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_size_4",
+		  "label": "Button size",
+		  "default": "btn-lg",
+		  "options": [
+			{
+			  "value": "btn-sm",
+			  "label": "Small"
+			},
+			{
+			  "value": "btn-md",
+			  "label": "Medium"
+			},
+			{
+			  "value": "btn-lg",
+			  "label": "Large"
+			}
+		  ]
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block_4",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		},
+		{
+		  "type": "header",
+		  "content": "Settings for button 5",
+		  "info": "------------------------------"
+		},
+		{
+		  "type": "text",
+		  "id": "button_label_5",
+		  "label": "Button label"
+		},
+		{
+		  "type": "url",
+		  "id": "button_link_5",
+		  "label": "Button link"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_button_5",
+		  "label": "Use type button",
+		  "default": true
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_style_5",
+		  "label": "Button style",
+		  "default": "btn-primary",
+		  "options": [
+			{
+			  "value": "btn-default",
+			  "label": "Default"
+			},
+			{
+			  "value": "btn-primary",
+			  "label": "Primary"
+			},
+			{
+			  "value": "btn-secondary",
+			  "label": "Secondary"
+			},
+			{
+			  "value": "btn-alternate",
+			  "label": "Alternate"
+			},
+			{
+			  "value": "btn-gradient",
+			  "label": "Gradient"
+			}
+		  ]
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_size_5",
+		  "label": "Button size",
+		  "default": "btn-lg",
+		  "options": [
+			{
+			  "value": "btn-sm",
+			  "label": "Small"
+			},
+			{
+			  "value": "btn-md",
+			  "label": "Medium"
+			},
+			{
+			  "value": "btn-lg",
+			  "label": "Large"
+			}
+		  ]
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block_5",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		},
+		{
+		  "type": "header",
+		  "content": "Settings for button 6",
+		  "info": "------------------------------"
+		},
+		{
+		  "type": "text",
+		  "id": "button_label_6",
+		  "label": "Button label"
+		},
+		{
+		  "type": "url",
+		  "id": "button_link_6",
+		  "label": "Button link"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_button_6",
+		  "label": "Use type button",
+		  "default": true
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_style_6",
+		  "label": "Button style",
+		  "default": "btn-primary",
+		  "options": [
+			{
+			  "value": "btn-default",
+			  "label": "Default"
+			},
+			{
+			  "value": "btn-primary",
+			  "label": "Primary"
+			},
+			{
+			  "value": "btn-secondary",
+			  "label": "Secondary"
+			},
+			{
+			  "value": "btn-alternate",
+			  "label": "Alternate"
+			},
+			{
+			  "value": "btn-gradient",
+			  "label": "Gradient"
+			}
+		  ]
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_size_6",
+		  "label": "Button size",
+		  "default": "btn-lg",
+		  "options": [
+			{
+			  "value": "btn-sm",
+			  "label": "Small"
+			},
+			{
+			  "value": "btn-md",
+			  "label": "Medium"
+			},
+			{
+			  "value": "btn-lg",
+			  "label": "Large"
+			}
+		  ]
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block_6",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		},
+		{
+		  "type": "header",
+		  "content": "Settings for button 7",
+		  "info": "------------------------------"
+		},
+		{
+		  "type": "text",
+		  "id": "button_label_7",
+		  "label": "Button label"
+		},
+		{
+		  "type": "url",
+		  "id": "button_link_7",
+		  "label": "Button link"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_button_7",
+		  "label": "Use type button",
+		  "default": true
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_style_7",
+		  "label": "Button style",
+		  "default": "btn-primary",
+		  "options": [
+			{
+			  "value": "btn-default",
+			  "label": "Default"
+			},
+			{
+			  "value": "btn-primary",
+			  "label": "Primary"
+			},
+			{
+			  "value": "btn-secondary",
+			  "label": "Secondary"
+			},
+			{
+			  "value": "btn-alternate",
+			  "label": "Alternate"
+			},
+			{
+			  "value": "btn-gradient",
+			  "label": "Gradient"
+			}
+		  ]
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_size_7",
+		  "label": "Button size",
+		  "default": "btn-lg",
+		  "options": [
+			{
+			  "value": "btn-sm",
+			  "label": "Small"
+			},
+			{
+			  "value": "btn-md",
+			  "label": "Medium"
+			},
+			{
+			  "value": "btn-lg",
+			  "label": "Large"
+			}
+		  ]
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block_7",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		},
+		{
+		  "type": "header",
+		  "content": "Settings for button 8",
+		  "info": "------------------------------"
+		},
+		{
+		  "type": "text",
+		  "id": "button_label_8",
+		  "label": "Button label"
+		},
+		{
+		  "type": "url",
+		  "id": "button_link_8",
+		  "label": "Button link"
+		},
+		{
+		  "type": "checkbox",
+		  "id": "use_button_8",
+		  "label": "Use type button",
+		  "default": true
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_style_8",
+		  "label": "Button style",
+		  "default": "btn-primary",
+		  "options": [
+			{
+			  "value": "btn-default",
+			  "label": "Default"
+			},
+			{
+			  "value": "btn-primary",
+			  "label": "Primary"
+			},
+			{
+			  "value": "btn-secondary",
+			  "label": "Secondary"
+			},
+			{
+			  "value": "btn-alternate",
+			  "label": "Alternate"
+			},
+			{
+			  "value": "btn-gradient",
+			  "label": "Gradient"
+			}
+		  ]
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_size_8",
+		  "label": "Button size",
+		  "default": "btn-lg",
+		  "options": [
+			{
+			  "value": "btn-sm",
+			  "label": "Small"
+			},
+			{
+			  "value": "btn-md",
+			  "label": "Medium"
+			},
+			{
+			  "value": "btn-lg",
+			  "label": "Large"
+			}
+		  ]
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block_8",
+		  "label": "Offset Block",
+		  "default": "5% 0 0 0",
+		  "info": "offset: Top Right Bottom Left"
+		}
+	  ]
+	},
+	{
+		"type": "custom_liquid",
+		"name": "Custom Liquid",
+		"settings": [
+		  {
+			"type": "liquid",
+			"id": "custom_liquid",
+			"label": "Custom Liquid",
+			"info": "Add app snippets or other Liquid code to create advanced customizations"
+		  }
+		]
+	}
+  ],
+  "presets": [
+	{
+	  "name": "Image with text overlay",
+	  "category": "Banner",
+	  "blocks": [
+		{
+			"type": "text",
+			"settings": {
+				"heading_size": 16,
+				"font_weight": 400,
+				"color": "#121212"
+			}
+		},
+		{
+			"type": "heading_h2"
+		},
+		{
+			"type": "richtext"
+		},
+		{
+			"type": "button"
+		}
+	]
+	}
+  ]
+}
+{% endschema %}
+
+{% javascript %}
+  jQuery(function($){
+  zmzParallax = function() {
+  $('.parallax_block-js').each(function() {
+  var parallaxBlock = $(this);
+  
+  var parallaxLayer = $(this).find('.parallax_layer-js');
+  
+  window.addEventListener('scroll', function() {
+  var parallaxHeight = parseInt(parallaxBlock.outerHeight());
+  var parallaxImgHeight = parseInt(parallaxLayer.outerHeight());
+  
+  var parallaxOffset1 = parseInt( parallaxBlock.offset().top);
+  var parallaxOffset2 = parseInt( parallaxOffset1 + parallaxHeight );
+  
+  var translateMax = parseInt( parallaxImgHeight - parallaxHeight ) - 2; // minus 2 to prevent floated numbers and borders between sections
+  
+  var scrollTemp = $(window).scrollTop() + window.innerHeight;
+  
+  if ( ( scrollTemp >= parallaxOffset1 ) && ( $(window).scrollTop() <= parallaxOffset2 ) ) {
+  // var translateZMZ = parallaxHeight/parallaxImgHeight;
+  
+  // if ( translateZMZ > 0.2 ) {
+  //    var translateVal = parseInt( ( scrollTemp - parallaxOffset1 ) * 0.2 );
+  // }
+  // else {
+  //    var translateVal = parseInt( ( scrollTemp - parallaxOffset1 ) * translateZMZ );
+  // };
+  
+  var translateVal = parseInt( ( scrollTemp - parallaxOffset1 ) * 0.3 );
+  var translateVal_2 = parseInt( ( scrollTemp - parallaxOffset1 ) * 0.1 );
+  
+  if ( translateVal <= translateMax ) {
+  parallaxLayer.css({ 'transform' : 'translate3d(0, -' + translateVal + 'px, 0)' });
+  }
+  else if ( translateVal > translateMax ) {
+  parallaxLayer.css({ 'transform' : 'translate3d(0, -' + translateMax + 'px, 0)' });
+  };
+  };
+  });
+  });
+  };
+  if ( $(window).width() > 1199 ) {
+  zmzParallax();
+  }
+  
+  $(document).on('shopify:section:load shopify:section:unload', '.section_image-with-text-overlay', function() {
+  if ( $(window).width() > 1199 ) {
+  zmzParallax();
+  }
+  });
+  });
+
+{% endjavascript %}
+
+{% if settings.pageAnimation %}
+  {{ 'animistaanimation.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'animation_wow.js' | asset_url }}" defer></script>
+{% endif %}
+

@@ -1,0 +1,321 @@
+{{ 'section-accordion.css' | asset_url | stylesheet_tag }}
+
+{% if section.blocks.size > 0 %}
+	<style>
+		{% for block in section.blocks %}
+		.section-style-{{ section.id }} .item-{{ block.id }} .element_title{
+			background-color: {{ block.settings.bg_header }};
+			color: {{ block.settings.color_header }};
+		}
+		
+		.section-style-{{ section.id }} .item-{{ block.id }} .element_title svg path{
+			fill: {{ block.settings.color_header }};
+		}
+		
+		.section-style-{{ section.id }} .item-{{ block.id }} .element_text{
+			background-color: {{ block.settings.bg_text }};
+			color: {{ block.settings.color_text }};
+			max-height: {{ block.settings.max_height_content }};
+		}
+		
+		.section-style-{{ section.id }} .item-{{ block.id }} {
+			margin-top: {{ block.settings.offset_top_item }};
+		}
+		{% endfor %}
+	</style>
+{% endif %}
+
+
+<div class="section-style-{{ section.id }}">
+	{%- include 'section-style' -%}
+		<div class="{{ section.settings.container_width }}">
+			{% if section.settings.section_title != blank or section.settings.desc != blank %}
+				<div class="col-12 section_heading_wrap text-{{ section.settings.sec_title_align }} mb-3">
+					{% if section.settings.section_title != blank %}
+						<h2 class="section_heading">{{ section.settings.section_title }}</h2>
+					{% endif %}
+					
+					{% if section.settings.desc != blank %}
+						<div class="text text-default mt-1">{{ section.settings.desc }}</div>
+					{% endif %}
+				</div>
+			{% endif %} 
+  	
+		<div class="row {% if section.settings.reset_indent %}gx-0{% endif %}">
+			{% for block in section.blocks %}
+				{% assign bl_it = block.settings %} 
+				<div class="col-lg-{{ bl_it.width }} col-12 item-{{ block.id }}{% unless bl_it.widget_open_toggle == true %}{% if bl_it.overlay_content %} item-overlay_content{% endif %}{% endunless %}" {{ block.shopify_attributes }}>
+						<div class="widget_acc_item">
+									<div class="widget_acc_element">
+										<div class="widget_toggle {% if bl_it.widget_open_toggle %} open{% endif %}">
+											<h2 class="element_title h6">{{ bl_it.element_header }}</h2>
+											<svg width="9" height="6" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg"><path d="M9 1.5L7.5 0L4.5 3L1.5 0L0 1.5L4.5 6L9 1.5Z" /></svg>
+										</div> 
+										<div class="element_text content-widget_toggle">
+											{% if bl_it.image != blank %}
+												<div class="image-item-container my-3">
+													<div class="image-item-wrapper" style="padding-top:{{ 1 | divided_by: bl_it.image.aspect_ratio | times: 100 }}%;">
+														{% assign img_url = bl_it.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+														<img loading="lazy" class="image-content__image lazyload"
+																 src="{{ bl_it.image | img_url: '300x300' }}"
+																 data-src="{{ img_url }}"
+																 data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 1944, 2048]"
+																 data-aspectratio="{{ bl_it.image.aspect_ratio }}"
+																 data-sizes="auto"
+																 alt="{{ bl_it.image.alt | escape }}">
+													</div>
+												 </div>
+											{% endif %}
+											{{ bl_it.element_text }} 
+										</div>
+									</div>
+						</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+{% schema %}
+{
+	"name": "Accordion section",
+	"class": "section section_accordion",
+	"max_blocks": 15,
+	"settings": [
+		{
+			"type": "header",
+			"content": "Section settings"
+		},
+		{
+			"type": "text",
+			"id": "section_title",
+			"label": "Section Title",
+			"default": "Block Accordion"
+		},
+		{
+			"type": "text",
+			"id": "desc",
+			"label": "Text subtitle"
+		},
+		{
+			"type": "select",
+			"id": "sec_title_align",
+			"label": "Section align title",
+			"default": "left",
+			"options": [
+			  {
+				"value": "left",
+				"label": "Left"
+			  },
+			  {
+				"value": "center",
+				"label": "Center"
+			  },
+			  {
+				"value": "right",
+				"label": "Right"
+			  }
+			]
+		  },
+
+		
+		{
+		"type":      "select",
+		"id":        "container_width",
+		"label":     "Container width",
+		"options": [
+			{
+				"value": "container container-770",
+				"label": "Small Box"
+			},
+			{
+				"value": "container",
+				"label": "Box"
+			},
+			{
+				"value": "container-fluid",
+				"label": "Container Fluid"
+			},
+			{
+				"value": "full-width",
+				"label": "Full"
+			}
+		],
+		"default":   "container"
+		},
+		{
+			"type": "checkbox",
+			"id": "reset_indent",
+			"label": "Remove indent",
+			"default":   false
+		},
+		{
+			"type": "color",
+			"id": "bg_section",
+			"label": "Background Section",
+			"default": "#ffffff"
+		},
+		{
+			"type": "text",
+			"id": "inset_section",
+			"label": "Inset Section",
+			"default": "0px 0px 0px 0px",
+			"info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+		},
+		{
+			"type": "text",
+			"id": "offset_section",
+			"label": "Offset Section",
+			"default": "0px 0px 0px 0px",
+			"info": "offset: Top Right Bottom Left"
+		}
+	],
+
+	"blocks": [
+		{
+			"type": "tab-block",
+			"name": "Tab block",
+			"settings": [
+				{
+					"type": "select",
+					"id": "width",
+					"label": "Width",
+					"default": "12",
+					"options": [
+						{
+							"value": "3",
+							"label": "25%"
+						},
+						{
+							"value": "4",
+							"label": "33.33%"
+						},
+						{
+							"value": "5",
+							"label": "41.67%"
+						},
+						{
+							"value": "6",
+							"label": "50%"
+						},
+						{
+							"value": "7",
+							"label": "58.33%"
+						},
+						{
+							"value": "8",
+							"label": "66.67%"
+						},
+						{
+							"value": "9",
+							"label": "75%"
+						},
+						{
+							"value": "10",
+							"label": "83.33%"
+						},
+						{
+						"value": "12",
+						"label": "100%"
+						}
+					]
+				},
+				{
+					"type": "text",
+					"id": "offset_top_item",
+					"label": "Offset Top Block",
+					"default": "0px"
+				},
+				{
+					"type": "text",
+					"id": "max_height_content",
+					"label": "Max height content",
+					"default": "auto",
+					"info": "Set height for content px/rem/em (if content more value - enable scroll)"
+				},
+				{
+					"type": "checkbox",
+					"id": "widget_open_toggle",
+					"label": "Set Open title",
+					"info": "By default always is open (on Desktop)"
+				},
+				{
+					"type": "checkbox",
+					"id": "overlay_content",
+					"label": "Use open with content overlay (without down shift)",
+					"default":   false,
+					"info": "Only with disable 'Set Open title'"
+				},
+
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Image"
+				},
+				{
+					"type": "text",
+					"id": "element_header",
+					"label": "Element title",
+					"default": "Title"
+				},
+				{
+					"type": "color",
+					"id": "color_header",
+					"label": "Color Title"
+				},
+				{
+					"type": "color",
+					"id": "bg_header",
+					"label": "Background Title",
+					"default": "#ffffff"
+				},
+				{
+					"type": "richtext",
+					"id": "element_text",
+					"label": "Element text",
+					"default": "<p>Text</p>"
+				},
+				{
+					"type": "color",
+					"id": "color_text",
+					"label": "Color text"
+				},
+				{
+					"type": "color",
+					"id" : "bg_text",
+					"label": "Background text",
+					"default": "#ffffff"
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "Accordion section",
+			"category": "Text",
+			"blocks": [
+				{
+					"type": "tab-block",
+					"settings": {
+							"width": "12"
+					}
+				},
+				{
+					"type": "tab-block",
+					"settings": {
+							"width": "12"
+					}
+				},
+				{
+					"type": "tab-block",
+					"settings": {
+							"width": "12"
+					}
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+

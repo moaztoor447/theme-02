@@ -1,0 +1,95 @@
+{% if blm_it.links.size > 0 %}
+	<ul  id="menu_{{ block.id }}" class="level_2 is-simplemenu submenu-js item_{{ block.type }}" style="display: none;" {{ block.shopify_attributes }}>
+	 
+		{%- assign links_small = blm_it.links -%}
+		{% for link in linklists[links_small].links %}
+			{%- assign child_list_handle = link.title | handleize -%}
+			
+			{%- assign link_count = 0 -%}
+			{% for childlink in linklists[child_list_handle].links %}
+				{%- assign link_count = link_count | plus: 1 -%}
+			{% endfor %}
+
+			{% if link.title contains '[new]' %}
+				{%- assign link_text = link.title | replace: '[new]', '' -%}
+				{%- assign link_badge = 'new' -%}
+				{% elsif link.title contains '[hot]' %}
+				{%- assign link_text = link.title | replace: '[hot]', '' -%}
+				{%- assign link_badge = 'hot' -%}
+				{% elsif link.title contains '[featured]' %}
+				{%- assign link_text = link.title | replace: '[featured]', '' -%}
+				{%- assign link_badge = 'featured' -%}
+				{% elsif link.title contains '[comming soon]' %}
+				{%- assign link_text = link.title | replace: '[comming soon]', '' -%}
+				{%- assign link_badge = 'comming_soon' -%}
+				{% elsif link.title contains '[heading]' %}
+				{%- assign link_text = link.title | replace: '[heading]', '' -%}
+				{%- assign link_badge = false -%}
+				{%- assign heading_text = 'custom_heading' -%}
+			{% else %}
+				{%- assign link_text = link.title -%}
+				{%- assign link_badge = false -%}
+			{% endif %}
+
+			{% if link_text contains '[ld]' %}
+				{%- assign link_text = link_text | replace: '[ld]', '' -%}
+			{% endif %}
+
+			
+			<li class="level_2__item {% if link_count > 0 %}with_ul{% endif %}">
+				<a class="level_2__link" href="{{ link.url }}">
+					<span class="wrap {% if link_badge %} link_badge_wrap {% endif %}">
+						<span class="pr-1">{{ link_text }}</span>
+						{% if link_badge %}
+							<span class="badge badge_{{ link_badge }}">
+								{{ link_badge }}
+							</span>
+						{% endif %}
+						{%- if link.title contains '[ld]' -%}
+							{%- assign link_image = link_text | handle | append: '.jpg' -%}
+							<img loading="lazy" class="lazyload" data-src="{{ link_image | file_img_url: "200x700" }}"  alt="{{ link_text | escape }}"/>
+						{%- endif -%}
+					</span>
+					{% if link_count > 0 %}
+						<span  class="level_2__trigger megamenu_trigger" data-submenu="submenu_{{ block.id }}-{{ forloop.index }}">
+								<svg viewBox="0 0 12 7" xmlns="http://www.w3.org/2000/svg" ><path fill-rule="evenodd" clip-rule="evenodd" d="M0.575684 1.4247L1.42421 0.576172L5.99995 5.15191L10.5757 0.576172L11.4242 1.4247L5.99995 6.84896L0.575684 1.4247Z" /></svg>
+						</span>
+					{% endif %}
+				</a>
+				
+				{% if link_count > 0 %}
+					<ul class="level_3 droped_linklist submenu-js" id="submenu_{{ block.id }}-{{ forloop.index }}"  style="display: none;">
+					  {% for childlink in linklists[child_list_handle].links %}
+							{%- assign child_list_2_handle = childlink.title | handleize -%}
+							
+							{%- assign link_count = 0 -%}
+							{% for childlink in linklists[child_list_2_handle].links %}
+								{%- assign link_count = link_count | plus: 1 -%}
+							{% endfor %}
+						
+							<li class="level_3_item {% if link_count > 0 %}with_ul{% endif %}">
+								<a class="level_3_link" href="{{ childlink.url }}">{{ childlink.title }}
+									{% if link_count > 0 %}
+										<span class="level_3__trigger megamenu_trigger" data-submenu="subsubmenu_{{ block.id }}-{{ forloop.index }}">
+											<svg viewBox="0 0 12 7" xmlns="http://www.w3.org/2000/svg" ><path fill-rule="evenodd" clip-rule="evenodd" d="M0.575684 1.4247L1.42421 0.576172L5.99995 5.15191L10.5757 0.576172L11.4242 1.4247L5.99995 6.84896L0.575684 1.4247Z" /></svg>
+										</span>
+									{% endif %}
+								</a>
+								{% if link_count > 0 %}
+									<ul class="level_3_1 droped_linklist submenu-js" id="subsubmenu_{{ block.id }}-{{ forloop.index }}" style="display: none;">
+										{% for childlink in linklists[child_list_2_handle].links %}
+											<li class="level_3_1_item">
+												<a class="level_3_1_link" href="{{ childlink.url }}">{{ childlink.title }}</a>
+											</li>
+										{% endfor %}
+									</ul>
+								{% endif %}
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			</li>
+		{% endfor %}
+	</ul>
+{% endif %}
+

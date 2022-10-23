@@ -1,0 +1,102 @@
+{% if blm_it.links_1.size > 0 or blm_it.links_2.size > 0 or blm_it.banner_image_1 or blm_it.banner_image_2 %}
+	<ul id="menu_{{ block.id }}" class="level_2 is-megamenu submenu-js" style="display: none;" {{ block.shopify_attributes }}>
+		<li class="item_{{ block.type }}">
+			<div class="row megamenu_wrapper">
+				{% for i in (1..3) %}
+					{% capture list %}links_{{ i }}{% endcapture %}
+					{%- assign list = blm_it[list] -%}
+					
+					<div class="megamenu_col__item col-12 col-md-6 col-xl-2 mt-1 mb-2 my-xl-0">
+						<div class="megamenu_linklist">
+							<div class="h6 {% if blm_it.show_title == blank %} d-xl-none mb-0{% endif %} d-flex mb-2">{{ linklists[list].title }} <i class="level_2__trigger megamenu_trigger" data-submenu="menu_{{ block.id }}-{{ i }}"></i></div>
+							<ul class="level_3 link-list" id="menu_{{ block.id }}-{{ i }}">
+								{% for link in linklists[list].links %}
+									<li class="level_3__item">
+										{% if link.title contains '[new]' %}
+											{%- assign link_text = link.title | replace: '[new]', '' -%}
+											{%- assign link_badge = 'new' -%}
+											{% elsif link.title contains '[hot]' %}
+											{%- assign link_text = link.title | replace: '[hot]', '' -%}
+											{%- assign link_badge = 'hot' -%}
+											{% elsif link.title contains '[featured]' %}
+											{%- assign link_text = link.title | replace: '[featured]', '' -%}
+											{%- assign link_badge = 'featured' -%}
+											{% elsif link.title contains '[comming soon]' %}
+											{%- assign link_text = link.title | replace: '[comming soon]', '' -%}
+											{%- assign link_badge = 'comming_soon' -%}
+											{% elsif link.title contains '[heading]' %}
+											{%- assign link_text = link.title | replace: '[heading]', '' -%}
+											{%- assign link_badge = false -%}
+											{%- assign heading_text = 'custom_heading' -%}
+										{% else %}
+											{%- assign link_text = link.title -%}
+											{%- assign link_badge = false -%}
+										{% endif %}
+									 
+										{% if link_text contains '[ld]' %}
+											{%- assign link_text = link_text | replace: '[ld]', '' -%}
+										{% endif %}
+										
+										<a class="level_3__link{% if link.title contains '[heading]' %} {{ heading_text }}{% endif %}" href="{{ link.url }}">
+											<span class="wrap {% if link_badge %} link_badge_wrap {% endif %}">
+												<span class="pr-1">{{ link_text }}</span>
+												{% if link_badge %}
+													<span class=" badge badge_{{ link_badge }}">
+															{{ link_badge }}
+														</span>
+												{% endif %}
+												{%- if link.title contains '[ld]' -%}
+													{%- assign link_image = link_text | handle | append: '.jpg' -%}
+													<img class="lazyload" data-src="{{ link_image | file_img_url: "200x700" }}"  alt="{{ link_text | escape }}"/>
+												{%- endif -%}
+											</span>
+										</a>
+									</li>
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
+				{% endfor %}
+				
+				{% for i in (1..2) %}
+					{% capture banner_link %}banner_link_{{ i }}{% endcapture %}
+					{% capture banner_image %}banner_image_{{ i }}{% endcapture %}
+					{% capture banner_inverted %}banner_inverted_{{ i }}{% endcapture %}
+					{% capture banner_position_vertical %}banner_position_vertical_{{ i }}{% endcapture %}
+					{% capture banner_position_horizontal %}banner_position_horizontal_{{ i }}{% endcapture %}
+					{% capture banner_align %}banner_align_{{ i }}{% endcapture %}
+					{% capture item_title %}item_title_{{ i }}{% endcapture %}
+					{% capture item_subtitle %}item_subtitle_{{ i }}{% endcapture %}
+					{% capture item_text %}item_text_{{ i }}{% endcapture %}
+					{% capture banner_style %}banner_style_{{ i }}{% endcapture %}
+					<div class="megamenu_col__item megamenu_col__banner {% if blm_it.use_ban1 != blank and blm_it.use_ban2 != blank %} col-xl-3 {% else %} col-xl-6 {% endif %} {% if i == 1 and blm_it.use_offset != blank %} offset-xl-2 {% endif %} mt-1 mb-2 my-xl-0">
+						{% if blm_it[banner_link].size > 0 and blm_it[banner_image] %}
+							<div class="megamenu_banner_wrapper {{ blm_it[banner_style] }}">
+								<a class="megamenu_banner" href="{{ blm_it[banner_link] }}"><span class="d-none">{{ blm_it[item_title] }}</span></a>
+								<div class="megamenu-img">
+								  {% if blm_it.use_ban1 != blank and blm_it.use_ban2 != blank %}
+									<img class="img-fluid lazyload" data-src="{{ blm_it[banner_image] | img_url: '255x402', crop: 'center' }}" alt="{{ blm_it[banner_image].alt | escape }}">
+								  {% else %}
+									<img class="img-fluid lazyload" data-src="{{ blm_it[banner_image] | img_url: '480x240', crop: 'center' }}" alt="{{ blm_it[banner_image].alt | escape }}">
+								  {% endif %}
+								</div>
+								<div class="description-banner {% if blm_it[banner_inverted] %} inverted{% endif %} text-{{ blm_it[banner_align] }} justify-content-{{ blm_it[banner_position_vertical] }} align-items-{{ blm_it[banner_position_horizontal] }}">
+									{% if blm_it[item_title].size > 0 %}
+										<div class="h4 my-0">{{ blm_it[item_title] }}</div>
+									{% endif %}
+									{% if blm_it[item_subtitle].size > 0 %}
+										<div class="h5 my-0">{{ blm_it[item_subtitle] }}</div>
+									{% endif %}
+									{% if blm_it[item_text].size > 0 %}
+										<div class="mt-1">{{ blm_it[item_text] }}</div>
+									{% endif %}
+								</div>
+							
+							</div>
+						{% endif %}
+					</div>
+				{% endfor %}
+			</div>
+		</li>
+	</ul>
+{% endif %}

@@ -1,0 +1,9 @@
+/**
+ * Section image with text column
+ */
+
+.section_image-with-text-column .image-item-wrapper {
+    display: block;
+    margin: 0 auto;
+    position: relative;
+}

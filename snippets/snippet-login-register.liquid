@@ -1,0 +1,225 @@
+<div class="template_customer template_customer__login">
+
+	<h1 class="page_heading">{{ page_title }}</h1>
+		
+	{% comment %} NAVIGATION {% endcomment %}
+	<div id="account_section__wrapper" class="container-sm mt-4">
+		<div class="customer_wrapper row justify-content-center">
+			<div class="col-6 col-md-3 col-xl-4 mb-3">
+				<a href="#" id="account_login__link" class="customer_block customer_block__login">
+					<svg width="36" height="36" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M20 16C15.6 16 12 12.4 12 8C12 3.6 15.6 0 20 0C24.4 0 28 3.6 28 8C28 12.4 24.4 16 20 16ZM20 2C16.7 2 14 4.7 14 8C14 11.3 16.7 14 20 14C23.3 14 26 11.3 26 8C26 4.7 23.3 2 20 2Z"/>
+						<path d="M40 40H0V39C0.299252 34.1 2.39401 29.3 5.88529 25.8C9.67581 22.1 14.6633 20 19.9501 20C25.2369 20 30.3242 22.1 34.015 25.9C37.5062 29.4 39.8005 34 40 39V40ZM2.09476 38H37.8055C37.3067 33.9 35.5112 30.2 32.6185 27.3C29.3267 23.9 24.7382 22 19.9501 22C15.1621 22 10.6733 23.9 7.2818 27.3C4.38903 30.2 2.59352 33.9 2.09476 38Z"/>
+					</svg>
+					<div class="h6">Log in</div>
+				</a>
+			</div>
+			<div class="col-6 col-md-3 col-xl-4 mb-3">
+				<a href="#" id="account_register__link" class="customer_block customer_block__register">
+					<svg width="36" height="36" viewBox="0 0 44 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M20 16C15.6 16 12 12.4 12 8C12 3.6 15.6 0 20 0C24.4 0 28 3.6 28 8C28 12.4 24.4 16 20 16ZM20 2C16.7 2 14 4.7 14 8C14 11.3 16.7 14 20 14C23.3 14 26 11.3 26 8C26 4.7 23.3 2 20 2Z"/>
+						<path d="M40 40H0V39C0.299252 34.1 2.39401 29.3 5.88529 25.8C9.67581 22.1 14.6633 20 19.9501 20C25.2369 20 30.3242 22.1 34.015 25.9C37.5062 29.4 39.8005 34 40 39V40ZM2.09476 38H37.8055C37.3067 33.9 35.5112 30.2 32.6185 27.3C29.3267 23.9 24.7382 22 19.9501 22C15.1621 22 10.6733 23.9 7.2818 27.3C4.38903 30.2 2.59352 33.9 2.09476 38Z"/>
+						<path d="M35 23V22H34H32H31V23V27H27H26V28V30V31H27H31V35V36H32H34H35V35V31H39H40V30V28V27H39H35V23Z" stroke="white" stroke-width="2"/>
+					</svg>
+					<div class="h6">Registration</div>
+				</a>
+			</div>
+
+			{% if shop.checkout.guest_login %}
+				<div class="col-6 col-md-3 col-xl-4 mb-3">
+					<a href="#" id="account_login_guest__link" class="customer_block customer_block__login_guest">
+						<svg width="36" height="36" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M20 16C15.6 16 12 12.4 12 8C12 3.6 15.6 0 20 0C24.4 0 28 3.6 28 8C28 12.4 24.4 16 20 16ZM20 2C16.7 2 14 4.7 14 8C14 11.3 16.7 14 20 14C23.3 14 26 11.3 26 8C26 4.7 23.3 2 20 2Z"/>
+							<path d="M40 40H0V39C0.299252 34.1 2.39401 29.3 5.88529 25.8C9.67581 22.1 14.6633 20 19.9501 20C25.2369 20 30.3242 22.1 34.015 25.9C37.5062 29.4 39.8005 34 40 39V40ZM2.09476 38H37.8055C37.3067 33.9 35.5112 30.2 32.6185 27.3C29.3267 23.9 24.7382 22 19.9501 22C15.1621 22 10.6733 23.9 7.2818 27.3C4.38903 30.2 2.59352 33.9 2.09476 38Z"/>
+						</svg>
+						<div class="h6">Continue as Guest</div>
+					</a>
+				</div>
+			{% endif %}
+
+			<div class="col-6 col-md-3 col-xl-4 mb-3">
+				<a href="#" id="account_reset__link" class="customer_block customer_block__restore">
+					<svg width="36" height="36" viewBox="0 0 39 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path fill-rule="evenodd" clip-rule="evenodd" d="M5.85788 5.85786C13.6683 -1.95262 26.3317 -1.95262 34.1421 5.85786L32.7279 7.27207C25.6985 0.242644 14.3015 0.242644 7.2721 7.27207L6.56499 6.56496L7.2721 7.27207C0.242634 14.3015 0.242634 25.6985 7.2721 32.728C14.3015 39.7573 25.6985 39.7573 32.7279 32.728C35.0474 30.4085 36.6002 27.616 37.3891 24.6622L39.3213 25.1782C38.4442 28.4627 36.7168 31.5675 34.1421 34.1422C26.3317 41.9526 13.6683 41.9526 5.85789 34.1422C-1.95263 26.3316 -1.95263 13.6684 5.85788 5.85786Z" />
+						<path fill-rule="evenodd" clip-rule="evenodd" d="M32.7154 6.32411L33.5192 2.30469L35.4804 2.69692L34.2843 8.6775L28.3037 7.48138L28.6959 5.52022L32.7154 6.32411Z" />
+						<path fill-rule="evenodd" clip-rule="evenodd" d="M12 15H28V29H12V15ZM14 17V27H26V17H14Z" />
+						<path fill-rule="evenodd" clip-rule="evenodd" d="M15 17C15 13.9061 17.0419 11 20 11C22.9581 11 25 13.9061 25 17H23C23 14.5711 21.4601 13 20 13C18.5399 13 17 14.5711 17 17H15Z" />
+						<path d="M20 24C21.1046 24 22 23.1046 22 22C22 20.8954 21.1046 20 20 20C18.8954 20 18 20.8954 18 22C18 23.1046 18.8954 24 20 24Z" />
+					</svg>
+					<div class="h6">Restore Password</div> 
+				</a>
+			</div>
+		</div>
+	</div>
+	
+
+	{% comment %} REGISTER {% endcomment %}
+	<div id="account_section__register" class="account_section account_section__register container-sm">
+		<div class="customer_item_wrap">
+			<div class="mb-3 h3 close-wrapper">{{ 'customer.register_form.title' | t }} <a class="link_close account_register__close" href="#" title="{{ 'customer.register_form.close' | t }}">
+					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path fill-rule="evenodd" clip-rule="evenodd" d="M13.7156 5L15 6.14286L10.993 10L15 13.8571L13.7156 15L9.95417 11.2857L6.28442 15L5 13.8571L8.9342 10L5 6.14286L6.28442 5L9.95417 8.71429L13.7156 5Z" />
+					</svg>
+				</a></div>
+			{% form 'create_customer' %}
+				<input type="hidden" id="password_confirmed" name="customer[password]">
+
+				{{ form.errors | default_errors | replace: 'errors', 'alert alert-danger' }}
+				<div class="form-group row">
+					<div class="col-12 text-left">
+						<label for="first_name">{{ 'customer.register_form.first_name' | t }}</label>
+					</div>
+					<div class="form-control-content col-12">
+						<input type="text" value="" name="customer[first_name]" id="first_name" class="form-control">
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<div class="col-12 text-left">
+						<label for="last_name">{{ 'customer.register_form.last_name' | t }}</label>
+					</div>
+					<div class="form-control-content col-12">
+						<input type="text" value="" name="customer[last_name]" id="last_name" class="form-control">
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<div class="col-12 text-left">
+						<label for="email">{{ 'customer.register_form.email' | t }}</label>
+					</div>
+					<div class="form-control-content col-12">
+						<input type="email" value="" name="customer[email]" id="email" class="form-control">
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<div class="col-12 text-left">
+						<label for="password_1">{{ 'customer.register_form.password' | t }}</label>
+					</div>
+					<div class="form-control-content col-12">
+						<div class="input-group">
+							<input class="form-control js-visible-password" type="password" value="" name="customer[password]" id="password_1">
+							<div class="input-group-append">
+								<div class="input-group-text" data-action="show-password">
+									<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="file_eye_el"><path d="M19.9213 6.33664C20.1557 5.81077 19.844 5.21824 19.2848 5.05073C18.7566 4.89251 18.1987 5.17332 17.9664 5.66527C16.4415 8.89505 13.3725 10.966 10.0416 10.966C6.6215 10.966 3.54948 8.90232 2.10083 5.68227C1.876 5.18253 1.32023 4.88805 0.785864 5.04012L0.728076 5.05657C0.155103 5.21963 -0.161611 5.82638 0.0839321 6.36027C0.677994 7.65193 1.46566 8.82793 2.44692 9.79417C2.80378 10.1456 2.90358 10.6891 2.64628 11.1163L2.37452 11.5674C2.08511 12.0479 2.25306 12.668 2.74729 12.9438C3.22751 13.2118 3.83775 13.0542 4.12169 12.589L4.23541 12.4027C4.52288 11.9316 5.1386 11.7753 5.64786 12.0022C6.39877 12.3366 7.2005 12.6011 8.01571 12.7778C8.51904 12.8869 8.90067 13.3108 8.90067 13.817V13.9866C8.90067 14.5463 9.3679 15 9.93786 15C10.5078 15 10.9751 14.5463 10.9751 13.9866V13.817C10.9751 13.3108 11.3565 12.887 11.8618 12.7872C12.6628 12.6289 13.4508 12.3976 14.1903 12.0598C14.7189 11.8183 15.372 11.963 15.6717 12.4541L15.754 12.589C16.038 13.0542 16.6482 13.2118 17.1284 12.9438C17.6227 12.668 17.7906 12.0479 17.5012 11.5674L17.2439 11.1403C16.9803 10.7027 17.0921 10.1451 17.4697 9.79728C18.5171 8.83258 19.3228 7.67903 19.9213 6.33664Z"/></svg>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<div class="col-12 text-left">
+						<label for="password_2">{{ 'customer.register_form.confirm_password' | t }}</label>
+					</div>
+					<div class="form-control-content col-12">
+						<div class="input-group">
+							<input type="password" value="" id="password_2" class="form-control js-visible-password">
+							<div class="input-group-append">
+								<div class="input-group-text" data-action="show-password">
+									<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="file_eye_el"><path d="M19.9213 6.33664C20.1557 5.81077 19.844 5.21824 19.2848 5.05073C18.7566 4.89251 18.1987 5.17332 17.9664 5.66527C16.4415 8.89505 13.3725 10.966 10.0416 10.966C6.6215 10.966 3.54948 8.90232 2.10083 5.68227C1.876 5.18253 1.32023 4.88805 0.785864 5.04012L0.728076 5.05657C0.155103 5.21963 -0.161611 5.82638 0.0839321 6.36027C0.677994 7.65193 1.46566 8.82793 2.44692 9.79417C2.80378 10.1456 2.90358 10.6891 2.64628 11.1163L2.37452 11.5674C2.08511 12.0479 2.25306 12.668 2.74729 12.9438C3.22751 13.2118 3.83775 13.0542 4.12169 12.589L4.23541 12.4027C4.52288 11.9316 5.1386 11.7753 5.64786 12.0022C6.39877 12.3366 7.2005 12.6011 8.01571 12.7778C8.51904 12.8869 8.90067 13.3108 8.90067 13.817V13.9866C8.90067 14.5463 9.3679 15 9.93786 15C10.5078 15 10.9751 14.5463 10.9751 13.9866V13.817C10.9751 13.3108 11.3565 12.887 11.8618 12.7872C12.6628 12.6289 13.4508 12.3976 14.1903 12.0598C14.7189 11.8183 15.372 11.963 15.6717 12.4541L15.754 12.589C16.038 13.0542 16.6482 13.2118 17.1284 12.9438C17.6227 12.668 17.7906 12.0479 17.5012 11.5674L17.2439 11.1403C16.9803 10.7027 17.0921 10.1451 17.4697 9.79728C18.5171 8.83258 19.3228 7.67903 19.9213 6.33664Z"/></svg>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div>
+						<button class="btn btn-default" type="submit">{{ 'customer.register_form.button' | t }}</button>
+					</div>
+				</div>
+			{% endform %}
+		</div>
+	</div>
+		
+	{% comment %} LOGIN {% endcomment %}
+	<div id="account_section__login"  class="account_section account_section__login container-sm">
+		<div class="customer_item_wrap">
+			{% form 'customer_login' %}
+				<div class="mb-3 h3 close-wrapper">{{ 'customer.login_form.title' | t }}
+					<a class="link_close account_login__close" href="#" title="{{ 'customer.reset_password.close' | t }}">
+						<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M13.7156 5L15 6.14286L10.993 10L15 13.8571L13.7156 15L9.95417 11.2857L6.28442 15L5 13.8571L8.9342 10L5 6.14286L6.28442 5L9.95417 8.71429L13.7156 5Z" />
+						</svg>
+					</a>
+				</div>
+
+				{{ form.errors | default_errors | replace: 'errors', 'alert alert-danger' }}
+
+				<div class="form-group row">
+					<div class="col-12 text-left">
+						<label for="customer_email">{{ 'customer.login_form.email' | t }}</label>
+					</div>
+					<div class="form-control-content col-12">
+						<input type="email" value="" name="customer[email]" id="customer_email" class="form-control">
+					</div>
+				</div>
+
+				{% if form.password_needed %}
+					<div class="form-group row">
+						<div class="col-12 text-left">
+							<label for="customer_password">{{ 'customer.login_form.password' | t }}</label>
+						</div>
+						<div class="form-control-content col-12">
+							<div class="input-group">
+								<input type="password" value="" name="customer[password]" id="customer_password" class="form-control js-visible-password">
+								<div class="input-group-append">
+									<div class="input-group-text" data-action="show-password">
+										<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="file_eye_el"><path d="M19.9213 6.33664C20.1557 5.81077 19.844 5.21824 19.2848 5.05073C18.7566 4.89251 18.1987 5.17332 17.9664 5.66527C16.4415 8.89505 13.3725 10.966 10.0416 10.966C6.6215 10.966 3.54948 8.90232 2.10083 5.68227C1.876 5.18253 1.32023 4.88805 0.785864 5.04012L0.728076 5.05657C0.155103 5.21963 -0.161611 5.82638 0.0839321 6.36027C0.677994 7.65193 1.46566 8.82793 2.44692 9.79417C2.80378 10.1456 2.90358 10.6891 2.64628 11.1163L2.37452 11.5674C2.08511 12.0479 2.25306 12.668 2.74729 12.9438C3.22751 13.2118 3.83775 13.0542 4.12169 12.589L4.23541 12.4027C4.52288 11.9316 5.1386 11.7753 5.64786 12.0022C6.39877 12.3366 7.2005 12.6011 8.01571 12.7778C8.51904 12.8869 8.90067 13.3108 8.90067 13.817V13.9866C8.90067 14.5463 9.3679 15 9.93786 15C10.5078 15 10.9751 14.5463 10.9751 13.9866V13.817C10.9751 13.3108 11.3565 12.887 11.8618 12.7872C12.6628 12.6289 13.4508 12.3976 14.1903 12.0598C14.7189 11.8183 15.372 11.963 15.6717 12.4541L15.754 12.589C16.038 13.0542 16.6482 13.2118 17.1284 12.9438C17.6227 12.668 17.7906 12.0479 17.5012 11.5674L17.2439 11.1403C16.9803 10.7027 17.0921 10.1451 17.4697 9.79728C18.5171 8.83258 19.3228 7.67903 19.9213 6.33664Z"/></svg>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endif %}
+
+				<div class="form-group">
+					<button class="btn btn-default" type="submit">{{ 'customer.login_form.button' | t }}</button>
+				</div>
+			{% endform %}
+		</div>
+	</div>
+
+	{% comment %} RESET {% endcomment %}
+	<div id="account_section__reset" class="account_section account_section__reset container-sm">
+		<div class="customer_item_wrap">
+			<div class="mb-3 h3 close-wrapper">{{ 'customer.reset_password.title' | t }}
+				<a class="link_close account_reset__cancel" href="#" title="{{ 'customer.reset_password.close' | t }}">
+					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path fill-rule="evenodd" clip-rule="evenodd" d="M13.7156 5L15 6.14286L10.993 10L15 13.8571L13.7156 15L9.95417 11.2857L6.28442 15L5 13.8571L8.9342 10L5 6.14286L6.28442 5L9.95417 8.71429L13.7156 5Z" />
+					</svg> 
+				</a>
+			</div>
+
+			<p class="note">{{ 'customer.reset_password.subtitle' | t }}</p>
+
+			{% form 'recover_customer_password' %}
+				<form action="">
+					{% if form.posted_successfully? %}
+						<p class="alert alert-success">{{ 'customer.reset_password.success' | t }}</p>
+					{% else %}
+						{{ form.errors | default_errors | replace: 'errors', 'alert alert-danger' }}
+					{% endif %}
+					<div class="form-group row">
+						<div class="col-12 text-left">
+							<label for="email_recover" class="large">{{ 'customer.reset_password.email' | t }}</label>
+						</div>
+						<div class="form-control-content col-12">
+							<input type="email" id="email_recover" name="email" value="" class="form-control">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div>
+							<button type="submit" class="btn btn-default">{{ 'customer.reset_password.button' | t }}</button>
+						</div>
+					</div>
+				</form>
+			{% endform %}
+		</div>
+	</div>
+</div>
+<script>
+	theme.loginForms = true;
+</script>

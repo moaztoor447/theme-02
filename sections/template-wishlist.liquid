@@ -1,0 +1,40 @@
+{{ 'component-loading-overlay.css' | asset_url | stylesheet_tag }}
+{{ 'component-rating.css' | asset_url | stylesheet_tag }}
+<div class="page_content">
+  
+  <h1 class="section_heading">
+	{{ page.title }}
+  </h1>
+  
+  {% if page.content.size > 0 %}
+	<div class="rte">
+	  {{ page.content }}
+	</div>
+  {% endif %}
+  
+  
+  <div class="product_listing__main  product_listing__grid mt-3 mt-md-5 d-flex flex-wrap" template-wishlist-js>
+	<p class="wishlist__loader full-width text-center position-relative loading">
+	  <span class="loading-overlay__spinner">
+		<svg aria-hidden="true" focusable="false" role="presentation" class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+		  <circle class="path" fill="none" stroke-width="4" cx="33" cy="33" r="30"></circle>
+		</svg>
+	  </span>
+	  <span class="d-inline-block my-1">Loading...</span>
+	</p>
+  </div>
+  
+  <div class="d-flex justify-content-center mt-3">
+	{% include 'widget-social-sharing', share_title: page.title, share_link: pages[settings.wishlist_page].url %}
+  </div>
+</div>
+
+
+{% schema %}
+{
+  "templates": [
+	"page"
+  ]
+}
+{% endschema %}
+

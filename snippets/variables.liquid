@@ -1,0 +1,196 @@
+{%- liquid
+	assign base_font = settings.type_base_font 
+	assign heading_font = settings.type_heading_font 
+	assign heading_font_h1 = settings.type_heading_font_h1
+	assign large_font = settings.type_large_font 
+
+	assign heading_font_thin = heading_font | font_modify: 'weight', '300'
+	assign heading_font_regular = heading_font | font_modify: 'weight', '400'
+	assign heading_font_medium = heading_font | font_modify: 'weight', '500'
+    assign heading_font_semi_bold = heading_font | font_modify: 'weight', '600'
+	assign heading_font_bold = heading_font | font_modify: 'weight', '700'
+    assign heading_font_extrabold = heading_font | font_modify: 'weight', '800'
+	assign heading_font_super_extarbold = heading_font | font_modify: 'weight', '900'
+
+	assign large_font_thin = large_font | font_modify: 'weight', '300'
+	assign large_font_regular = large_font | font_modify: 'weight', '400'
+	assign large_font_medium = large_font | font_modify: 'weight', '500'
+    assign large_font_semi_bold = large_font | font_modify: 'weight', '600'
+	assign large_font_bold = large_font | font_modify: 'weight', '700'
+    assign large_font_extrabold = large_font | font_modify: 'weight', '800'
+	assign large_font_super_extarbold = large_font | font_modify: 'weight', '900'
+
+    assign heading_font_h1_thin = heading_font_h1 | font_modify: 'weight', '300'
+    assign heading_font_h1_regular = heading_font_h1 | font_modify: 'weight', '400'
+	assign heading_font_h1_medium = heading_font_h1 | font_modify: 'weight', '500'
+	assign heading_font_h1_semi_bold = heading_font_h1 | font_modify: 'weight', '600'
+	assign heading_font_h1_bold = heading_font_h1 | font_modify: 'weight', '700'
+    assign heading_font_h1_extrabold = heading_font_h1 | font_modify: 'weight', '800'
+	assign heading_font_h1_super_extrabold = heading_font_h1 | font_modify: 'weight', '900'
+
+   	assign base_font_thin = base_font | font_modify: 'weight', '300'
+	assign base_font_regular = base_font | font_modify: 'weight', '400'
+	assign base_font_medium = base_font | font_modify: 'weight', '500'
+	assign base_font_semi_bold = base_font | font_modify: 'weight', '600'
+  	assign base_font_bold = base_font | font_modify: 'weight', '700'
+   	assign base_font_extrabold = base_font | font_modify: 'weight', '800'
+	assign body_font_italic = base_font | font_modify: 'style', 'italic'
+	assign body_font_bold_italic = base_font_bold | font_modify: 'style', 'italic' 
+-%} 
+ 
+
+  {% style %}
+
+    {{ base_font | font_face: font_display: 'swap' }}
+    {{ base_font_thin | font_face: font_display: 'swap' }}
+	{{ base_font_regular | font_face: font_display: 'swap' }}
+	{{ base_font_medium | font_face: font_display: 'swap' }}
+	{{ base_font_semi_bold | font_face: font_display: 'swap' }}
+	{{ base_font_bold | font_face: font_display: 'swap' }}
+	{{ base_font_extrabold | font_face: font_display: 'swap' }}
+	{{ body_font_italic | font_face: font_display: 'swap' }}
+	{{ body_font_bold_italic | font_face: font_display: 'swap' }}
+	
+	{{ heading_font | font_face: font_display: 'swap' }}
+    {{ heading_font_thin | font_face: font_display: 'swap' }}
+	{{ heading_font_regular | font_face: font_display: 'swap' }}
+	{{ heading_font_medium | font_face: font_display: 'swap' }}
+	{{ heading_font_semi_bold | font_face: font_display: 'swap' }}
+	{{ heading_font_bold | font_face: font_display: 'swap' }}
+    {{ heading_font_extrabold | font_face: font_display: 'swap' }}
+    {{ heading_font_super_extarbold | font_face: font_display: 'swap' }}
+
+	{{ large_font | font_face: font_display: 'swap' }}
+	{{ large_font_thin | font_face: font_display: 'swap' }}
+	{{ large_font_regular | font_face: font_display: 'swap' }} 
+	{{ large_font_medium | font_face: font_display: 'swap' }}
+	{{ large_font_semi_bold | font_face: font_display: 'swap' }}
+	{{ large_font_bold | font_face: font_display: 'swap' }}
+	{{ large_font_extrabold | font_face: font_display: 'swap' }}
+	{{ large_font_super_extarbold | font_face: font_display: 'swap' }}
+
+	{{ heading_font_h1 | font_face: font_display: 'swap' }}
+    {{ heading_font_h1_thin | font_face: font_display: 'swap' }}
+    {{ heading_font_h1_regular | font_face: font_display: 'swap' }}
+	{{ heading_font_h1_medium | font_face: font_display: 'swap' }}
+	{{ heading_font_h1_semi_bold | font_face: font_display: 'swap' }}
+	{{ heading_font_h1_bold | font_face: font_display: 'swap' }}
+	{{ heading_font_h1_extrabold | font_face: font_display: 'swap' }}
+	{{ heading_font_h1_super_extrabold | font_face: font_display: 'swap' }}
+	
+	:root {
+		/*  TYPOGRAPHY  */
+		--base-font: {{ base_font.family }}, {{ base_font.fallback_families }};
+		--base-font-size: {{ settings.base_font_size }};
+		--heading-font: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+		--heading-font-h1: {{ heading_font_h1.family }}, {{ heading_font_h1.fallback_families }};
+		--heading-font-size-h1: {{ settings.heading_font_size_h1 }};  
+		--heading-font-size-h2: {{ settings.heading_font_size_h2 }}; 
+		--heading-font-size: {{ settings.heading_font_size }};
+		--heading-font-size-h4: {{ settings.heading_font_size_h4 }};
+		--heading-font-size-h5: {{ settings.heading_font_size_h5 }};
+		--heading-font-size-h6: {{ settings.heading_font_size_h6 }}; 
+		--heading-font-weight: {{ settings.heading_font_weight }};
+		--heading-font-weight-h1: {{ settings.heading_font_weight_h1 }};
+		--custom_large_font: {{ large_font.family }}, {{ large_font.fallback_families }};
+		--custom_large_font_size: {{ settings.custom_large_font_size }};
+		--custom_large_font_weight: {{ settings.custom_large_font_weight }};
+
+		/*  COLORS  */
+		--color-primary: {{ settings.color_primary }};
+		--color-secondary: {{ settings.color_secondary }};
+		--color-white: {{ settings.color_white }};
+		--color-black: {{ settings.color_black }};
+		--color-grey-1: {{ settings.color_grey_1 }};
+		--color-grey-2: {{ settings.color_grey_2 }};
+		--color-grey-3: {{ settings.color_grey_3 }}; 
+		--color-grey-4: {{ settings.color_grey_4 }};
+		--color-grey-5: {{ settings.color_grey_5 }};
+		--color-grey-6: {{ settings.color_grey_6 }};
+		--color_success: {{ settings.color_success }};
+		--color-icon-success: {{ settings.color_icon_success }};  
+		--color-info: {{ settings.color_info }};
+		--color-icon-info: {{ settings.color_icon_info }};
+		--color-warning: {{ settings.color_warning }};
+	    --color-icon-warning: {{ settings.color_icon_warning }};
+		--color-danger: {{ settings.color_danger }};
+	    --color-icon-danger: {{ settings.color_icon_danger }};
+
+		--color-text-field-text: {{ settings.color_text_field_text }};
+		--color-text-field-border: {{ settings.color_text_field_border }};
+		--color-text-field: {{ settings.color_text_field }};
+		--body-background-color: {{ settings.body_background_color }};
+		--base-font-color: {{ settings.base_font_color }};
+		--heading-font-color: {{ settings.heading_font_color }};
+		--border-color: {{ settings.border_color }};
+		--links-color: {{ settings.links_color }};
+		--links-color-hover: {{ settings.links_color_hover }};
+		--product-name-color: {{ settings.product_name_color }};
+		--product-name-color-hover: {{ settings.product_name_color_hover }};
+		--product-name-color-secondary: {{ settings.product_name_color_secondary }};
+		--product-name-color-secondary-hover: {{ settings.product_name_color_secondary_hover }};
+		--product-price-color: {{ settings.product_price_color }};
+		--product-regular-price-color: {{ settings.product_regular_price_color }};
+		--product-price-sale-color: {{ settings.product_price_sale_color }};
+		--button-background-color: {{ settings.button_background_color }};
+		--button-text-color: {{ settings.button_text_color }};
+		--button-border-color: {{ settings.button_border_color }};
+		--button-hover-color: {{ settings.button_hover_background_color }};
+		--button-hover-text-color: {{ settings.button_hover_text_color }};
+		--button-hover-border-color: {{ settings.button_hover_border_color }};
+		--primary-button-background-color: {{ settings.primary_button_background_color }};
+		--primary-button-text-color: {{ settings.primary_button_text_color }};
+		--primary-button-border-color: {{ settings.primary_button_border_color }};
+		--primary-button-hover-background-color: {{ settings.primary_button_hover_background_color }};
+		--primary-button-hover-text-color: {{ settings.primary_button_hover_text_color }};
+		--primary-button-hover-border-color: {{ settings.primary_button_hover_border_color }};
+		--color-badge-new: {{ settings.new_badge_color }};
+		--color-badge-sale: {{ settings.sale_badge_color }};
+		--color-badge-outstocksale: {{ settings.outstock_badge_color }};
+		--color-badge-custom-1: {{ settings.custom_badge_1_color }};
+		--color-badge-custom-text-color-1: {{ settings.custom_badge_1_text_color }};
+		--color-badge-custom-2: {{ settings.custom_badge_2_color }};
+		--color-badge-custom-text-color-2: {{ settings.custom_badge_2_text_color }};
+		--rout_gradient: {{ settings.rout_deg | append: 'deg' }};
+		--gradient_color_1 : {{ settings.grad_color_1 }};
+		--gradient_color_2 : {{ settings.grad_color_2 }};
+		--gradient_start_color_1: {{ settings.start_color1 | append: '%' }};
+		--gradient_end_color_2: {{ settings.end_color2 | append: '%' }};
+		--rout2_gradient: {{ settings.rout2_deg | append: 'deg' }};
+		--gradient2_color_1 : {{ settings.grad2_color_1 }};
+		--gradient2_color_2 : {{ settings.grad2_color_2 }};
+		--gradient2_start_color_1: {{ settings.start2_color1 | append: '%' }};
+		--gradient2_end_color_2: {{ settings.end2_color2 | append: '%' }};
+		--max-width-container: {{ settings.maxwidth | append: 'px' }};
+		--spacer: {{ settings.spacer | append: 'px' }};     
+	}	
+	
+	  *,
+	  *::before,
+	  *::after {
+	 	 box-sizing: inherit;
+	  }
+	
+	  html {
+	  	box-sizing: border-box;
+	  	height: 100%;
+	  }
+	
+	  body {
+	  	display: grid;
+	  	grid-template-rows: auto auto 1fr auto;
+	  	grid-template-columns: 100%;
+	  	min-height: 100%;
+	  	margin: 0;
+	  	-webkit-font-smoothing: antialiased;
+	  	-moz-osx-font-smoothing: grayscale;
+	  	color: var(--base-font-color);
+	  	background: var(--body-background-color);
+	  	font-family: var(--base-font);
+	  	font-size: var(--base-font-size);
+	  	font-weight: 400;
+	  	line-height: 1.2;
+	  }
+	
+	
+  {% endstyle %}

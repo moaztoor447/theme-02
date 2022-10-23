@@ -1,0 +1,1075 @@
+{{ 'component-rating.css' | asset_url | stylesheet_tag }}
+
+{% assign p_item = section.settings %}
+
+{% assign product_media = true %}
+{% if product.media.size == 0 %}
+	{% assign product_media = false %}
+{% endif %}
+
+{%- assign productJSON = product | json -%}
+{%- assign pr_img_min_size = 'small' -%}
+
+{%- for var in product.variants -%}
+	{%- assign varIDold = '"id": ' | append: var.id | append: ',' -%}
+	{%- assign varQ = '"inventory_quantity": ' | append: var.inventory_quantity | append: ',' -%}
+	{%- assign varIDnew = varIDold | append: varQ -%}
+
+	{%- if productJSONnew.size > 0 -%}
+		{%- assign productJSONnew = productJSONnew | replace: varIDold, varIDnew -%}
+	{%- else -%}
+		{%- assign productJSONnew = productJSON | replace: varIDold, varIDnew -%}
+	{%- endif -%}
+{%- endfor -%}
+
+{%- style -%}
+    .single_product__img .media,
+	.single_product__img .swiper-slide,
+	.single_product__img .gallery_thumbs .swiper-slide img,
+    .zoomWindowContainer > div.zoomWindow {
+	  	background-color: {{ p_item.bg_prodthumb }};
+  	}
+{%- endstyle -%}
+
+{% unless product == empty %}
+  <script type="application/json" id="product_json_{{ section.id }}">{{ productJSONnew }}</script>
+{% endunless %}
+
+<script type="application/json" id="variant_weights_{{ section.id }}">{% raw %}{{% endraw %}{% for variant in product.variants %}{% if forloop.last %}"{{ variant.id }}":"{{ variant.weight | weight_with_unit: variant.weight_unit }}"{% else %}"{{ variant.id }}":"{{ variant.weight | weight_with_unit: variant.weight_unit }}",{% endif %}{% endfor %}{% raw %}}{% endraw %}</script>
+
+
+<script>
+    theme.productViewType = '{{ p_item.product_view_type }}';
+    var productImage = '{{ product_media }}',
+        productImageMinSize = '{{ pr_img_min_size }}',
+        galleryImageSticky = '{{ p_item.use_pg_sticky }}',
+        viewItem = {{ p_item.pg_itemview }},
+        spaceBetweenItem = {{ p_item.pg_spacebi }},
+        modalThumbsWidth = {{ p_item.pg_modalthumb_w }},
+        modalThumbsHeight = {{ p_item.pg_modalthumb_h }},
+        vSlider = false,
+        hSlider = false,
+        isTile = false;
+
+    if ( theme.productViewType == 'carousel-vertical'){
+        vSlider = true;
+        var directionSlide = 'vertical';
+    }
+
+    if ( theme.productViewType == 'carousel-horizontal'){
+        hSlider = true;
+        var directionSlide = 'horizontal';
+    }
+
+    if (productImage && theme.productViewType == 'tile') {
+        isTile = true;
+    }
+
+</script>
+
+{% if p_item.product_view_type == 'carousel-big' %}
+  <script>
+      if (productImage && theme.productViewType == 'carousel-big'){
+          var viewBigItem = {{ p_item.pg_itembigview }},
+              spaceBetweenBigItem = {{ p_item.pg_spacebbigi }};
+      }
+  </script>
+{% endif %}
+
+{% if p_item.product_view_type == 'tile' %}
+  {% capture number_of_images %}{{ product.media | size }}{% endcapture %}
+  <script>
+      if (productImage && theme.productViewType == 'tile'){
+          var filterColorThumbs = {{ p_item.use_filter_color_thumbs }},
+              simpleTileMore = {{ p_item.use_more_image }},
+              shownItemSimpleTile = {{ p_item.pg_simpletile }},
+              viewTileItem = {{ p_item.pg_tileitemview }},
+              prImageCount = {{ number_of_images }};
+      }
+  </script>
+{% endif %}
+
+{% case p_item.product_view_type %}
+  {% when 'carousel-vertical' %}
+  	{% assign product_info_class = 'col-lg-5 stickyimgprheight-js' %}
+  	{% assign product_gallery_class = 'col-md-10 offset-md-1 offset-lg-0 col-lg-7 mb-2' %}
+  {% when 'carousel-horizontal' %}
+  	{% assign product_info_class = 'col-lg-6 col-xl-5 stickyimgprheight-js' %}
+  	{% assign product_gallery_class = 'col-sm-10 offset-sm-1 offset-lg-0 col-lg-6 mb-2' %}
+  {% when 'sticky' %}
+  	{% assign product_info_class = 'col-lg-6 col-xl-5' -%}
+  	{% assign product_gallery_class = 'col-12 col-lg-6 mb-2 mb-md-0' %}
+  {% when 'tile' %}
+  	{% assign product_info_class = 'col-md-6 col-lg-5 col-xl-4 stickyimgprheight-js' %}
+  	{% assign product_gallery_class = 'col-12 col-md-6 col-lg-6' %}
+  {% when 'carousel-big' %}
+  	{% assign product_info_class = 'container-small container-small-570 mt-3 text-center' %}
+  	{% assign product_gallery_class = 'col-12 text-center' %}
+{% endcase %}
+
+<!-- Product page  -->
+<section class="section-style-{{ section.id }}">
+  {%- include 'section-style' -%}
+  <div class="{{ section.settings.container_width }}">
+	  <div class="product-scope type_{{ p_item.product_view_type }} {% if p_item.use_border_thumbs %} use_border_thumbs{% endif %} {% if product.has_only_default_variant %} product-scope--only-def {% endif%}">
+		<div class="single-product-wrapper">
+			<div class="row{% if p_item.product_view_type == 'carousel-vertical' %} align-items-start{% endif %}">
+	
+					<div class="{{ product_gallery_class }}">
+						{% render 'product-gallery-layout',
+							pr_image_ratio: p_item.pr_image_ratio,
+							product_view_type: p_item.product_view_type,
+							use_gallery_sticky: p_item.use_pg_sticky,
+							pr_img_min_size: pr_img_min_size,
+							product_image_alignment: p_item.product_image_alignment,
+							pg_zoom: p_item.pg_zoom,
+							product_image_scale: p_item.pg_zoom_levelscale,
+							pg_modal_mainthumb: p_item.pg_modal_mainthumb,
+							pg_nav: p_item.pg_nav,
+							pg_pag: p_item.pg_pag,
+							pg_spacebi: p_item.pg_spacebi,
+							pg_itemview: p_item.pg_itemview,
+							pg_thumbshide: p_item.pg_thumbshide,
+							pg_fraction: p_item.pg_fraction,
+							pg_modalgallery: p_item.pg_modalgallery,
+							pg_spacebtilei: p_item.pg_spacebtilei,
+							use_more_pr_image: p_item.use_more_image,
+						    use_filter_thumbs: p_item.use_filter_color_thumbs
+						%}
+					</div>
+	
+					<div class="single_product__info product-details-info col-12 {{ product_info_class }}">
+						{% render 'product-descr' %}
+	
+						{% case p_item.product_description_type %}
+						{% when 'dropdown-content'  %}
+							{% render 'product-tabs-vertical', pr_description_as: p_item.pr_description_as, open_descr_collapse: p_item.open_descr_collapse %}
+						{% endcase %}
+					</div>
+				</div>
+		</div>
+		<div class="container product-details-info px-0">
+		  {% unless p_item.pr_description_as == 'content_tab_collapse' %}
+			<div itemprop="description" class="product_description py-3 my-3 rte">
+			  <div class="h6">{{ 'layout.product.tab_description' | t }}</div>
+			  <div>{{ product.description }}</div>
+			</div>
+		  {% endunless %}
+		  {% case p_item.product_description_type %}
+		  {% when 'tab-content'  %}
+		  {% render 'product-tabs-horizontal', pr_description_as: p_item.pr_description_as %}
+		  {% endcase %}
+		</div>
+	  </div>
+  </div>
+</section>
+
+<!-- END Product page -->
+{% render 'product-script',
+  product_view_type: p_item.product_view_type,
+  use_gallery_sticky: p_item.use_pg_sticky,
+  pg_nav: p_item.pg_nav,
+  pg_pag: p_item.pg_pag,
+  pg_spacebi: p_item.pg_spacebi,
+  pg_thumbshide: p_item.pg_thumbshide,
+  pg_fraction: p_item.pg_fraction
+%}
+
+
+{% schema %}
+{
+	"name": "Product template",
+	"tag": "section",
+	"class": "section section_single-product section_product section_template__product",
+	"max_blocks": 30,
+	"settings": [
+		{
+		  "type":      "select",
+		  "id":        "container_width",
+		  "label":     "Container width",
+		  "options": [
+			{
+			  "value": "container",
+			  "label": "Box"
+			},
+			{
+			  "value": "container-fluid",
+			  "label": "Container Fluid"
+			}
+		  ],
+		  "default":   "container"
+		},
+		
+		{
+		  "type": "color",
+		  "id": "bg_section",
+		  "label": "Background Section",
+		  "default": "#ffffff"
+		},
+		
+		{
+		  "type": "text",
+		  "id": "inset_section",
+		  "label": "Inset Section",
+		  "default": "0px 0px 0px 0px",
+		  "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+		},
+		
+		{
+		  "type": "text",
+		  "id": "offset_section",
+		  "label": "Offset Section",
+		  "default": "0px 0px 0px 0px",
+		  "info": "offset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+		},
+	 
+		{
+			"type": "header",
+			"content": "Product"
+		},
+  
+		{
+			"type": "select",
+			"id": "product_view_type",
+			"label": "View type",
+			"options": [
+				{
+					"value": "carousel-vertical",
+					"label": "Carousel Vertical"
+				},
+				{
+					"value": "carousel-horizontal",
+					"label": "Carousel Horizontal"
+				},
+				{
+					"value": "sticky",
+					"label": "Sticky"
+				},
+				{
+					"value": "tile",
+					"label": "Tile"
+				},
+				{
+					"value": "carousel-big",
+					"label": "Big img carousel"
+				}
+			]
+		},
+  
+  		{
+  			"type": "select",
+  			"id": "pr_image_ratio",
+  			"options": [
+  				{
+  					"value": "adapt",
+  					"label": "adapt"
+  				},
+  				{
+  					"value": "portrait",
+  					"label": "portrait"
+  				},
+  				{
+  					"value": "square",
+  					"label": "square"
+  				}
+  			],
+  			"default": "adapt",
+  			"label": "image ratio",
+  			"info": "Adapt not recommended to use Type Carousel Vertical"
+  		},
+	  
+	  {
+		"type": "select",
+		"id": "product_image_alignment",
+		"label": "Product image alignment",
+		"default": "center",
+		"info": "E.g. need if the rectangle is clipped to a square",
+		"options": [
+		  {
+			"value": "top",
+			"label": "Top"
+		  },
+		  {
+			"value": "center",
+			"label": "Center"
+		  },
+		  {
+			"value": "bottom",
+			"label": "Bottom"
+		  }
+		]
+	  },
+  
+  		{
+  			"type": "color",
+  			"id": "bg_prodthumb",
+  			"label": "Background color",
+  			"default": "#f2f3f5",
+  			"info": "Used if image is png with transparent background"
+  		},
+  
+  		{
+  			"type": "checkbox",
+  			"id": "use_border_thumbs",
+  			"label": "Enable border thumbs",
+  			"default": true
+  		},
+	  
+		{
+		  "type": "checkbox",
+		  "id": "use_pg_sticky",
+		  "label": "Enable sticky gallery",
+		  "default": true
+		},
+  		
+		{
+			"type": "select",
+			"id": "product_description_type",
+			"label": "Product Info type",
+			"options": [
+				{
+					"value": "tab-content",
+					"label": "Tab content"
+				},
+				{
+					"value": "dropdown-content",
+					"label": "Dropdown content"
+				}
+			]
+		},
+	  
+	  	{
+			"type": "radio",
+			"id": "pr_description_as",
+			"label": "Product Info type",
+		  	"default": "content_tab_collapse",
+			"options": [
+			  {
+				"value": "content_tab_collapse",
+				"label": "Content tab or collapse"
+			  },
+			  {
+				"value": "content_in_content",
+				"label": "Content without tab or collapse"
+			  }
+			]
+	  	},
+
+
+		{
+			"type": "checkbox",
+			"id": "open_descr_collapse",
+			"label": "Open default collapse of description",
+			"default": false
+		},
+	  
+	  
+  		{
+  			"type": "header",
+  			"content": "- Horizontal and Vertical Gallery settings"
+  		},
+  		{
+  			"type": "range",
+  			"id": "pg_itemview",
+  			"label": "View carousel thumb",
+  			"min": 3,
+  			"max": 8,
+  			"step": 1,
+  			"default": 5
+  		},
+  		{
+  			"type": "range",
+  			"id": "pg_spacebi",
+  			"label": "Space between thumbs",
+  			"min": 0,
+  			"max": 25,
+  			"unit": "px",
+  			"step": 1,
+  			"default": 10
+  		},
+  		{
+  			"type": "checkbox",
+  			"id": "pg_pag",
+  			"label": "Show pagination gallery",
+  			"default": true
+  		},
+  		{
+  			"type": "checkbox",
+  			"id": "pg_nav",
+  			"label": "Show navigation gallery",
+  			"default": true
+  		},
+  		{
+  			"type": "checkbox",
+  			"id": "pg_fraction",
+  			"label": "Show fraction carousel",
+  			"default": true
+  		},
+  		{
+  			"type": "checkbox",
+  			"id": "pg_thumbshide",
+  			"label": "Hide thumbs gallery",
+  			"info": "Only horizontal type gallery",
+  			"default": false
+  		},
+  		{
+  			"type": "header",
+  			"content": " > Big Image Carousel settings"
+  		},
+  		{
+  			"type": "range",
+  			"id": "pg_itembigview",
+  			"label": "View thumb",
+  			"min": 2,
+  			"max": 5,
+  			"step": 1,
+  			"default": 3
+  		},
+  		{
+  			"type": "range",
+  			"id": "pg_spacebbigi",
+  			"label": "Space between thumbs",
+  			"min": 0,
+  			"max": 25,
+  			"unit": "px",
+  			"step": 1,
+  			"default": 0
+  		},
+
+  		{
+  			"type": "header",
+  			"content": "Tile layout"
+  		},
+
+  		{
+  			"type": "paragraph",
+  			"content": "You may disable twice variant for see all image in two columns"
+  		},
+
+  		{
+  			"type": "paragraph",
+  			"content": "Common settings for tile"
+  		},
+  		{
+  			"type": "range",
+  			"id": "pg_spacebtilei",
+  			"label": "Space between tile thumbs",
+  			"min": 0,
+  			"max": 25,
+  			"unit": "px",
+  			"step": 1,
+  			"default": 10
+  		},
+
+  		{
+  			"type": "paragraph",
+  			"content": " > Tile Color Filter Gallery settings"
+  		},
+
+  		{
+  			"type": "checkbox",
+  			"id": "use_filter_color_thumbs",
+  			"label": "Use filter color for thumbs",
+  			"info": "Necessarily need to set attribute color in image alt. Disable button 'show more' images",
+  			"default": false
+  		},
+
+  		{
+  			"type": "range",
+  			"id": "pg_tileitemview",
+  			"label": "View items 'filter color'",
+  			"info": "Only when to use 'filter color' for thumbs",
+  			"min": 2,
+  			"max": 8,
+  			"step": 2,
+  			"default": 4
+  		},
+
+  		{
+  			"type": "paragraph",
+  			"content": " > Or Tile More Button Gallery settings"
+  		},
+
+ 		{
+ 			"type": "checkbox",
+ 			"id": "use_more_image",
+ 			"label": "Use button 'show more' images",
+ 			"info": "Disable if using 'filter color thumbs'",
+ 			"default": false
+ 		},
+  		{
+  			"type": "select",
+  			"id": "pg_simpletile",
+  			"label": "Shown items 'show more' thumbs",
+  			"default": "5",
+  			"options": [
+  				{
+  					"value": "3",
+  					"label": "3"
+  				},
+  				{
+  					"value": "5",
+  					"label": "5"
+  				}
+  			]
+  		},
+
+
+  		{
+  			"type": "header",
+  			"content": "Product zoom gallery"
+  		},
+  		{
+  			"type": "checkbox",
+  			"id": "pg_zoom",
+  			"label": "- Enable zoom",
+  			"default": true
+  		},
+  		{
+  			"type": "range",
+  			"id": "pg_zoom_levelscale",
+  			"label": "- Gallery level zoom",
+  			"min": 1,
+  			"max": 3,
+  			"step": 0.1,
+  			"default": 1.5
+  		},
+  		{
+  			"type": "header",
+  			"content": "Product modal gallery"
+  		},
+  
+  		{
+  			"type": "checkbox",
+  			"id": "pg_modalgallery",
+  			"label": "- Enable modal gallery",
+  			"default": true
+  		},
+  		{
+  			"type": "select",
+  			"id": "pg_modal_mainthumb",
+  			"label": "- Select shape modal main image",
+  			"options": [
+  				{
+  					"value": "square",
+  					"label": "Square"
+  				},
+  				{
+  					"value": "rectangle",
+  					"label": "Rectangle"
+  				}
+  			],
+  			"default": "square"
+  		},
+  
+  		{
+  			"type": "range",
+  			"id": "pg_modalthumb_w",
+  			"label": "- Gallery modal thumbs width",
+  			"min": 60,
+  			"max": 120,
+  			"unit": "px",
+  			"step": 1,
+  			"default": 68
+  		},
+  		{
+  			"type": "range",
+  			"id": "pg_modalthumb_h",
+  			"label": "- Gallery modal thumbs height",
+  			"min": 80,
+  			"max": 150,
+  			"unit": "px",
+  			"step": 1,
+  			"default": 85
+  		}
+	],
+	"blocks": [
+	  {
+		"type": "@app"
+	  },
+	  {
+		"type": "pr_text",
+		"name": "Text",
+		"settings": [
+		  {
+			"type": "text",
+			"id": "text_custom",
+			"label": "Text content",
+			"default": "Some text"
+		  },
+		  {
+			"type": "select",
+			"id": "text_style",
+			"options": [
+			  {
+				"value": "body",
+				"label": "Body"
+			  },
+			  {
+				"value": "subtitle",
+				"label": "subtitle"
+			  },
+			  {
+				"value": "uppercase",
+				"label": "Uppercase"
+			  }
+			],
+			"default": "body",
+			"label": "Body"
+		  }
+		]
+	  },
+	  {
+		"type": "pr_avalreview",
+		"name": "Availabile and review",
+		"limit": 1,
+		"settings" : [
+		  {
+			"type": "header",
+			"content": "Product Reviews"
+		  },
+		  {
+			"type": "checkbox",
+			"id": "product_reviews",
+			"label": "Show Product Reviews",
+			"info": "To use, you need to install the application"
+		  },
+			{
+			"type": "checkbox",
+			"id": "product_available",
+			"label": "Show Product Available"
+			},
+		  {
+			"type": "paragraph",
+			"content": "[Product Reviews](https:\/\/apps.shopify.com\/product-reviews)"
+		  }
+		]
+	  },
+
+		{
+			"type": "pr_available",
+			"name": "Available",
+			"limit": 1
+		},
+
+	  {
+		"type": "pr_title",
+		"name": "Product title",
+		"limit": 1
+	  },
+	  
+	  {
+		"type": "pr_price",
+		"name": "Product price",
+		"limit": 1
+	  },
+	  
+	  {
+		"type": "pr_variant_picker",
+		"name": "Variant picker",
+		"limit": 1,
+		"settings": [
+ 		{
+			"type": "paragraph",
+			"content": "It is not recommended to remove this unit for correct operation."
+		  },
+		  {
+			"type": "header",
+			"content": "Swatch option"
+		  },
+		  {
+			"type": "select",
+			"id": "swatch_type",
+			"label": "Option type",
+			"default": "swatch_buttons",
+			"options": [
+			  {
+				"value": "swatch_buttons",
+				"label": "Options as button"
+			  },
+			  {
+				"value": "swatch_dropdown",
+				"label": "Options as dropdown"
+			  }
+			]
+		  },
+		  {
+			"type": "radio",
+			"id": "sw_c_type",
+			"label": "Swatch color type (options as button)",
+			"default": "sw_bc",
+			"options": [
+			  {
+				"value": "sw_bc",
+				"label": "Color as color"
+			  },
+			  {
+				"value": "sw_bi",
+				"label": "Color as image"
+			  },
+			  {
+				"value": "sw_but",
+				"label": "Color as button"
+			  }
+			]
+		  },
+		  
+		  {
+			"type": "checkbox",
+			"id": "show_size_chart",
+			"label": "Show size chart",
+			"default": true
+		  }
+		]
+	  },
+	  
+	  {
+		"type": "pr_quantity_and_btn",
+		"name": "Quantity/compare/wishlist",
+		"limit": 1,
+		"settings": [
+			{
+				"type": "checkbox",
+				"id": "show_compare_button",
+				"label": "Show compare button",
+				"default": true
+			},
+			{
+				"type": "checkbox",
+				"id": "show_wishlist_button",
+				"label": "Show wishlist button",
+				"default": true
+			}
+		]
+	  },
+	  
+	  {
+		"type": "pr_short_descriprtion",
+		"name": "Short description",
+		"limit": 1
+	  },
+	  
+	 {
+		"type": "pr_current_viewing",
+		"name": "Current viewing",
+		"limit": 1,
+		"settings": [
+		{
+          "type": "checkbox",
+          "id": "autoViewing",
+          "default": true,
+          "label": "Set auto current viewing"
+        },
+         {
+              "type": "number",
+              "id": "autoViewingInterval",
+              "default": 5000,
+              "label": "Auto current viewing Interval in number"
+            },
+        {
+          "type": "image_picker",
+            "id": "icon_viewing",
+            "label": "Current viewing",
+            "info": "Add icon image for current viewing"
+        },
+        {
+          "type": "number",
+          "id": "min_viewing",
+          "label": "Min viewing people",
+          "default": 1
+        },
+        {
+          "type": "number",
+          "id": "max_viewing",
+          "label": "Max viewing people",
+          "default": 12
+        },
+        {
+            "type": "text",
+            "id": "text_viewing",
+            "label": "Text for current viewing",
+            "default": "people are viewing"
+        }
+	  ]
+	  },
+
+ 	{
+		"type": "pr_recently_bought",
+		"name": "Recently bought",
+		"limit": 1,
+		"settings": [
+          {
+            "type": "image_picker",
+              "id": "icon_bought",
+              "label": "Icon just bought",
+              "info": "Add icon image for current viewing"
+          },
+          {
+            "type": "number",
+            "id": "min_bought",
+            "label": "Min just bought",
+            "default": 1
+          },
+          {
+            "type": "number",
+            "id": "max_bought",
+            "label": "Max just bought",
+            "default": 7
+          },
+          {
+              "type": "text",
+              "id": "text_bought",
+              "label": "Text for just bought",
+              "default": "sold in recently"
+          }
+        ]
+	  },
+
+
+	  {
+		"type": "pr_add_to_cart",
+		"name": "Product button",
+		"limit": 1,
+		"settings": [
+		  {
+			"type": "checkbox",
+			"id": "show_bit_button",
+			"label": "Show buy it now button",
+			"default": true
+		  }
+		]
+	  },
+	  
+	  {
+		"type": "pr_notify_button",
+		"name": "Notify button",
+		"limit": 1
+	  },
+	  
+	  {
+		"type": "pr_info",
+		"name": "Product information",
+		"limit": 1,
+		"settings": [
+		  {
+			"type": "header",
+			"content": "Product Info list"
+		  },
+		  {
+			"type": "checkbox",
+			"id": "show_sku",
+			"label": "Show SKU",
+			"default": true
+		  },
+		  
+		  {
+			"type": "checkbox",
+			"id": "show_vendor",
+			"label": "Show vendor",
+			"default": true
+		  },
+		  {
+			"type": "checkbox",
+			"id": "show_product_types",
+			"label": "Show product types",
+			"default": true
+		  },
+		  {
+			"type": "checkbox",
+			"id": "show_barcode",
+			"label": "Show barcode",
+			"default": true
+		  },
+		  {
+			"type": "checkbox",
+			"id": "show_weight",
+			"label": "Show weight",
+			"default": false
+		  },
+		  {
+			"type": "checkbox",
+			"id": "show_tags",
+			"label": "Show tags",
+			"default": true
+		  },
+		  {
+			"type": "checkbox",
+			"id": "show_collections",
+			"label": "Show collections",
+			"default": true
+		  }
+		]
+	  },
+	  
+	  {
+		"type": "pr_share",
+		"name": "Product share",
+		"limit": 1
+	  },
+	  
+	  {
+		"type": "pr_modal_windows",
+		"name": "Product popup",
+		"settings": [
+		  {
+			"type": "header",
+			"content": "Popup block"
+		  },
+		  
+		  {
+			"type": "url",
+			"id": "url_page",
+			"label": "Url page with content"
+		  },
+		  {
+			"type": "text",
+			"id": "url_text",
+			"label": "Link text",
+			"default": "Link text"
+		  },
+		  {
+			"type": "textarea",
+			"id": "svg_icon",
+			"label": "Paste html svg icon or image"
+		  },
+		  {
+			"type": "radio",
+			"id": "design_popup_link_type",
+			"label": "Design type",
+			"default": "full_btn",
+			"options": [
+			  {
+				"value": "link",
+				"label": "url as link"
+			  },
+			  {
+				"value": "btn",
+				"label": "url as btn (Default Button)"
+			  },
+			  {
+				"value": "full_btn",
+				"label": "url as full width btn (Default Button)"
+			  }
+			]
+		  }
+		]
+	  },
+	  
+	  {
+		"type": "custom_liquid",
+		"name": "Custom Liquid",
+		"settings": [
+		  {
+			"type": "liquid",
+			"id": "custom_liquid",
+			"label": "Custom Liquid",
+			"info": "Add app snippets or other Liquid code to create advanced customizations"
+		  }
+		]
+	  },
+	  
+	  
+		{
+			"type": "all_tab",
+			"name": "Tab for all product",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Tab title",
+					"default": "Tab title"
+				},
+			  	{
+					"type": "richtext",
+					"id": "content",
+					"label": "Some Content"
+			  	},
+				{
+					"type": "page",
+					"id": "page",
+					"label": "Page",
+					"info": "Select a page with content"
+				}
+			]
+		},
+
+	 
+		{
+			"type": "reviews",
+			"name": "Tab Product reviews",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Tab title",
+					"default": "Product reviews",
+				    "info": "[Product Reviews](https:\/\/apps.shopify.com\/product-reviews)"
+				}
+			]
+		},
+
+		
+		{
+			"type": "product_tab",
+			"name": "Tab for this product",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Tab title",
+					"default": "Tab title"
+				},
+				{
+					"type": "product",
+					"id": "custom_product",
+					"label": "Product",
+					"info": "Content will only be shown on this product."
+				},
+			  	{
+					"type": "richtext",
+					"id": "content",
+					"label": "Some Content"
+			  	},
+				{
+					"type": "page",
+					"id": "page",
+					"label": "Page",
+					"info": "Select a page with content"
+				}
+			]
+		},
+
+		
+		{
+			"type": "collection_tab",
+			"name": "Tab for collection",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Tab title",
+					"default": "Tab title"
+				},
+				{
+					"type": "collection",
+					"id": "custom_collection",
+					"label": "Collection",
+					"info": "Content will only be shown on products from this collection."
+				},
+			  	{
+					"type": "richtext",
+					"id": "content",
+					"label": "Some Content"
+			  	},
+				{
+					"type": "page",
+					"id": "page",
+					"label": "Page",
+					"info": "Select a page with content."
+				}
+			]
+		}
+	]
+}
+{% endschema %}

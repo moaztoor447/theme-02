@@ -1,0 +1,159 @@
+{% case settings.np_type %}
+	{% when '2' %}
+	{% capture popupCode %}
+		<div class="newsletter_popup_text">
+			<div class="caption_text">
+				<div class="h4">{{ settings.newsletter_popup_header_2 }}</div>
+				<div class="discount-content h2">{{ settings.newsletter_popup_discount_percent_2 }}</div>
+				<div class="newsletter-description divider">{{ settings.newsletter_popup_description_2 }}</div>
+			</div>
+			<div class="newsletter_form newsletter_form__shopify">
+				{% form 'customer' %}
+					<input type="hidden" name="contact[tags]" value="prospect,newsletter" id="contact_tags" />
+					<input type="hidden" name="contact[first_name]" value="Newsletter" id="newsletter-first-name" />
+					<input type="hidden" name="contact[last_name]" value="Subscriber" id="newsletter-last-name" />
+					<div class="form_wrapper">
+						<input required type="email" name="contact[email]" id="contact_email" class="form-control" placeholder="Enter your email" />
+						<button type="submit" name="subscribe" class="btn btn-primary btn-md btn-gradient">{{ 'layout.footer.subscribe_button_short' | t }}</button>
+					</div>
+					<div class="newsletter_off__wrap">
+						<a id="newsletter_off">{{ 'layout.footer.newsletter_off' | t }}</a>
+					</div>
+					<p class="newsletter_error">{{ 'layout.footer.newsletter_error' | t }}</p>
+				{% endform %}
+				<p class="newsletter_success">{{ 'layout.footer.newsletter_success' | t }}</p>
+			</div>
+		</div>
+	{% endcapture %}
+	{% when '3' %}
+		{% capture popupCode %}
+			<div class="newsletter_popup_text">
+				<div class="caption_text">
+					<div class="h4">{{ settings.newsletter_popup_header_3 }}</div>
+					<div class="discount-content h2">{{ settings.newsletter_popup_discount_percent_3 }}</div>
+					<div class="newsletter-description">{{ settings.newsletter_popup_description_3 }}</div>
+				</div>
+				<div class="newsletter_form newsletter_form__shopify">
+					{% form 'customer' %}
+					<input type="hidden" name="contact[tags]" value="prospect,newsletter" id="contact_tags" />
+					<input type="hidden" name="contact[first_name]" value="Newsletter" id="newsletter-first-name" />
+					<input type="hidden" name="contact[last_name]" value="Subscriber" id="newsletter-last-name" />
+					<div class="form_wrapper">
+						<input required type="email" name="contact[email]" id="contact_email" class="form-control" placeholder="Enter your email" />
+						<button type="submit" name="subscribe" class="btn btn-primary btn-md btn-gradient">{{ 'layout.footer.subscribe_button_short' | t }}</button>
+					</div>
+					<div class="newsletter_off__wrap">
+						<a id="newsletter_off" >{{ 'layout.footer.newsletter_off' | t }}</a>
+					</div>
+					<p class="newsletter_error">{{ 'layout.footer.newsletter_error' | t }}</p>
+					{% endform %}
+					<p class="newsletter_success">{{ 'layout.footer.newsletter_success' | t }}</p>
+				</div>
+			</div>
+	{% endcapture %}
+	{% else %}
+		{% capture popupCode %}
+			<div class="newsletter_popup_text">
+				<div class="caption_text">
+					<div class="h5">{{ settings.newsletter_popup_header_1 }}</div>
+					<div class="discount-content h2">{{ settings.newsletter_popup_discount_percent_1 }}</div>
+					<span class="divider"></span>
+					<div class="newsletter-description divider">{{ settings.newsletter_popup_description_1 }}</div>
+				</div>
+				<div class="newsletter_form newsletter_form__shopify">
+					{% form 'customer' %}
+						<input type="hidden" name="contact[tags]" value="prospect,newsletter" id="contact_tags" />
+						<input type="hidden" name="contact[first_name]" value="Newsletter" id="newsletter-first-name" />
+						<input type="hidden" name="contact[last_name]" value="Subscriber" id="newsletter-last-name" />
+						<input required type="email" name="contact[email]" id="contact_email" class="form-control" placeholder="Enter your email" />
+					
+						<button type="submit" name="subscribe" class="btn btn-primary btn-md btn-gradient w-100">
+							{{ 'layout.footer.subscribe_button_short' | t }}
+						</button>
+						<div class="newsletter_off__wrap">
+							<a id="newsletter_off">{{ 'layout.footer.newsletter_off_alt' | t }}</a>
+						</div>
+						<p class="newsletter_error">{{ 'layout.footer.newsletter_error' | t }}</p>
+					{% endform %}
+					<p class="newsletter_success">{{ 'layout.footer.newsletter_success' | t }}</p>
+				</div>
+			</div>
+	{% endcapture %}
+	{% endcase %}
+
+
+{% assign popupCode = popupCode | replace: "'", "&lsquo;" | strip_newlines %}
+{% case settings.np_type %}
+		{% when '2' %}
+		<div id="newsletter_popup_{{ settings.np_type }}" class="np-design style_{{ settings.np_type }}"
+		{% if settings.newsletter_popup_bg_2 %}
+			style="background-image: url('{{ settings.newsletter_popup_bg_2 | img_url: '400x530', crop: 'center' }}');"
+		{% endif %}>
+		</div>
+		{% when '3' %}
+			<div id="newsletter_popup_{{ settings.np_type }}" class="np-design style_{{ settings.np_type }}"
+			{% if settings.newsletter_popup_bg_3 %}
+				style="background-image: url('{{ settings.newsletter_popup_bg_3 | img_url: '620x319', crop: 'center' }}');"
+			{% endif %}>
+			</div>
+		{% else %}
+		<div id="newsletter_popup_{{ settings.np_type }}" class="np-design style_{{ settings.np_type }}"
+				{% if settings.newsletter_popup_bg_1 %}
+			style="background-image: url('{{ settings.newsletter_popup_bg_1 | img_url: '400x530"', crop: 'center' }}');"
+				{% endif %}>
+		</div>
+{% endcase %}
+
+
+<script>
+	(function ($) {
+		jQuery(document).ready(function(){
+	
+		$('#newsletter_popup_{{ settings.np_type }}').append('{{ popupCode }}');
+		$("#newsletter_popup_{{ settings.np_type }}, .newsletter_success, .newsletter_error").hide();
+		
+		
+		if ( !($.cookie('newsletter_popup_status_{{ settings.np_type }}'))) {
+			setTimeout(function(){
+				$.fancybox(
+						$('#newsletter_popup_{{ settings.np_type }}'), {
+							'openSpeed': 500,
+							'closeSpeed': 500,
+							'autoSize': false,
+							 width: '100%',
+							 helpers:  {
+							 	overlay: {
+							 		speedOut: 1000
+							 	}
+							 },
+							tpl: {
+								wrap: '<div id="newsletter_popup__wrap" class="fancybox-wrap np_wrap_{{ settings.np_type }}" tabIndex="-1"><div class="fancybox-skin"><div class="fancybox-outer"><div class="fancybox-inner"></div></div></div></div>',
+								closeBtn : '<a title="Close" id="newsletter_popup__close" class="fancybox-item fancybox-close" href="javascript:;"></a>'
+							}
+						}
+				);
+				
+				
+				$('#newsletter_popup__wrap').parent().on('click', function() {
+					$.cookie('newsletter_popup_status_{{ settings.np_type }}', 'delayed', { path: '/' });
+				});
+				
+				$('#newsletter_popup__close').on('click', function() {
+					$.cookie('newsletter_popup_status_{{ settings.np_type }}', 'delayed', { path: '/' });
+				});
+				
+				$('#newsletter_off').on('click', function() {
+					$.fancybox.close($('#newsletter_popup_{{ settings.np_type }}'));
+					$.cookie("newsletter_popup_status_{{ settings.np_type }}", "disabled", { path: '/', expires : {{ settings.newsletter_popup_period | plus: 0 }} });
+					return false;
+				});
+			}, 15000);
+		}
+
+		$('#newsletter_popup_{{ settings.np_type }} form').formValidation();
+		});
+	})(jQuery);
+</script>
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+    

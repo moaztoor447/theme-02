@@ -1,0 +1,75 @@
+<article class="article_item">
+    <div class="row align-items-center">
+      {%- if item.column_item == '100%' -%}
+        {%- if item.blog_show_date -%}
+          <div class="col-12 col-md-auto">
+            <time class="article_time" datetime="{{ article.published_at | date: '%Y-%m-%dT%H:%M' }}">
+              {{ article.published_at | date: '%d.%m.%y' }}
+            </time>
+           </div>
+        {%- endif -%}
+      {%- endif -%}
+      <div class="col-12{% if article.image == blank %} col-md-auto {% elsif useC %} col-lg-6 {% else %} col-md-4 pr-md-0{% endif %}">
+        {%- unless item.column_item == '100%' -%}
+          {%- if item.blog_show_date -%}
+            <div class="d-flex align-items-center">
+              <time class="article_time" datetime="{{ article.published_at | date: '%Y-%m-%dT%H:%M' }}">
+                {{ article.published_at | date: '%d.%m.%y' }}
+              </time>
+            </div>
+          {%- endif -%}
+        {%- endunless -%}
+        <div class="article_image">
+          {% if article.image %}
+            {% include 'blog-image-item' blog: blog, article: article %}
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-12{% if article.image == blank %} col-md-auto{% else %} col-lg-6{% endif %} my-2 my-md-0">
+        <div class="article_caption {% if article.image == blank %} article_caption_no_image {% endif %}">
+          {%- if item.blog_show_info -%}
+            <div class="article_info mt-1">
+
+              {%- if item.blog_show_author -%}
+                <span class="d-flex align-items-center">
+                  {{ 'blog.articles.by_author' | t }}
+                  <em>{{ article.author }}</em>
+                </span>
+              {%- endif -%}
+
+              {%- if blog.comments_enabled? or blogs[item.section_blog].comments_enabled? and item.show_comments -%}
+                <span class="post-comments">
+                   <span class="divider">&#124;</span>
+                   <span class="comments_count">{{ article.comments_count }} {{ 'blog.articles.comments' | t }}</span>
+                </span>
+              {%- endif -%}
+
+              {%- if article.tags != blank and item.blog_show_tags -%}
+                {%- for tag in article.tags limit: 3 -%}
+                  <a class="d-flex align-items-center" href="{{ blog.url }}/tagged/{{ tag | handle }}">
+                    <span class="divider">&#124;</span>
+                    {{ tag }}
+                  </a>
+                {%- endfor -%}
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+           <h2 class="article_title h5">
+             <a href="{{ article.url }}">{{ article.title | truncate: 50 }}</a>
+           </h2> 
+
+          <div class="rte article_description">
+            {% if article.excerpt != blank %}
+                {{ article.excerpt }}
+              {% elsif article.content != blank %}
+                 {{ article.content | strip_html | truncatewords: 45 }}
+            {% endif %}
+          </div>
+          <a class="mt-2 mt-md-3 article_btn" href="{{ article.url }}">{{ 'blog.articles.read_more' | t }}</a>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  

@@ -1,0 +1,120 @@
+
+{% if section.settings.section_view == 'boxed' %}
+<div class="container">
+	{% endif %}
+	<div class="page_header">
+		{% if block.settings.page_title != blank %}
+			<h3 class="page_heading">{{ block.settings.page_title }}</h3>
+		{% endif %}
+	</div>
+	{% for block in section.blocks %}
+		<div class="collection_listing__main_type_2 text-center img_placeholder__wrap my-3">
+			{% if block.settings.bg_image != blank %}
+				{%- assign img_bg_size = '2048x700' -%}
+				<div class="img_placeholder__wrap" style="background-image: url( {{ block.settings.bg_image | img_url: img_bg_size, crop: block.settings.img_bg_alignment }} ); background-repeat: no-repeat; background-size: contain;"></div>
+			{% else %}
+				<div class="img_placeholder__wrap">
+					{{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+				</div>
+			{% endif %}
+			
+			
+			<div class="collection_caption">
+				{% if block.settings.links != blank %}
+					{%- assign linklist = block.settings.links -%}
+					<h3 class="linklist-title mb-md-6">
+						{{ linklists[linklist].title }}
+					</h3>
+					{% if block.settings.item_description.size > 0 %}
+						<h6>{{ block.settings.item_description }}</h6>
+					{% endif %}
+					<ul class="link_list">
+						{% for link in linklists[linklist].links %}
+							<li class="mt-1">
+								<a href="{{ link.url }}">{{ link.title }}</a>
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			</div>
+		</div>
+	{% endfor %}
+	{% if section.settings.section_view == 'boxed' %}
+	</div>
+		{% endif %}
+		
+{% schema %}
+	{
+		"name": "Collection listing",
+		"class": "section section_homepage section_template__collections-listing",
+		"settings": [
+			{
+				"type": "select",
+				"id": "section_view",
+				"label": "Section view",
+				"default": "boxed",
+				"options": [
+					{
+						"label": "Boxed",
+						"value": "boxed"
+					},
+					{
+						"label": "Full width",
+						"value": "full_width"
+					}
+				]
+			},
+
+			{
+				"type": "text",
+				"id": "page_title",
+				"label": "Page Title"
+			}
+		],
+		"blocks": [
+			{
+				"type": "image",
+				"name": "Collection",
+				"settings": [
+					{
+						"type": "image_picker",
+						"id": "bg_image",
+						"label": "Background Image",
+						"info": "The image should be more than 2048px wide to resize and crop properly"
+					},
+					{
+						"type": "select",
+						"id": "img_bg_alignment",
+						"label": "Image background alignment",
+						"info": "It used for image type 2",
+						"options": [
+							{
+								"value": "top",
+								"label": "Top"
+							},
+							{
+								"value": "center",
+								"label": "Middle"
+							},
+							{
+								"value": "bottom",
+								"label": "Bottom"
+							}
+						]
+					},
+
+					{
+						"type": "link_list",
+						"id": "links",
+						"label": "Subcollection linklist"
+					},
+					{
+						"type": "text",
+						"id": "item_description",
+						"label": "Item Description"
+					}
+				]
+			}
+		]
+	}
+{% endschema %}

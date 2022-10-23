@@ -1,0 +1,101 @@
+
+body.use_lg .bg-gradient,
+body.use_lg .add_to_cart_button,
+body.use_lg .product_listing__list .product-buttons .add_to_cart_button,
+body.use_lg .grid_style_1 .quick_view_icon,
+body.use_lg .linkstyle--btn .article_btn,
+body.use_lg .header_cart .cart_link.item-absolute .header_cart_items,
+body.use_lg ul.megamenu>li.level_1__item.sfHover>.level_1__link:before,
+body.use_lg ul.megamenu>li.level_1__item>.level_1__link.current:before,
+body.use_lg ul.megamenu>li.level_1__item>.level_1__link:active:before,
+body.use_lg ul.megamenu>li.level_1__item>.level_1__link:hover:before {
+  background: var(--color-primary);
+  background: linear-gradient(var(--rout_gradient), var(--gradient_color_1) var(--gradient_start_color_1), var(--gradient_color_2) var(--gradient_end_color_2));
+  color: #fff;
+}
+
+.section_featured-products-tabs .tab_content_wrapper .tab_nav.active,
+.section_featured-products-tabs .tab_content_wrapper .tab_nav:hover {
+    border-image-slice: 1;
+    border-width: 1px;
+    border-image-source: linear-gradient(var(--rout_gradient), var(--gradient_color_1) var(--gradient_start_color_1), var(--gradient_color_2) var(--gradient_end_color_2));
+}
+
+body.use_lg .blog__main.linkstyle--btn .article_btn,
+body.use_lg .product_listing__list .product-buttons .add_to_cart_button{
+    border: none;
+}
+
+body.use_lg .btn-gradient:focus,
+body.use_lg .grid_style_1 .quick_view_icon:hover,
+body.use_lg .add_to_cart_button:hover,
+body.use_lg .blog__main.linkstyle--btn .article_btn:hover,
+body.use_lg .product_listing__list .product-buttons .add_to_cart_button:hover{
+    background: var(--color-black);
+    background-image: linear-gradient(var(--rout_gradient), var(--color-black) var(--gradient_start_color_1), var(--color-black) var(--gradient_end_color_2));
+    color: #fff;
+}
+
+
+body.use_lg .link:not(.localization-form__select),
+body.use_lg .blog__main.linkstyle--link .article_btn,
+.section_featured-products-tabs .tab_content_wrapper .tab_nav.active,
+.section_featured-products-tabs .tab_content_wrapper .tab_nav:hover{
+  background-image: linear-gradient(var(--rout_gradient), var(--gradient_color_1) var(--gradient_start_color_1), var(--gradient_color_2) var(--gradient_end_color_2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body.use_lg .link:after,
+body.use_lg .linkstyle--link .article_btn:after {
+  background-image: linear-gradient(var(--rout_gradient), var(--gradient_color_1) var(--gradient_start_color_1), var(--gradient_color_2) var(--gradient_end_color_2));
+}
+
+body.use_lg .link:hover,
+body.use_lg .link:focus,
+body.use_lg .blog__main.linkstyle--link .article_btn:hover,
+body.use_lg .blog__main.linkstyle--link .article_btn:focus {
+    background-image: linear-gradient(var(--rout_gradient), var(--color-black) var(--gradient_start_color_1), var(--color-black) var(--gradient_end_color_2));
+}
+
+
+@media (min-width:1200px) {
+body.use_lg ul.megamenu>li.level_1__item.sfHover>.level_1__link,
+body.use_lg ul.megamenu>li.level_1__item>.level_1__link.current,
+body.use_lg ul.megamenu>li.level_1__item>.level_1__link:active,
+body.use_lg ul.megamenu>li.level_1__item>.level_1__link:hover {
+    background: linear-gradient(var(--rout_gradient), var(--gradient_color_1) var(--gradient_start_color_1), var(--gradient_color_2) var(--gradient_end_color_2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+body.use_lg .bg_grad1 {
+    background: linear-gradient(var(--rout_gradient), var(--gradient_color_1) var(--gradient_start_color_1), var(--gradient_color_2) var(--gradient_end_color_2));
+}
+body.use_lg .bg_grad2 {
+    background: linear-gradient(var(--rout2_gradient), var(--gradient2_color_1) var(--gradient2_start_color_1), var(--gradient2_color_2) var(--gradient2_end_color_2));
+}
+body.use_lg .bg_grad2 .swiper-pagination-bullet {
+    transform-origin: 50% 50%;
+}
+body.use_lg .bg_grad2 .swiper-pagination-bullet {
+    outline: none;
+}
+
+body.use_lg .bg_grad2 .swiper-pagination-bullet.swiper-pagination-bullet-active,
+body.use_lg .bg_grad2 .swiper-pagination-bullet:hover {
+    background: linear-gradient(var(--rout_gradient), var(--gradient_color_1) var(--gradient_start_color_1), var(--gradient_color_2) var(--gradient_end_color_2));
+    box-shadow: none;
+    transform: scale(1.4);
+    outline: none;
+}
+
+
+
+
+
+
+
+
+

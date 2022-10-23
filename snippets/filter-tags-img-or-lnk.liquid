@@ -1,0 +1,67 @@
+
+<div class="filter-tags-wrapper mb-3">
+		{% case tags_option %}
+		{% when 'tag_test' %}
+		{% if collection.all_tags.size > 0 %}
+			<div class="button_filters link-filters">
+				<ul class="text-left{% if item.descr_align_column == 'align-center' %} mx-auto{% endif %}">
+					{% if collection.url.size == 0 %}
+						<li{% unless current_tags %} class="active"{% endunless %}>
+							<a href="/collections/all">{{ 'layout.collection.all_tags' | t }}</a>
+						</li>
+					{% else %}
+						<li{% unless current_tags %} class="active"{% endunless %}>
+							<a href="{{ collection.url }}">{{ 'layout.collection.all_tags' | t }}</a>
+						</li>
+					{% endif %}
+					{% for tag in collection.all_tags limit: 12 %}
+						<li {% if current_tags contains tag %}class="active"{% endif %}>{{ tag | link_to_tag: tag }}</li>
+					{% endfor %}
+				</ul>
+			</div>
+		{% endif %}
+		{% when 'tag_img' %}
+		{% if collection.title != 'Products' %}
+			<ul class="image_filters row flex-wrap">
+				{% for block in section.blocks %}
+					{%- assign bl_set = block.settings -%}
+					{% for tag in collection.all_tags %}
+						
+						{%- assign tag_text = bl_set.tag_text | downcase -%}
+						{%- assign tag_low = tag | downcase -%}
+						{%- assign prod_count = 0 -%}
+						
+						{% for product in collection.all_products %}
+							{% if product.tags contains tag %}
+								{%- assign prod_count = prod_count | plus: 1 -%}
+							{% endif %}
+						{% endfor %}
+						
+						{% if prod_count == 50 %}
+							{%- assign prod_count = 'More then 50' -%}
+						{% endif %}
+						
+						{% if tag_text == tag_low %}
+							{% if bl_set.tag_text.size > 0 %}
+								<li class="tag-block my-2 col-4 {% if item.info_style == 'style_1' %} col-xsm-3 col-xl-auto{% else %} col-sm-4 col-md-3 col-xl-2{% endif %}">
+							{% endif %}
+							<div class="product-thumbnail{% if current_tags contains tag %} active{% endif %}">
+								{% if bl_set.tag_img %}
+									<img class="tag-img img-fluid" src="{{ bl_set.tag_img | img_url: '130x160', crop: 'center' }}"  data-src="{{ bl_set.tag_img | img_url: '130x160', crop: 'center' }}" alt="{{ tag | escape }}">
+								{% else %}
+									<img id="tag-img" class="tag-img img-fluid" data-src="{{ 'img_tag.jpg' | asset_img_url: '130x10', crop: 'center' }}" alt="{{ tag | escape }}">
+								{% endif %}
+								<p class="tag-name">{{ tag | link_to_tag: tag }}<span class="product-count">{{ prod_count }} Product(s)</span></p>
+							</div>
+							{% if bl_set.tag_text.size > 0 %}
+								</li>
+							{% endif %}
+						{% endif %}
+					{% endfor %}
+				{% endfor %}
+			</ul>
+		{% endif %}
+		{% endcase %}
+</div>
+
+

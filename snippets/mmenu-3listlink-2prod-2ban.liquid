@@ -1,0 +1,109 @@
+{% if blm_it.links_1.size > 0 or blm_it.links_2.size > 0 or blm_it.links_3.size > 0 %}
+    <ul id="menu_{{ block.id }}" class="level_2 is-megamenu submenu-js"
+        style="display: none;" {{ block.shopify_attributes }}>
+        <li class="item_{{ block.type }}">
+            <div class="megamenu_wrapper">
+                <div class="row">
+                    {% for i in (1..3) %}
+                        {% capture list %}links_{{ i }}{% endcapture %}
+                        {%- assign list = blm_it[list] -%}
+                        <div class="megamenu_col__item col-12 col-md-6 {% if i == 3 %} col-xl-2 {% else %} col-xl-3 {% endif %} mt-1 mb-2 my-xl-0">
+                            <div class="megamenu_linklist">
+                                <div class="h6 {% if blm_it.show_title == blank %} d-xl-none mb-0{% endif %} d-flex mb-2">{{ linklists[list].title }}
+                                    <i class="level_2__trigger megamenu_trigger"
+                                       data-submenu="menu_{{ block.id }}-{{ i }}"></i>
+                                </div>
+                                <ul class="level_3 link-list" id="menu_{{ block.id }}-{{ i }}">
+                                    {% for link in linklists[list].links %}
+                                        <li class="level_3__item">
+                                            {% if link.title contains '[new]' %}
+                                                {%- assign link_text = link.title | replace: '[new]', '' -%}
+                                                {%- assign link_badge = 'new' -%}
+                                                {% elsif link.title contains '[hot]' %}
+                                                {%- assign link_text = link.title | replace: '[hot]', '' -%}
+                                                {%- assign link_badge = 'hot' -%}
+                                                {% elsif link.title contains '[featured]' %}
+                                                {%- assign link_text = link.title | replace: '[featured]', '' -%}
+                                                {%- assign link_badge = 'featured' -%}
+                                            {% else %}
+                                                {%- assign link_text = link.title -%}
+                                                {%- assign link_badge = false -%}
+                                            {% endif %}
+                                            <a class="level_3__link" href="{{ link.url }}">
+                                               <span class="wrap {% if link_badge %} link_badge_wrap {% endif %}">
+                                                <span class="pr-1">{{ link_text }}</span> 
+                                               {% if link_badge %}
+                                                <span class="badge badge_{{ link_badge }}">
+                                                    {{ link_badge }}
+                                                </span>
+                                              {% endif %}
+                                             </span>
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="megamenu_col__item megamenu_col__products col-xl-4">
+                        {% if blm_it.products_title.size > 0 and blm_it.show_title != blank %}
+                            <div class="h6 mb-2"> {{ blm_it.products_title }} </div>
+                        {% endif %}
+                        <div class="row flex-lg-nowrap product_listing__main product_listing__grid">
+                            {% for i in (1..2) %}
+                                <div class="text-center col-12 col-lg-6 my-1 my-xl-0">
+                                    {% capture single_product %}single_product_{{ i }}{% endcapture %}
+                                    {%- assign product = all_products[blm_it[single_product]] -%}
+                                    {%- if product.id.size > 0 -%}
+                                        {% render 'product-item-simple',
+                                        product_card_product: product,
+                                        media_size: settings.image_ratio,
+                                        add_image_padding: settings.image_padding,
+                                        add_wrapper_image_bg: settings.bg_wrap_img_color,
+                                        add_image_bg: settings.bg_img_color %}
+                                    {%- endif -%}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    {% for i in (1..2) %}
+                        {% capture banner_link %}banner_link_{{ i }}{% endcapture %}
+                        {% capture banner_image %}banner_image_{{ i }}{% endcapture %}
+                        {% capture item_title %}item_title_{{ i }}{% endcapture %}
+                        {% capture item_text %}item_text_{{ i }}{% endcapture %}
+                        {% capture banner_inverted %}banner_inverted_{{ i }}{% endcapture %}
+                        {% capture banner_position_vertical %}banner_position_vertical_{{ i }}{% endcapture %}
+                        {% capture banner_position_horizontal %}banner_position_horizontal_{{ i }}{% endcapture %}
+                        {% capture banner_align %}banner_align_{{ i }}{% endcapture %}
+                        {% capture banner_style %}banner_style_{{ i }}{% endcapture %}
+                        <div class="megamenu_col__item megamenu_col__banner col-12 col-xl-6 mt-4">
+                            {% if blm_it[banner_link].size > 0 and blm_it[banner_image] %}
+                                <div class="megamenu_banner_wrapper {{ blm_it[banner_style] }} ">
+                                    <a class="megamenu_banner" href="{{ blm_it[banner_link] }}"><span
+                                                class="d-none">{{ blm_it[item_title] }}</span></a>
+
+                                    <div class="megamenu-img">
+                                        <img loading="lazy" class="img-fluid lazyload"
+                                             data-src="{{ blm_it[banner_image] | img_url: '570x161', crop:'center' }}"
+                                             alt="{{ blm_it[banner_image].alt | escape }}">
+                                    </div>
+                                    <div class="description-banner {% if blm_it[banner_inverted] %} inverted{% endif %} text-{{ blm_it[banner_align] }} justify-content-{{ blm_it[banner_position_vertical] }} align-items-{{ blm_it[banner_position_horizontal] }}">
+                                        {% if blm_it[item_title].size > 0 %}
+                                            <div class="h4 my-1">{{ blm_it[item_title] }}</div>
+                                        {% endif %}
+                                        {% if blm_it[item_text].size > 0 %}
+                                            <div>{{ blm_it[item_text] }}</div>
+                                        {% endif %} 
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </li>
+    </ul>
+{% endif %}

@@ -1,0 +1,568 @@
+{{ 'section-cms-block.css' | asset_url | stylesheet_tag }}
+
+{% assign icon_airplane = '<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M30.2751 51.7115L39.2078 53.5V48.1346L35.6347 44.5577V35.6154L53.5 39.1923V33.8269L35.6347 24.8846L35.6096 12.3654C35.6096 10.9424 35.0449 9.57769 34.0398 8.57148C33.0347 7.56528 31.6714 7 30.25 7C28.8285 7 27.4653 7.56528 26.4602 8.57148C25.4551 9.57769 24.8904 10.9424 24.8904 12.3654L24.8653 24.8846L7 33.8269V39.1923L24.8653 35.6154V44.5577L21.3425 48.1346V53.5L30.2751 51.7115Z" stroke="#121212" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>' %}
+
+{% assign icon_truck = '<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M13.75 35C15.1908 34.9997 16.5875 35.4972 17.7036 36.4084C18.8198 37.3195 19.5868 38.5883 19.875 40H37.5V15H10C8.67392 15 7.40215 15.5268 6.46447 16.4645C5.52678 17.4021 5 18.6739 5 20V40H7.625C7.91316 38.5883 8.68023 37.3195 9.79637 36.4084C10.9125 35.4972 12.3092 34.9997 13.75 35ZM13.75 47.5C12.3092 47.5003 10.9125 47.0028 9.79637 46.0916C8.68023 45.1805 7.91316 43.9117 7.625 42.5H2.5V20C2.5 18.0109 3.29018 16.1032 4.6967 14.6967C6.10322 13.2902 8.01088 12.5 10 12.5H37.5C38.163 12.5 38.7989 12.7634 39.2678 13.2322C39.7366 13.7011 40 14.337 40 15V20H47.5L55 29.9525V42.5H49.875C49.5881 43.9129 48.8216 45.1831 47.7053 46.0955C46.5891 47.0079 45.1917 47.5063 43.75 47.5063C42.3083 47.5063 40.9109 47.0079 39.7947 46.0955C38.6784 45.1831 37.9119 43.9129 37.625 42.5H19.875C19.5868 43.9117 18.8198 45.1805 17.7036 46.0916C16.5875 47.0028 15.1908 47.5003 13.75 47.5ZM13.75 37.5C12.7554 37.5 11.8016 37.8951 11.0984 38.5984C10.3951 39.3016 10 40.2554 10 41.25C10 42.2446 10.3951 43.1984 11.0984 43.9017C11.8016 44.6049 12.7554 45 13.75 45C14.7446 45 15.6984 44.6049 16.4017 43.9017C17.1049 43.1984 17.5 42.2446 17.5 41.25C17.5 40.2554 17.1049 39.3016 16.4017 38.5984C15.6984 37.8951 14.7446 37.5 13.75 37.5ZM43.75 35C45.1908 34.9997 46.5875 35.4972 47.7036 36.4084C48.8198 37.3195 49.5868 38.5883 49.875 40H52.5V30.79L51.905 30H40V36.25C41.081 35.437 42.3974 34.9982 43.75 35ZM43.75 37.5C42.7554 37.5 41.8016 37.8951 41.0984 38.5984C40.3951 39.3016 40 40.2554 40 41.25C40 42.2446 40.3951 43.1984 41.0984 43.9017C41.8016 44.6049 42.7554 45 43.75 45C44.7446 45 45.6984 44.6049 46.4017 43.9017C47.1049 43.1984 47.5 42.2446 47.5 41.25C47.5 40.2554 47.1049 39.3016 46.4017 38.5984C45.6984 37.8951 44.7446 37.5 43.75 37.5ZM40 22.5V27.5H50.0225L46.25 22.5H40Z" fill="#121212"/>
+</svg>' %}
+
+{% assign icon_creditcard = '<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.5 12.5H45C46.9891 12.5 48.8968 13.2902 50.3033 14.6967C51.7098 16.1032 52.5 18.0109 52.5 20V42.5C52.5 44.4891 51.7098 46.3968 50.3033 47.8033C48.8968 49.2098 46.9891 50 45 50H12.5C10.5109 50 8.60322 49.2098 7.1967 47.8033C5.79018 46.3968 5 44.4891 5 42.5V20C5 18.0109 5.79018 16.1032 7.1967 14.6967C8.60322 13.2902 10.5109 12.5 12.5 12.5ZM12.5 15C11.1739 15 9.90215 15.5268 8.96447 16.4645C8.02678 17.4021 7.5 18.6739 7.5 20V22.5H50V20C50 18.6739 49.4732 17.4021 48.5355 16.4645C47.5979 15.5268 46.3261 15 45 15H12.5ZM7.5 42.5C7.5 43.8261 8.02678 45.0979 8.96447 46.0355C9.90215 46.9732 11.1739 47.5 12.5 47.5H45C46.3261 47.5 47.5979 46.9732 48.5355 46.0355C49.4732 45.0979 50 43.8261 50 42.5V30H7.5V42.5ZM12.5 40H22.5V42.5H12.5V40ZM27.5 40H35V42.5H27.5V40ZM7.5 25V27.5H50V25H7.5Z" fill="#121212"/>
+</svg>' %}
+{% assign icon_wallet = '<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M41.5365 19.5415H40.4897V13.2519C40.4897 10.6801 38.3962 8.59561 35.8335 8.59561H34.8679L34.8769 6.25844C34.8769 4.52588 33.4692 3.11816 31.7367 3.11816H3.81706C1.73257 3.11816 0.0270714 4.79659 0 6.88109C0 6.89913 0 6.91718 0 6.93523V37.7425C0 39.475 1.40771 40.8827 3.14028 40.8827H35.8425C38.4143 40.8827 40.4988 38.7892 40.4988 36.2265V29.9278H41.5455C42.8991 29.9278 44 28.8269 44 27.4734V21.9959C43.991 20.6424 42.8901 19.5415 41.5365 19.5415ZM3.81706 5.28387H31.7367C32.2691 5.28387 32.7112 5.71702 32.7112 6.24942L32.7022 8.59561H3.81706C2.90566 8.59561 2.16571 7.85565 2.16571 6.94425C2.16571 6.03285 2.90566 5.28387 3.81706 5.28387ZM38.324 36.2174C38.324 37.589 37.2051 38.708 35.8335 38.708H3.13126C2.59885 38.708 2.15669 38.2749 2.15669 37.7334V10.3823C2.66202 10.626 3.22149 10.7613 3.81706 10.7613H35.8335C37.2051 10.7613 38.324 11.8803 38.324 13.2519V19.5415H30.9336C29.58 19.5415 28.4791 20.6424 28.4791 21.9959V27.4734C28.4791 28.8269 29.58 29.9278 30.9336 29.9278H38.324V36.2174V36.2174ZM41.8253 27.4734C41.8253 27.6358 41.6989 27.7621 41.5365 27.7621H30.9426C30.7801 27.7621 30.6538 27.6358 30.6538 27.4734V21.9959C30.6538 21.8425 30.7801 21.7072 30.9426 21.7072H41.5365C41.6899 21.7072 41.8253 21.8335 41.8253 21.9959V27.4734Z" fill="#7C7E83"/>
+</svg>' %}
+{% assign icon_clockwise = '<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.4906 12.5H24.9906V25H22.4906V16.2325C19.0272 17.6818 16.1724 20.2852 14.4108 23.6007C12.6493 26.9161 12.0897 30.7391 12.8271 34.4203C13.5645 38.1015 15.5535 41.4139 18.4562 43.795C21.3588 46.1761 24.9962 47.4791 28.7506 47.4825C32.7371 47.4864 36.586 46.0247 39.565 43.3756C42.544 40.7264 44.4452 37.0747 44.907 33.115C45.3689 29.1553 44.359 25.164 42.0696 21.9004C39.7802 18.6368 36.371 16.3286 32.4906 15.415V12.855C36.7887 13.7296 40.6443 16.0834 43.3864 19.5069C46.1284 22.9303 47.5835 27.2068 47.4984 31.5922C47.4133 35.9777 45.7935 40.1945 42.9206 43.509C40.0478 46.8235 36.1039 49.026 31.775 49.7332C27.4461 50.4404 23.0063 49.6076 19.228 47.3796C15.4498 45.1516 12.5721 41.6695 11.0959 37.5392C9.61958 33.4088 9.63806 28.8916 11.1481 24.7735C12.6581 20.6554 15.5642 17.197 19.3606 15H12.4906V12.5Z" fill="#121212"/>
+</svg>' %}
+{% assign icon_shopping_bag = '<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M43.9909 35.8894L41.8261 11.5442C41.781 11.03 41.348 10.6422 40.8339 10.6422H36.3419C36.3058 6.58312 32.9954 3.2998 28.9364 3.2998C24.8773 3.2998 21.567 6.58312 21.5309 10.6422H17.0389C16.5247 10.6422 16.0918 11.039 16.0467 11.5442L13.8818 35.8894C13.8818 35.9165 13.8818 35.9435 13.8818 35.9796C13.8818 38.7217 16.3984 40.9587 19.5014 40.9587H38.3804C41.4743 40.9587 43.9999 38.7307 43.9999 35.9796C43.9999 35.9435 43.9999 35.9165 43.9909 35.8894ZM28.9454 5.28422C31.913 5.28422 34.3304 7.68357 34.3665 10.6422H23.5153C23.5514 7.68357 25.9688 5.28422 28.9454 5.28422ZM38.3804 38.9652H19.5014C17.5169 38.9652 15.8933 37.6483 15.8663 36.0157L17.9409 12.6266H21.5219V15.8377C21.5219 16.388 21.9638 16.8299 22.5141 16.8299C23.0643 16.8299 23.5063 16.388 23.5063 15.8377V12.6266H34.3574V15.8377C34.3574 16.388 34.7994 16.8299 35.3496 16.8299C35.8999 16.8299 36.3419 16.388 36.3419 15.8377V12.6266H39.9228L41.9974 36.0157C41.9884 37.6483 40.3648 38.9652 38.3804 38.9652Z" fill="#7C7E83"/>
+<path d="M11.5727 19.1934H4.77151C4.22128 19.1934 3.7793 19.6353 3.7793 20.1856C3.7793 20.7358 4.22128 21.1778 4.77151 21.1778H11.5727C12.1229 21.1778 12.5649 20.7358 12.5649 20.1856C12.5649 19.6353 12.1229 19.1934 11.5727 19.1934Z" fill="#7C7E83"/>
+<path d="M11.5728 24.0283H0.99221C0.441984 24.0283 0 24.4703 0 25.0205C0 25.5708 0.441984 26.0127 0.99221 26.0127H11.5728C12.123 26.0127 12.565 25.5708 12.565 25.0205C12.565 24.4703 12.123 24.0283 11.5728 24.0283Z" fill="#7C7E83"/>
+<path d="M11.5727 28.8623H4.77151C4.22128 28.8623 3.7793 29.3043 3.7793 29.8545C3.7793 30.4047 4.22128 30.8467 4.77151 30.8467H11.5727C12.1229 30.8467 12.5649 30.4047 12.5649 29.8545C12.5649 29.3043 12.1229 28.8623 11.5727 28.8623Z" fill="#7C7E83"/>
+</svg>' %}
+{% assign icon_package = '<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M42.8647 11.3861L34.2285 0.433219C34.0119 0.160103 33.6917 0 33.3433 0H10.6652C10.3167 0 9.99653 0.160103 9.77992 0.433219L1.14379 11.3861C0.983686 11.5839 0.898926 11.8288 0.898926 12.083V42.8699C0.898926 43.4914 1.40749 44 2.02906 44H41.97C42.5916 44 43.1001 43.4914 43.1001 42.8699V12.083C43.1095 11.8288 43.0248 11.5839 42.8647 11.3861ZM39.7945 11.1413H23.1344V2.26027H32.797L39.7945 11.1413ZM11.2114 2.26027H20.8741V11.1413H4.21399L11.2114 2.26027ZM3.1592 41.7397V13.4015H40.8398V41.7397H3.1592Z" fill="#7C7E83"/>
+<path d="M27.3624 22.4988L19.7905 30.0707L16.6449 26.9251C16.2023 26.4825 15.4865 26.4825 15.0439 26.9251C14.6013 27.3678 14.6013 28.0835 15.0439 28.5262L18.99 32.4722C19.2066 32.6888 19.4985 32.8019 19.7905 32.8019C20.0824 32.8019 20.365 32.6888 20.591 32.4722L28.954 24.1092C29.3966 23.6666 29.3966 22.9508 28.954 22.5082C28.5208 22.0561 27.805 22.0561 27.3624 22.4988Z" fill="#7C7E83"/>
+</svg>' %}
+{% assign icon_headphones = '<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M37.053 16.7311V15.0395C37.053 10.9908 35.6202 7.22857 33.0227 4.43698C30.3606 1.57143 26.7001 0 22.7068 0H21.311C17.3177 0 13.6572 1.57143 10.995 4.43698C8.39753 7.22857 6.96476 10.9908 6.96476 15.0395V16.7311C3.81266 16.9437 1.30762 19.5689 1.30762 22.7765V25.4202C1.30762 28.7571 4.02526 31.4748 7.36224 31.4748H10.7732C11.3832 31.4748 11.8824 30.9756 11.8824 30.3655V17.8218C11.8824 17.2118 11.3832 16.7126 10.7732 16.7126H9.18325V15.0395C9.18325 7.72773 14.3967 2.21849 21.3017 2.21849H22.6975C29.6118 2.21849 34.816 7.72773 34.816 15.0395V16.7126H33.2261C32.616 16.7126 32.1169 17.2118 32.1169 17.8218V30.3563C32.1169 30.9664 32.616 31.4655 33.2261 31.4655H34.7791C34.3261 37.2521 30.3421 38.5924 28.4933 38.8975C27.9849 37.3353 26.5152 36.2076 24.7866 36.2076H22.0135C19.869 36.2076 18.1219 37.9546 18.1219 40.0992C18.1219 42.2437 19.869 44 22.0135 44H24.7959C26.5891 44 28.0959 42.7798 28.5488 41.1345C29.4547 41.005 30.8875 40.6815 32.311 39.8496C34.3169 38.6756 36.6925 36.2815 37.0068 31.4563C40.1774 31.2622 42.6917 28.6277 42.6917 25.4109V22.7672C42.7009 19.5689 40.2051 16.9345 37.053 16.7311ZM9.68241 29.2471H7.38073C5.26392 29.2471 3.54459 27.5277 3.54459 25.4109V22.7672C3.54459 20.6504 5.26392 18.9311 7.38073 18.9311H9.68241V29.2471ZM24.7959 41.7815H22.0135C21.0891 41.7815 20.3404 41.0328 20.3404 40.1084C20.3404 39.184 21.0891 38.4353 22.0135 38.4353H24.7959C25.7202 38.4353 26.469 39.184 26.469 40.1084C26.469 41.0328 25.7202 41.7815 24.7959 41.7815ZM40.4824 25.4109C40.4824 27.5277 38.7631 29.2471 36.6463 29.2471H34.3446V18.9311H36.6463C38.7631 18.9311 40.4824 20.6504 40.4824 22.7672V25.4109Z" fill="#7C7E83"/>
+</svg>' %}
+
+
+
+{% if section.blocks.size > 0 %}
+	{% for block in section.blocks %}
+		<style>
+			.section-style-{{ section.id }} .item-{{ block.id }} .item_block {
+				background-color: {{ block.settings.bg_block }};
+			}
+
+            @media (min-width: 1200px) {
+                .section-style-{{ section.id }} .item-{{ block.id }} .item_block {
+                    padding: {{ block.settings.inset_block }};
+                }
+            }
+			
+			.section-style-{{ section.id }} .item-{{ block.id }} .text-container {
+				padding: {{ block.settings.inset_text }};
+			}
+
+			@media (max-width: 991px) {
+				.section-style-{{ section.id }} .item-{{ block.id }} .text-container {
+					padding-left: 5px;
+					padding-right: 5px;
+				}
+			}
+			
+			.section-style-{{ section.id }} .item-{{ block.id }} .icon-cms-block svg,
+			.section-style-{{ section.id }} .item-{{ block.id }} .img_placeholder__wrap svg {
+				width: {{ block.settings.icon_width | append: 'px' }};
+				height: {{ block.settings.icon_height| append: 'px' }};
+			}
+			.section-style-{{ section.id }} .item-{{ block.id }} .img_placeholder__wrap svg {
+				background-color: var(--color-grey-1);
+			}
+		</style>
+	{% endfor %}
+{% endif %}
+
+
+<div class="section-style-{{ section.id }}">
+	{%- include 'section-style' -%}
+	<div class="{{ section.settings.container_width }}">
+		<div class="col-12 text-center">
+			{% if section.settings.section_title != blank %}
+				<h2 class="section_heading">{{ section.settings.section_title }}</h2>
+			{% endif %}
+			
+			{% if section.settings.section_title != blank %}
+				<div class="text text-default">{{ section.settings.desc }}</div>
+			{% endif %}
+		</div>
+
+		<div class="cms-block">
+			<ul class="row justify-content-between mb-0">
+				{% for block in section.blocks %}
+				  
+				  {% case block.settings.width %}
+				  	{% when '1' %}
+				  	{%- assign item_width = 'col-md-6 col-lg-4 col-xl-2' -%}
+				  	{% when '2' %}
+				  	{%- assign item_width = 'col-md-6 col-lg-4 col-xl-2-5' -%}
+				  	{% when '3' %}
+				  	{%- assign item_width = 'col-md-6 col-lg-3' -%}
+				  	{% when '4' %}
+				  	{%- assign item_width = 'col-lg-4' -%}
+				  	{% when '5' %}
+				  	{%- assign item_width = 'col-lg-5' -%}
+				  	{% when '6' %}
+				  	{%- assign item_width = 'col-lg-6' -%}
+				  	{% when '7' %}
+				  	{%- assign item_width = 'col-lg-7' -%}
+				  	{% when '8' %}
+				  	{%- assign item_width = 'col-lg-8' -%}
+				  	{% when '9' %}
+				  	{%- assign item_width = 'col-lg-9' -%}
+				  	{% when '10' %}
+				  	{%- assign item_width = 'col-lg-10' -%}
+				  	{% when '11' %}
+				  	{%- assign item_width = 'col-lg-11' -%}
+				  	{% when '12' %}
+				  	{%- assign item_width = 'col-lg-12' -%}
+				  {% endcase %}
+				  
+					{%- assign use_image = false -%}
+					{% if block.settings.use_image %}
+						{%- assign use_image = true -%}
+					{% endif %}
+					
+					{% case block.settings.item_pos %}
+						{% when 'left' %}{%- assign position_item = 'flex-row align-items-center' -%}
+						{% when 'right'  %}{%- assign position_item = 'flex-row-reverse align-items-center' -%}
+						{% when 'top' %}{%- assign position_item = 'flex-column' -%}
+						{% when 'bottom' %}{%- assign position_item = 'flex-column-reverse' -%}
+					{% endcase %}
+			
+				 <li class="col-12 {{ item_width }} item-cms-block text-{{ block.settings.content_align }}  item-{{ block.id }}">
+					
+					<div class="item_block d-flex {{ position_item }} {% unless block.settings.item_pos == 'top' or block.settings.item_pos == 'bottom' %}justify-content{% else %}align-items{% endunless %}-{{ block.settings.content_pos }}">
+						<div class="item-container" {% if use_image == true and block.settings.image != blank %} style="flex: 0 1 100%; max-width:{{ block.settings.wid | default: block.settings.image.width }}px;" {% endif %}>
+						{% unless block.settings.use_image == true %}
+							{% assign icon_setting = block.settings.icon_type %}
+							<div class="icon-cms-block">
+								{% if icon_setting == 'icon_airplane' %}
+										{{ icon_airplane }}
+									{% elsif icon_setting == 'icon_creditcard' %}
+										{{ icon_creditcard }}
+								   {% elsif icon_setting == 'icon_truck' %}
+										{{ icon_truck }}
+									{% elsif icon_setting == 'icon_wallet' %}
+										{{ icon_wallet }}
+									{% elsif icon_setting == 'icon_clockwise' %}
+										{{ icon_clockwise }}
+									{% elsif icon_setting == 'icon_shopping_bag' %}
+										{{ icon_shopping_bag }}
+									{% elsif icon_setting == 'icon_package' %}
+										{{ icon_package }}
+									{% elsif icon_setting == 'icon_headphones' %}
+										{{ icon_headphones }}
+									{% elsif icon_setting == 'svg_code' %}
+										{% if block.settings.code.size > 0 %}
+											{{ block.settings.code }}
+										{% endif %}
+								{% endif %}
+							</div>
+						{% endunless %}
+						
+						{% if use_image == true %}
+							<div class="image-item-container">
+								{% if block.settings.image != blank %}
+									{%- assign img_url = block.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+									<img loading="lazy" src="{%- include 'srcEmpty' -%}"
+										 data-src="{{ img_url }}"
+										 data-sizes="auto"
+										 class="lazyload w-100 img-fluid"
+										 alt="{{ block.settings.image.alt | escape }}"
+										 data-parent-fit="contain" />
+								{% else %}
+									<div class="img_placeholder__wrap">
+										{{ 'image' | placeholder_svg_tag }}
+									</div>
+								{% endif %}
+							</div>
+						{% endif %}
+					</div>
+						
+					{% if block.settings.title.size > 0 or block.settings.text.size > 0 or block.settings.link.size > 0 %}
+						<div class="text-container " {% if block.settings.image.size == blank %} style="flex: 0 1 auto;"{% endif %}>
+							{% if block.settings.title.size > 0 %}
+								<div class="h6">{{ block.settings.title }}</div>
+							{% endif %}
+							{% if block.settings.text.size > 0 %}
+								<div class="text-small ttu">{{ block.settings.text }}</div>
+							{% endif %}
+							{% if block.settings.link.size > 0 or block.settings.link_text.size > 0 %}
+								<a class="{% if block.settings.use_lb %} link-block {% endif %} link link-primary" href="{{ block.settings.link }}"><span {% if block.settings.use_lb %} class="visibility-h"{% endif %}>{{ block.settings.link_text }}</span></a>
+							{% endif %}
+						</div>
+					{% endif %}
+					</div>
+				</li>
+		{% endfor %}
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+
+{% schema %}
+{
+	"name": "Cms Block",
+	"class": "section section_homepage index_cms_block",
+	"max_blocks": 12,
+	"settings": [
+		{
+			"type": "header",
+			"content": "Section settings"
+		},
+		{
+			"type": "text",
+			"id": "section_title",
+			"label": "Section Title",
+			"default": "<p>Block content</p>"
+		},
+		{
+			"type": "textarea",
+			"id": "desc",
+			"label": "HTML / Description"
+		},
+		
+		{
+			"type":      "select",
+			"id":        "container_width",
+			"label":     "Container width",
+			"options": [
+				{
+					"value": "container",
+					"label": "Box"
+				},
+				{
+					"value": "container-fluid",
+					"label": "Container Fluid"
+				},
+				{
+					"value": "full-width",
+					"label": "Full"
+				}
+			],
+			"default":   "container"
+		},
+		{
+			"type": "checkbox",
+			"id": "reset_indent",
+			"label": "Remove indent",
+			"default":   false
+		},
+		{
+			"type": "color",
+			"id": "bg_section",
+			"label": "Background Section",
+			"default": "#ffffff"
+		},
+		{
+			"type": "text",
+			"id": "inset_section",
+			"label": "Inset Section",
+			"default": "0px 0px 0px 0px",
+			"info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+		},
+		{
+			"type": "text",
+			"id": "offset_section",
+			"label": "Offset Section",
+			"default": "0px 0px 0px 0px",
+			"info": "offset: Top Right Bottom Left"
+		}
+	],
+	"blocks": [
+		{
+			"type": "item",
+			"name": "Simple link",
+			"settings": [
+  				{
+  					"type": "select",
+  					"id": "width",
+  					"label": "Width",
+  					"default": "6",
+  					"options": [
+  						{
+  							"value": "1",
+  							"label": "16.67%"
+  						},
+  						{
+  							"value": "2",
+  							"label": "20%"
+  						},
+  						{
+  							"value": "3",
+  							"label": "25%"
+  						},
+  						{
+  							"value": "4",
+  							"label": "33.33%"
+  						},
+  						{
+  							"value": "5",
+  							"label": "41.67%"
+  						},
+  						{
+  							"value": "6",
+  							"label": "50%"
+  						},
+  						{
+  							"value": "7",
+  							"label": "58.33%"
+  						},
+  						{
+  							"value": "8",
+  							"label": "66.67%"
+  						},
+  						{
+  							"value": "9",
+  							"label": "75%"
+  						},
+  						{
+  							"value": "10",
+  							"label": "83.33%"
+  						},
+  						{
+  							"value": "11",
+  							"label": "91.66%"
+  						},
+  						{
+  							"value": "12",
+  							"label": "100%"
+  						}
+  					]
+  				},
+	
+				{
+					"type": "color",
+					"id": "bg_block",
+					"label": "Background Block",
+					"default": "#ffffff"
+				},
+				{
+					"type": "text",
+					"id": "inset_block",
+					"label": "Inset Block",
+					"default": "0px 0px 0px 0px",
+					"info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+				},
+	
+				{
+					"type": "text",
+					"id": "inset_text",
+					"label": "Inset text",
+					"default": "20px 20px 20px 20px",
+					"info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+				},
+	
+				{
+					"type":      "select",
+					"id":        "item_pos",
+					"label":     "Item position",
+					"options": [
+						{
+							"value": "left",
+							"label": "Left"
+						},
+						{
+							"value": "right",
+							"label": "Row reverse (right)"
+						},
+						{
+							"value": "top",
+							"label": "Top"
+						},
+						{
+							"value": "bottom",
+							"label": "Column reverse (bottom)"
+						}
+					],
+					"default":   "left"
+				},
+				
+				{
+					"type":      "select",
+					"id":        "content_pos",
+					"label":     "Content position",
+					"options": [
+						{
+							"value": "start",
+							"label": "Left"
+						},
+						{
+							"value": "center",
+							"label": "Center"
+						},
+						{
+							"value": "end",
+							"label": "Right"
+						}
+					],
+					"default":   "start"
+				},
+				
+				{
+					"type":      "select",
+					"id":        "content_align",
+					"label":     "Content align",
+					"options": [
+						{
+							"value": "left",
+							"label": "Left"
+						},
+						{
+							"value": "center",
+							"label": "Center"
+						},
+						{
+							"value": "right",
+							"label": "Right"
+						}
+					],
+					"default":   "left"
+				},
+	
+				{
+					"type": "richtext",
+					"id": "title",
+					"label": "Item Title",
+					"default": "<p>Item Title</p>"
+				},
+				{
+					"type": "richtext",
+					"id": "text",
+					"label": "Item Text",
+					"default": "<p>Item Text</p>"
+				},
+	
+				{
+					"type": "text",
+					"id": "link_text",
+					"label": "Link Text"
+				},
+				{
+					"type": "url",
+					"id": "link",
+					"label": "Link"
+				},
+				{
+					"type": "checkbox",
+					"id": "use_lb",
+					"label": "Use link for all area block",
+					"default":   false
+				},
+				{
+					"type": "header",
+					"content": "Use image or icon"
+				},
+				{
+					"type": "checkbox",
+					"id": "use_image",
+					"label": "Use image",
+					"default":   false
+				},
+	
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Image",
+					"info": "First select 'use image'"
+				},
+	
+				{
+					"type": "text","id": "wid","label": "Max width image:","info": "integer, eg: 500"
+				},
+	
+				{
+					"type": "paragraph",
+					"content": "ICON SETTINGS"
+				},
+	
+				{
+					"type": "radio",
+					"id": "icon_type",
+					"label": "Icon type",
+					"default": "icon_airplane",
+					"options": [
+						{
+							"value": "icon_airplane",
+							"label": "Airplane"
+						},
+					    {
+							"value": "icon_truck",
+							"label": "Truck"
+						},
+						{
+							"value": "icon_creditcard",
+							"label": "Creditcard"
+						},
+						{
+							"value": "icon_wallet",
+							"label": "Wallet"
+						},
+						{
+							"value": "icon_clockwise",
+							"label": "Clockwise"
+						},
+						{
+							"value": "icon_shopping_bag",
+							"label": "Shopping bag"
+						},
+						{
+							"value": "icon_package",
+							"label": "Package"
+						},
+						{
+							"value": "icon_headphones",
+							"label": "Headphones"
+						},
+						{
+							"value": "svg_code",
+							"label": "Use Custom svg by html code"
+						}
+					]
+				},
+				{
+					"type": "textarea",
+					"id": "code",
+					"label": "Custom svg by html code"
+				},
+				{
+					"type": "range",
+					"id": "icon_width",
+					"min": 30,
+					"max": 180,
+					"step": 2,
+					"label": "Icon width",
+					"default": 60,
+					"info": "Not working with Custom svg"
+				},
+				{
+					"type": "range",
+					"id": "icon_height",
+					"min": 30,
+					"max": 180,
+					"step": 2,
+					"label": "Icon height",
+					"default": 60,
+					"info": "Not working with Custom svg"
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "CMS block",
+			"category": "Text",
+			"blocks": [
+				{
+					"type": "item"
+				},
+				{
+					"type": "item"
+				},
+				{
+					"type": "item"
+				}
+			]
+		}
+	]
+}
+{% endschema %}

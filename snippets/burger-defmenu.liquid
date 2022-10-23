@@ -1,0 +1,18 @@
+
+<details id="Menu-{{ section.id }}" class="collapse-menu collapse-menu-desktop">
+	<summary class="collapse-menu--toggle menu-toggle">
+		<span class="svg-icon svg-icon--xl">
+			{% render 'icon-menu' %}
+		</span>
+		<div class="megamenu_mobile_close">
+			<div class="close_icon d-inline-flex align-items-center svg-icon svg-icon--lg">
+				{% render 'icon-close' %}
+			</div>
+		</div>
+	</summary>
+	<div class="collapse-menu--content" style="overflow-y: auto;">
+		{% include 'default-menu' with menu_burger: ss_item.menu_burger %}
+	</div>
+</details>
+
+

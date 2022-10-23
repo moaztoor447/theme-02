@@ -1,0 +1,19 @@
+{% render 'product-listing-item',
+  product_card_product: product,
+  use_border_card: settings.use_border_card,
+  pc_grid_style: settings.pc_grid_style,
+  media_size: settings.image_ratio,
+  show_secondary_image: settings.show_secondary_image,
+  add_image_padding: settings.image_padding,
+  add_wrapper_image_bg: settings.bg_wrap_img_color,
+  add_image_bg: settings.bg_img_color,
+  badge_card_toggle: settings.badge_card_toggle,
+  product_card_reviews: settings.product_card_reviews,
+  product_card_product_class: 'col-6 col-sm-4 col-md-3 col-xl-2-5 product_item_wrap product_wishlist'
+%}
+
+{% schema %}
+  {
+    "templates": ["product"]
+  }
+{% endschema %}

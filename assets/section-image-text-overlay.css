@@ -1,0 +1,63 @@
+/**
+ * Section Image with text overlay
+ */
+.section_image-with-text-overlay {
+    margin: 0;
+    position: relative;
+}
+
+.section_image-with-text-overlay .section_wrap {
+    overflow: hidden;
+    position: relative;
+}
+
+
+.section_image-with-text-overlay .section_txt {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+}
+
+.section_image-with-text-overlay .section_txt .container {
+    display: flex;
+}
+
+.section_image-with-text-overlay .section_txt.align_right .container {
+    justify-content: flex-end;
+}
+
+.section_image-with-text-overlay .section_txt.align_center .container {
+    justify-content: center;
+}
+
+.section_image-with-text-overlay .h2, .section_image-with-text-overlay .h1 {
+    text-shadow: 0 0 2px white;
+}
+
+.section_image-with-text-overlay .inverted *:not(.btn) {
+    color: var(--color-white);
+}
+
+.section_image-with-text-overlay .full_width .caption_text {
+    padding: 0;
+}
+
+.section_image-with-text-overlay .linklist--inner .btn{
+    min-width: unset;
+    width: auto;
+}
+
+.section_image-with-text-overlay .h1 strong {
+    color: var(--color-primary);
+}
+
+.section_image-with-text-overlay  .h1{
+    text-transform: uppercase;
+}
+
+

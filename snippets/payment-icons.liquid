@@ -1,0 +1,10 @@
+{% assign payment_icons = 'afterpay|amazon_payments|american_express|apple_pay|bitcoin|dankort|diners_club|discover|dogecoin|dwolla|forbrugsforeningen|google_pay|ideal|jcb|klarna|klarna-pay-later|litecoin|maestro|master|paypal|shopify_pay|sofort|visa' | remove: ' ' | split: '|' %}
+<div class="footer_payments">
+  {% for i in payment_icons %}
+    {% if settings[i] %}
+      <img src="{{ i | payment_type_img_url }}" height="18" alt="{{ i }}">
+    {% endif %}
+  {% endfor %}
+</div>
+
+

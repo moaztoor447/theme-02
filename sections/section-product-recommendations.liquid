@@ -1,0 +1,258 @@
+<div class="section-style-{{ section.id }}">
+  {%- include 'section-style' -%}
+    <div class="{{ section.settings.container_width }}">
+		{% if section.settings.related_type == 'related' %}
+			{% if collection and collection.products_count > 1 %}
+				{% if collection == null or collection.handle == 'frontpage' or collection.handle == 'all' %}
+				{% assign found_a_collection = false %}
+				{% for c in product.collections %}
+					{% if found_a_collection == false and c.handle != 'frontpage' and c.handle != 'all' and c.all_products_count > 1 %}
+					{% assign found_a_collection = true %}
+					{% assign collection = c %}
+					{% endif %}
+				{% endfor %}
+				{% endif %}	
+				<div class="widget_related_products">
+					<h2 class="section_heading swiper-title mb-4">
+						<span>{{ section.settings.related_title }}</span>
+					</h2>
+					
+					<div id="zmz-carousel-{{ section.id }}" class="swiper-container related_products_carousel product_listing__main product_listing__grid text-center zmz-swiper-container mt-4 swiper-nav-wrapper"
+						data-options='{
+										"observer": true,
+										"observeParents": true,
+										{% comment %}"pagination": {"el": "#pagination_{{ section.id }}", "clickable": true },{% endcomment %}
+										"navigation": {"nextEl": "#next_{{ section.id }}", "prevEl": "#prev_{{ section.id }}"},
+										"spaceBetween": 10,
+										"slidesPerView": 2.2,
+										"breakpoints": {
+											"400": { "slidesPerView": 2.2, "spaceBetween": 15 },
+											"640": { "slidesPerView": 3.2, "spaceBetween": 20 },
+											"1024": {"slidesPerView": 4, "spaceBetween": 30 },
+											"1536": {"slidesPerView": 4, "spaceBetween": {% unless settings.use_custom_container_only_index %} {{ settings.spacer }} {% else %} 30 {% endunless %} }
+										}
+									}'>
+						<div class="swiper-wrapper">
+							{% assign current_product_title = product.title %}
+							{% assign current_product_found = true %}
+						
+							{% for prod in collection.products limit: section.settings.max_limit %}
+								{% if prod.title == current_product_title %}
+									{% assign current_product_found = false %}
+								{% endif %}
+								
+								{% unless prod.title == current_product_title %}
+									{% unless forloop.last and current_product_found %}
+										<div class="swiper-slide product">
+											<div class="product_item_wrap px-0">
+												{% render 'product-item-simple',
+												product_card_product: prod,
+												media_size: settings.image_ratio,
+												add_image_padding: settings.image_padding,
+												add_wrapper_image_bg: settings.bg_wrap_img_color,
+												add_image_bg: settings.bg_img_color %}
+											</div>
+										</div>
+									{% endunless %}
+								{% endunless %}
+							{% endfor %}
+						</div>
+						{% comment %}
+						<div id="pagination_{{ section.id }}" class="swiper-pagination"></div>{% endcomment %}
+						<div id="prev_{{ section.id }}" class="swiper-button-prev"></div>
+						<div id="next_{{ section.id }}" class="swiper-button-next"></div>
+					</div>
+				</div>
+			{% endif %}
+		{% elsif section.settings.related_type == 'recommendations' %}
+			<div class="widget_related_products">
+				<h2 class="section_heading swiper-title mb-4">
+					<span>{{ section.settings.related_title }}</span> 
+				</h2>
+				<div id="zmz-recommend-carousel-{{ section.id }}" class="swiper-container related_products_carousel product_listing__main product_listing__grid text-center zmz-recommend-swiper-container-js mt-4 swiper-nav-wrapper"
+					data-options='{
+									"observer": true,
+									"observeParents": true,
+									{% comment %}"pagination": {"el": "#pagination_{{ section.id }}", "clickable": true },{% endcomment %}
+									"navigation": {"nextEl": "#next_{{ section.id }}", "prevEl": "#prev_{{ section.id }}"},
+									"spaceBetween": 10,
+									"slidesPerView": 2.2,
+									"breakpoints": {
+										"400": { "slidesPerView": 2.2, "spaceBetween": 15 }, 
+										"640": { "slidesPerView": 3.2, "spaceBetween": 20 },
+										"1024": {"slidesPerView": 4, "spaceBetween": 30 },
+										"1536": {"slidesPerView": 4, "spaceBetween": {% unless settings.use_custom_container_only_index %} {{ settings.spacer }} {% else %} 30 {% endunless %} }
+										}
+								}'>
+					<product-recommendations class="swiper-wrapper product-recommendations" data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}">
+						{% if recommendations.performed and recommendations.products_count > 0 %}
+							{% for prod in recommendations.products limit: section.settings.max_limit %}
+								<div class="swiper-slide product">
+									<div class="product_item_wrap px-0">
+									{% render 'product-item-simple',
+										product_card_product: prod,
+										media_size: settings.image_ratio,
+										add_image_padding: settings.image_padding,
+										add_wrapper_image_bg: settings.bg_wrap_img_color,
+										add_image_bg: settings.bg_img_color %}
+									</div>
+								</div>
+							{% endfor %}
+						{% endif %}
+					</product-recommendations>
+					{% comment %}
+					<div id="pagination_{{ section.id }}" class="swiper-pagination"></div>{% endcomment %}
+					<div id="prev_{{ section.id }}" class="swiper-button-prev"></div>
+					<div id="next_{{ section.id }}" class="swiper-button-next"></div>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+</div>
+
+
+{% schema %}
+{
+  "name": "Related products",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+  
+	{
+	  "type":      "select",
+	  "id":        "container_width",
+	  "label":     "Container width",
+	  "options": [
+		{
+		  "value": "container",
+		  "label": "Box"
+		},
+		{
+		  "value": "container-fluid",
+		  "label": "Container Fluid"
+		},
+		{
+		  "value": "full-width",
+		  "label": "Full"
+		}
+	  ],
+	  "default":   "container"
+	},
+ 
+	{
+	  "type": "color",
+	  "id": "bg_section",
+	  "label": "Background Section",
+	  "default": "#ffffff"
+	},
+ 
+	{
+	  "type": "text",
+	  "id": "inset_section",
+	  "label": "Inset Section",
+	  "default": "0px 0px 0px 0px",
+	  "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+	},
+ 
+	{
+	  "type": "text",
+	  "id": "offset_section",
+	  "label": "Offset Section",
+	  "default": "0px 0px 0px 0px",
+	  "info": "offset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+	},
+	
+	{
+	  "type": "header",
+	  "content": "Related products"
+	},
+	{
+	  "type": "range",
+	  "id": "max_limit",
+	  "min": 2,
+	  "max": 20,
+	  "step": 1,
+	  "unit": "pds",
+	  "label": "Max count",
+	  "default": 8
+	},
+	{
+	  "type": "select",
+	  "id": "related_type",
+	  "label": "Type",
+	  "default": "related",
+	  "options": [
+		{
+		  "value": "related",
+		  "label": "Related"
+		},
+		{
+		  "value": "recommendations",
+		  "label": "Recommendations"
+		}
+	  ]
+	},
+	{
+	  "type": "text",
+	  "id": "related_title",
+	  "label": "Title",
+	  "default": "Related Products"
+	}
+  ]
+}
+{% endschema %}
+
+{% style %}
+  .product-recommendations:not(.product-recommendations--loaded) {
+	padding: 0;
+	margin: 0;
+  }
+{% endstyle %}
+
+{% javascript %}
+  
+  class ProductRecommendations extends HTMLElement {
+  constructor() {
+  super();
+  
+  const handleIntersection = (entries, observer) => {
+  if (!entries[0].isIntersecting) return;
+  observer.unobserve(this);
+  
+  fetch(this.dataset.url)
+  .then(response => response.text())
+  .then(text => {
+  const html = document.createElement('div');
+  html.innerHTML = text;
+  const recommendations = html.querySelector('product-recommendations');
+  
+  if (recommendations && recommendations.innerHTML.trim().length) {
+  this.innerHTML = recommendations.innerHTML;
+  }
+  
+  (function($){
+	$('.zmz-recommend-swiper-container-js').each(function () {
+		var sliderId = '#' + $(this).attr('id');
+		var swiperOptions = $(this).data('options');
+		var zmzCarousel = new Swiper(sliderId, swiperOptions);
+	});
+  })(jQuery);
+  
+  
+  if (html.querySelector('.product_item_wrap')) {
+  	this.classList.add('product-recommendations--loaded');
+  }
+  
+  })
+  .catch(e => {
+  console.error(e);
+  });
+  }
+  
+  new IntersectionObserver(handleIntersection.bind(this), {rootMargin: '0px 0px 200px 0px'}).observe(this);
+  }
+  }
+  
+  customElements.define('product-recommendations', ProductRecommendations);
+ 
+{% endjavascript %}

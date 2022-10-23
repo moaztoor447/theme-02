@@ -1,0 +1,34 @@
+{%- if request.page_type == 'index' -%}
+<h1 class="my-0 d-flex">
+<span class="visibility-h">{{ shop.name }}</span>
+{%- endif -%}
+<a href="{{ shop.url }}" class="block-logo text {% if ss_item.use_logo_inverted %} block-logo--inverted{% endif %}">
+	<span class="{% if ss_item.logo_slogan.size > 0 %}slogan-on {% endif %}{% if ss_item.logo_type == 'img' %}logo-image {% else %}logo-txt {% endif %}">
+		{% if ss_item.logo_slogan.size > 0 %}
+		  {% assign logo_slogan = ss_item.logo_slogan | prepend: '<span class="logo_slogan d-block">' | append: '</span>' %}
+		{% endif %}
+	  {% if ss_item.logo_txt.size > 0 %}
+		{% assign logo_txt = ss_item.logo_txt | prepend: '<span class="m-0 h6 d-block">' | append: '</span>' %}
+	  {% endif %}
+	  {% assign logo_width = ss_item.logo_width %}
+	  {% assign logo_type = ss_item.logo_type %}
+	  {% assign logo_i = ss_item.logo_main %}
+	  {% assign logo_src = ss_item.logo_main | img_url: logo_size, crop: 'center' %}
+	  
+	  {% if ss_item.use_logo_inverted and request.page_type == 'index' or ss_item.use_logo_inverted and ss_item.inverted_headermain %}
+		{% assign logo_alt =  ss_item.logo_main_inverted.alt | default: shop.name %}
+		{% assign logo_src = ss_item.logo_main_inverted | img_url: logo_size, crop: 'center' %}
+		<span class="d-xl-block d-none">
+			{% include 'logo' slogan: logo_slogan, logo_t: logo_type, logo_image: ss_item.logo_main_inverted, max_w: logo_width, src: logo_src, alt: logo_alt %}
+		</span>
+	  {% endif %}
+	  {% assign logo_alt = ss_item.logo_main.alt | default: shop.name %}
+	  {% assign logo_src = ss_item.logo_main | img_url: logo_size, crop: 'center' %}
+		<span {% if ss_item.use_logo_inverted and request.page_type == 'index' or ss_item.use_logo_inverted and ss_item.inverted_headermain %} class="d-xl-none d-block"{% endif %}>
+			{% include 'logo' slogan: logo_slogan, logo_t: logo_type, logo_image: ss_item.logo_main, max_w: logo_width, src: logo_src, alt: logo_alt %}
+		</span>
+	</span>
+</a>
+{%- if request.page_type == 'index' -%} 
+</h1>
+{%- endif -%}

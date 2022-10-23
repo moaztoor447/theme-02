@@ -1,0 +1,113 @@
+<div class="product-details-wrapper item-accordion-js product-accordion d-flex flex-column">
+ 
+ {% unless pr_description_as == 'content_in_content' %}
+	  <details id="Details-ProductAcc-{{ section.id }}" class="product_description" {% if open_descr_collapse != blank %}open{% endif %}>
+		<summary class="focus-inset rte accordion-header h6">
+		  {{ 'layout.product.tab_description' | t }}
+		  <svg width="9" height="6" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg">
+			<path d="M9 1.5L7.5 0L4.5 3L1.5 0L0 1.5L4.5 6L9 1.5Z"/>
+		  </svg>
+		</summary>
+		<div class="wrap_descr accordion-content content motion-reduce" role="list" itemprop="description" tabindex="-1">{{ product.description }}</div>
+	  </details>
+  {% endunless %}
+  
+  {% for block in section.blocks %}
+	{%- assign pb_set = block.settings -%}
+	{% case block.type %}
+	{% when 'all_tab' %}
+	  <details id="Details-ProductAcc-{{ block.id }}-{{ section.id }}" class="product-section-tab">
+		<summary class="focus-inset rte accordion-header h6">
+		  {{ pb_set.title }}
+		  <svg width="9" height="6" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg">
+			<path d="M9 1.5L7.5 0L4.5 3L1.5 0L0 1.5L4.5 6L9 1.5Z"/>
+		  </svg>
+		</summary>
+		<div class="accordion-content content motion-reduce" role="list" tabindex="-1">
+		  {{ pb_set.content }}
+		  {{ pages[pb_set.page].content }}
+		</div>
+	  </details>
+	
+	{% when 'product_tab' %}
+	  {% if pb_set.custom_product == product.handle %}
+		<details id="Details-ProductAcc-{{ block.id }}-{{ section.id }}" class="product-section-tab">
+		  <summary class="focus-inset rte accordion-header h6">
+			{{ pb_set.title }}
+			<svg width="9" height="6" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg">
+			  <path d="M9 1.5L7.5 0L4.5 3L1.5 0L0 1.5L4.5 6L9 1.5Z"/>
+			</svg>
+		  </summary>
+		  <div class="accordion-content content motion-reduce" role="list" tabindex="-1">
+		 	{{ pb_set.content }}
+			{{ pages[pb_set.page].content }}
+		  </div>
+		</details>
+	  {% endif %}
+	
+	{% when 'collection_tab' %}
+	  {% if product.collections.size > 0 %}
+		{% for collection in product.collections %}
+		  {% if collection.title contains collections[pb_set.custom_collection].title %}
+			<details id="Details-ProductAcc-{{ block.id }}-{{ section.id }}" class="product-section-tab">
+			  <summary class="focus-inset rte accordion-header h6">
+				{{ pb_set.title }}
+				<svg width="9" height="6" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg">
+				  <path d="M9 1.5L7.5 0L4.5 3L1.5 0L0 1.5L4.5 6L9 1.5Z"/>
+				</svg>
+			  </summary>
+			  <div class="accordion-content content motion-reduce" role="list" tabindex="-1">
+				{{ pb_set.content }}
+				{{ pages[pb_set.page].content }}
+			  </div>
+			</details>
+		  {% endif %}
+		{% endfor %}
+	  {% endif %}
+	
+	{% when 'reviews' %}
+	 
+		
+	  
+		<details id="Details-ProductAcc-{{ block.id }}-{{ section.id }}" class="product-review">
+		  <summary class="focus-inset rte accordion-header h6">
+			{{ pb_set.title }} ({% if product.metafields.reviews.rating_count == blank %}0{% else %}{{ product.metafields.reviews.rating_count }}{% endif %})
+			<svg width="9" height="6" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg">
+			  <path d="M9 1.5L7.5 0L4.5 3L1.5 0L0 1.5L4.5 6L9 1.5Z"/>
+			</svg>
+		  </summary>
+		  <div class="accordion-content content motion-reduce" role="list" tabindex="-1">
+			<div id="shopify-product-reviews" data-id="{{ product.id }}">
+			  {% if product.metafields.reviews.rating_count != blank %}
+			  {% assign mf = product.metafields.spr.reviews | newline_to_br | split: "<br />" %}
+			  {% for line in mf %}
+				{% if line contains "<meta" %}
+				  {% elsif line contains 'itemtype="http://schema.org/AggregateRating"' %}
+				  {{ line | remove: 'itemtype="http://schema.org/AggregateRating"' }}
+				  {% elsif line contains "div" and line contains "http://schema.org/Product" %}
+				  {% assign skip_div = true %}
+				  {% elsif skip_div %}
+				  {% if line contains "/div" %}
+					{% assign skip_div = false %}
+				  {% endif %}
+				{% else %}
+				  {{ line }}
+				{% endif-%}
+			  {% endfor %}
+			  <script>
+                  var SPRCallbacks = {
+                      onProductLoad: function( e ) {
+                          $('.spr-summary').attr('itemType','').find('meta').remove()
+                      }
+                  }
+			  </script>
+			  {% endif %}
+			</div>
+		
+		  </div>
+		</details>
+	{% endcase %}
+  {% endfor %}
+</div>
+
+

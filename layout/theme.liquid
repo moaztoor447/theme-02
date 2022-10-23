@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}" class="no-js" {% if settings.rtl %}dir="rtl"{% endif %}>
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta name="theme-color" content="">
+	<link rel="canonical" href="{{ canonical_url }}">
+	<link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+	
+	
+	{% capture seo_title %}
+	  {{ page_title }}
+	  {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+	  {% unless page_title contains shop.name %}
+		&ndash; {{ shop.name }}
+	  {% endunless %}
+	{% endcapture %}
+	
+	{%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
+	  <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+	{%- endunless -%}
+	
+	
+	<title>{{ seo_title }}</title>
+	
+	{%- if canonical_url != blank -%}
+	  <link rel="canonical" href="{{ canonical_url }}">
+	{%- endif -%}
+	
+	
+	{%- if settings.favicon != blank -%}
+	  <link rel="shortcut icon" href="{{ settings.favicon | image_url: '32x32' }}" type="image/png">
+	{%- endif -%}
+	
+	{%- if page_description -%}
+	  <meta name="description" content="{{ page_description | escape }}">
+	{%- endif -%}
+	
+	
+	{% render 'meta-tags' %}
+	
+	
+	<!--[if IE]>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<![endif]-->
+	
+	<!-- CSS -->
+	{% render 'variables' %} 
+
+	<link rel="preload" href="{{ 'theme.css' | asset_url }}" as="style" /> 
+	{{ 'theme.css' | asset_url | stylesheet_tag }}    
+	
+	{% if settings.rtl %}
+	  {{ 'rtl.scss.css' | asset_url | stylesheet_tag }}
+	{% endif %}
+ 
+	{% if settings.use_lg %}
+	  {{ 'component-gradient.css' | asset_url | stylesheet_tag }}
+	{% endif %}
+ 
+ 
+	{% if settings.show_compare %}
+	  {{ 'component-compare.css' | asset_url | stylesheet_tag }}
+	{% endif %}
+ 
+	{% if settings.wishlist_toggle %}
+	  {{ 'component-wishlist.css' | asset_url | stylesheet_tag }}
+	{% endif %}
+	
+	{%- if content_for_index contains 'slide-video-js' -%}
+	  {{ 'jquery.mb.YTPlayer.min.css' | asset_url | stylesheet_tag }}
+	{%- endif -%}
+	
+	{{ 'customer_styles.css' | asset_url | stylesheet_tag }}	
+	
+	<!-- JS -->
+	
+	<script>
+		var theme = {
+			moneyFormat: {{ shop.money_format | json }},
+			shopCurrency: {{ shop.currency | json }},
+			moneyFormatCurrency: {{ shop.money_with_currency_format | json }},
+		};
+
+		var productText = {
+			available: {{ 'layout.product.available' | t | json }},
+			unavailable: {{ 'layout.product.unavailable' | t | json }},
+			items: {{ 'layout.product.items' | t | json }} 
+		};
+
+		var headerText = {
+			headerBtnBack: {{ 'layout.header.back' | t | json }} 
+		}
+
+		var themeProtect = false;
+        var productCompare = false;
+        var productWishlist = false;
+		document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+		
+
+		{% if settings.protect %}
+			themeProtect = true;
+		{% endif %}
+
+		{% if settings.wishlist_toggle %}
+			productWishlist = true;
+	    {% endif %}
+
+		{% if settings.show_compare %}
+			    productCompare = true;
+			var product = {
+				newProductsPeriod: {{ settings.new_products_period }},
+				useCompareSize: {{ settings.use_compare_size }},
+				useCompareColor: {{ settings.use_compare_color }},
+				textCompareSize:{{ settings.text_pr_size_option | downcase | json }},
+				textCompareColor:{{ settings.text_pr_color_option | downcase | json }}
+			};
+			theme.strings = {
+				timerEnd:{{ 'layout.countdown.end' | t | json }},
+				compareImg:{{ 'layout.compare.image' | t | json }},
+				compareTitle:{{ 'layout.compare.title' | t | json }},
+				compareDetails:{{ 'layout.compare.details' | t | json }},
+				compareRating:{{ 'layout.compare.rating' | t | json }},
+				compareAvailable:{{ 'layout.compare.available' | t | json }},
+				compareVendor:{{ 'layout.compare.vendor' | t | json }},
+				compareType:{{ 'layout.compare.type' | t | json }},
+				compareDescription:{{ 'layout.compare.description' | t | json }},
+				compareOptions:{{ 'layout.compare.options' | t | json }},
+				compareRemove:{{ 'layout.compare.remove' | t | json }}, 
+				compareSale:{{ 'layout.compare.sale' | t | json }},
+				compareNew:{{ 'layout.compare.new' | t | json }},
+				compareAlert:{{ 'layout.compare.compareAlert' | t | json }} 
+			};
+	  {% endif %}
+
+	</script>
+	
+	
+	
+	{%- if request.page_type contains 'customers' -%}
+	  {{ 'shopify_common.js' | shopify_asset_url | script_tag | remove: ' type="text/javascript"' }}
+	  {{ 'customer_area.js' | shopify_asset_url | script_tag | remove: ' type="text/javascript"' }}
+	{%- endif -%}
+	
+	<link rel="preload" href="{{ 'jquery.min.js' | asset_url }}" as="script">
+	<script src="{{ 'jquery.min.js' | asset_url }}"></script>
+	
+	{% assign prod_three_columns = false %}
+	{%- if content_for_layout contains 'section_template_column_product' -%}
+	  {% assign prod_three_columns = true %}
+	{%- endif -%}
+	
+	<!-- SHOPIFY SERVICE SCRIPTS -->
+	{{ content_for_header }} 
+  </head>
+  
+   <body class="template-{{ request.page_type | handle }} page-{{ template.suffix }} {% if settings.rtl %}rtl{% endif %} {% if settings.use_lg %} use_lg{% endif %} {% if settings.use_custom_container_only_index or template == 'index' %} custom_width_only_index {% else %} custom_width_all_pages {% endif %}">
+
+
+   <div id="page_preloader__bg">
+	 <div class="lds-ring">
+	   <div></div>
+	   <div></div>
+	   <div></div>
+	   <div></div>
+	 </div>
+   </div>
+
+   <script>
+       preloaderBg = document.getElementById('page_preloader__bg');
+
+       window.addEventListener('load', function () {
+           preloaderBg.classList.add("off");
+       });
+
+   </script>
+   
+	  {% comment %}
+	  {% section 'helper' %}
+	  {% endcomment %}
+	  
+	  {% section 'section-announcement-bar' %}
+	  
+	  {%- if settings.header_layout == '2' -%}
+	  <div class="hs_wrapper">
+		{% section 'header_sidebar' %}
+		{%- else -%}
+		  {%- capture var_header -%}
+		  {% section 'header' %}
+		  {%- endcapture -%}
+		  
+		  {{ var_header }}
+		{%- endif -%}
+		
+		<main id="MainContent" class="page_wrapper content-for-layout focus-none" role="main" tabindex="-1">
+		  
+		  <div class="page_container">
+			
+			{% unless template == 'index' or request.page_type contains 'product' or template == 'collection.fullwidth' or template == 'page.about-us' or template == 'page.about-us-creative' or template == 'page.contact' %}
+			<div class="container">
+			  {% endunless %}
+			  
+			  {% unless template == 'index' %}
+				{% if settings.use_breadcrumbs %}
+				  {% include 'snippet-breadcrumbs' %}
+				{% endif %}
+			  {% endunless %}
+			  
+			  {%- assign sidebar_on = false -%}
+			  {% case template %}
+			  {% when 'search', 'list-collection', 'page.wishlist', 'gift_card', 'page' %}
+				{% if settings.sidebar_toggle %}
+				  {%- assign sidebar_on = true -%}
+				{% endif %}
+			  {% endcase %}
+			  {% case template %}
+			  {% when 'search', 'list-collection', 'page.wishlist', 'gift_card', 'page' %}
+				<div class="collection-wrapper"></div>
+			  {% endcase %}
+			  {% if sidebar_on %}
+			  <div class="sidebar-enable row{% if settings.sidebar_position == 'sidebar_right' %} justify-content-md-end{% endif %}">
+				{% endif %}
+				<div class="main_content{% if request.page_type contains 'collection' or prod_three_columns %} mt-0{% endif %}{% if sidebar_on %} sidebar_on col-12 col-md-9{% if settings.sidebar_position == 'sidebar_left' %} left-sidebar{% elsif settings.sidebar_position == 'sidebar_right' %} right-sidebar{% endif %}{% endif %}">
+				  {{ content_for_layout }}
+				</div>
+				{% if sidebar_on %}
+				  <div class="sidebar_small col-12 col-md-3">
+					{% section 'template-sidebar' %}
+				  </div>
+				{% endif %}
+				{% if sidebar_on %}
+			  </div>
+			  {% endif %}
+			  {% unless template == 'index' or request.page_type contains 'product' or template == 'collection.fullwidth' or template == 'page.about-us' or template == 'page.about-us-creative' or template == 'page.contact' %}
+			</div>
+			{% endunless %}
+		  </div>
+		
+		</main>
+		
+		{%- if settings.header_layout == '2' -%}
+	  </div>
+	  {%- endif -%}
+   
+		{% case settings.footer_type %}
+		  {% when '1' %}
+			  {% section 'footer-1' %}
+		  {% when '2' %}
+			  {% section 'footer-2' %}
+		  {% when '3' %}
+			  {% section 'footer-3' %}
+		  {% when '4' %}
+			  {% section 'footer-4' %}
+		  {% when '5' %}
+			  {% section 'footer-5' %}
+		{% endcase %}
+		
+		{% if settings.show_compare %}
+		  <button type="button" id="compare_list">
+			<span id="compare__counter">0</span>
+			<span class="svg-icon svg-icon--md">
+					{% render 'icon-compare' %} 
+				</span>
+		  </button>
+		{% endif %}
+		
+		<a id="back_top" class="d-xl-block d-none" href="#">
+		  <svg width="16" height="13" viewBox="0 0 8 5" xmlns="http://www.w3.org/2000/svg">
+			<path d="M8 4L7 5L4 2L1 5L0 4L4 0L8 4Z"/>
+		  </svg>
+		</a>
+		
+		{% if settings.newsletter_popup_toggle %}
+		  {% render 'widget-newsletter-popup' %} 
+		{% endif %}
+		
+		{% if settings.show_compare %} 
+		  <div class="compare" id="compare"> 
+			<div class="container px-1 compare__wrapper">
+			  <svg id="compareClose" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M17 3L10 10L17 17" stroke="#222222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+				<path d="M3 3L10 10L3 17" stroke="#222222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+			  </svg>
+			  
+			  <div class="compare__title h6">
+				{{ 'layout.compare.compareTitle' | t }}
+				<span id="compareClearAll">{{ 'layout.compare.clear' | t }}</span>
+			  </div> 
+			</div>
+		  </div>
+		{% endif %}
+	  
+	  {%- render "include_script_js" -%}
+	  
+	  {%- if settings.hide_pb_toggle -%}
+		<style>
+			#preview-bar-iframe {
+				display: none !important;
+			}
+	  
+			html {
+				padding-bottom: 0 !important;
+			}
+		
+		</style>
+	  {%- endif -%}
+	
+	</body>
+</html>  

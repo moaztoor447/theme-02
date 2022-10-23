@@ -1,0 +1,183 @@
+{{ 'section-ab.css' | asset_url | stylesheet_tag }}
+
+{% if section.settings.display_ab %}
+    <div class="section-style-{{ section.id }}" id="announcement-bar">
+        <div class="{{ section.settings.container_width }}">
+            <div class="ab-style{% if section.settings.bg_type == 'image_bg' %} img_bg__wrap lazyload{% endif %}"
+              {% if section.settings.bg_type == 'image_bg' %}
+                data-bgset="{%- render 'bgset', image: section.settings.image -%}"
+                data-sizes="auto"
+                data-parent-fit="cover"{% endif %}>
+
+              <div class="des">
+                 {{ section.settings.content }}
+              </div>
+              <span class="notification-cookies accept_cookies_link {% if section.settings.bg_type == 'image_bg' and section.settings.content == blank %} ml-auto {% else %} ml-3{% endif %}" data-ab-cookie>
+                 {% render 'icon-close-small' %}
+              </span>
+                {% if section.settings.item_link != blank and section.settings.link_type_banner != blank %}
+                    <a class="link_banner" href="{{ section.settings.item_link }}"></a>
+                {% endif %}
+            </div>
+        </div>
+ </div>
+{% endif %} 
+
+
+{% schema %}
+  {
+    "name": "Announcement Bar",
+    "settings": [
+		{
+            "type": "checkbox",
+            "id": "display_ab",
+            "label": "Enable",
+            "default": false
+        },
+
+        {
+            "type": "header",
+            "content": "Section sittings"
+        },
+        {
+            "type":      "select",
+            "id":        "container_width",
+            "label":     "Container width",
+                "options": [
+                    {
+                        "value": "container",
+                        "label": "Box"
+                    },
+                    {
+                        "value": "container-fluid",
+                        "label": "Container Fluid"
+                    },
+                    {
+                        "value": "full-width",
+                        "label": "Full" 
+                    }
+                ],
+            "default":   "full-width"
+        },
+
+        {
+            "type": "range",
+            "id": "ab_height", 
+            "label": "Height block",
+            "min": 30,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+        },
+
+        {
+            "type":      "radio",
+            "id":        "bg_type",
+            "label":     "Type Background",
+            "options": [
+                {
+                    "value": "color_bg",
+                    "label": "Color"
+                },
+                {
+                    "value": "image_bg",
+                    "label": "Image"
+                }
+            ],
+            "default": "color_bg"
+        },
+
+
+        {
+            "type": "color_background",
+            "id": "bg_section",
+            "label": "Background Color",
+            "default": "#DFDFDF"
+        },
+
+
+        {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Background Image",
+            "info": "The image should be more than 1920px wide to resize and crop properly"
+        },
+
+
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "Text Color",
+            "default": "#121212"
+        },
+
+        {
+            "type": "html",
+            "id": "content",
+            "label": "Description HTML",
+            "default": "<div>Enjoy FREE standard delivery on orders over $100</div>",
+            "info": "Announcement bar"
+        },
+
+        {
+            "type": "checkbox",
+            "id": "link_type_banner",
+            "label": "Link banner",
+            "default": false,
+            "info": "Only overlay type. If enable - click on all banner, else - click only button"
+        },
+
+        {
+            "type": "url",
+            "id": "item_link",
+            "label": "Link banner",
+            "info": "Optional"
+        },
+
+        {
+            "type": "text",
+            "id": "against_view_period",
+            "label": "Block disable expiration (in days)",
+            "info": "Number of days until user will see block again"
+        }
+
+	]
+  }
+{% endschema %} 
+
+
+{% style %}
+    #announcement-bar{
+        color:{{ section.settings.text_color }};
+    }
+
+     .ab-style {
+         min-height: {{ section.settings.ab_height }}px;
+        {% if section.settings.bg_type == 'color_bg' %}
+            background-color: {{ section.settings.bg_section }};
+        {% endif %}
+     }
+
+
+{% endstyle %}
+
+{% javascript %}
+    (function ($) {
+        $(document).ready(function() {
+            var viewPeriod = '{{ section.settings.against_view_period | plus: 0 }}'; 
+            var abCookie = $('#announcement-bar');
+            abCookie.show();
+            if ($.cookie('cookieAb') == 'closed') {
+                abCookie.remove();
+            }
+
+            abCookie.find('[data-ab-cookie]').on('click', function(e) {
+                e.preventDefault();
+                abCookie.remove();
+                $.cookie('cookieAb', 'closed', {expires: 1, path:'/'});
+                $.cookie('cookieAb', "disabled", { path: '/', expires : viewPeriod });
+            });
+        });
+    })(jQuery);
+{% endjavascript %}  

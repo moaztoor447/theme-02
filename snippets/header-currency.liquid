@@ -1,0 +1,33 @@
+
+
+{% unless form_id %}
+  {% assign form_id = 'currency-form' %}
+{% endunless %}
+<localization-form>
+    {% assign min = 65 %}
+    {% assign max = 87 %}
+    {% assign differ = max | minus: min %}
+    {% assign randomNumber = "now" | date: "%N" | modulo: differ | plus: min %}
+    {% assign form_id = form_id | append: randomNumber %}
+      {%- capture form_id -%}localization_form{{ product.id }}__{{ "now" | date: "%L" }}{%- endcapture -%}
+      {%- form 'localization', data-localization-form: '', id: form_id -%}
+        <div class="no-js-hidden">
+          <div class="disclosure currency-selector-box">
+            <button type="button" class="disclosure__button currency_active localization-form__select localization-selector" aria-expanded="false" aria-controls="HeaderCountryList" aria-describedby="HeaderCountryLabel">
+                <span class="mr-1 link_text">{{ form.current_currency.iso_code }} {{ form.current_currency.symbol }}</span>
+                <svg width="7" height="7" viewBox="0 0 12 7" xmlns="http://www.w3.org/2000/svg" ><path fill-rule="evenodd" clip-rule="evenodd" d="M0.575684 1.4247L1.42421 0.576172L5.99995 5.15191L10.5757 0.576172L11.4242 1.4247L5.99995 6.84896L0.575684 1.4247Z" /></svg>
+            </button>
+            <ul id="HeaderCountryList" role="list" class="disclosure__list currency_selector" hidden>
+              {%- for currency in form.available_currencies -%}
+                <li class="disclosure__item" tabindex="-1">
+                  <a class="disclosure__link{% if form.current_currency.iso_code == currency.iso_code %} disclosure__link--active{% endif %} focus-inset" href="#"{% if form.current_currency.iso_code == currency.iso_code %} aria-current="true"{% endif %} data-value="{{ currency.iso_code }}">
+                     <span class="localization-form__currency">{{ currency.iso_code }} {{ currency.symbol }}</span>
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+          <input type="hidden" name="currency_code" value="{{ form.current_currency.iso_code }}">
+        </div>
+      {%- endform -%}
+</localization-form>

@@ -1,0 +1,477 @@
+
+{% if section.blocks.size > 0 %}
+	<style>
+	{% for block in section.blocks %}
+  
+		/* Block Separator style */
+      .section-style-{{ section.id }} .item-{{ block.id }}{
+      	position: relative;
+      }
+      @media only screen and (min-width: 768px) {
+        {% if block.settings.use_separatorline_desktop %}
+			.section-style-{{ section.id }} .item-{{ block.id }}::before {
+				    content: '';
+                    position: absolute;
+                    right: auto;
+                    left: 0;
+                    width: 1px;
+                    min-height: 428px;
+                    top: 0;
+                    bottom: 0;
+                    background-color: var(--color-grey-1);
+			}
+        {% endif %}
+        .section-style-{{ section.id }} .item-{{ block.id }} .content_item_wrap{
+         	padding: {{ block.settings.inset_block_desktop }};
+        }
+        
+      }
+      @media only screen and (max-width: 768px) {
+      	.section-style-{{ section.id }} .item-{{ block.id }} .content_item_wrap{
+          padding: {{ block.settings.inset_block_mobile }};
+        }
+      }
+      
+      {% endfor %}
+</style>
+{% endif %}
+
+
+
+<div class="section-style-{{ section.id }}">
+   {%- include 'section-style' -%}
+ 	 <div class="{{ section.settings.container_width }}">
+    	 <div class="row {% if section.settings.reset_indent %}gx-0{% endif %}">
+          {% for block in section.blocks %}
+           		{% case block.type %}
+			  	{% when 'info'  %}
+                  <div class="contact_item item_address col-md-{{ block.settings.width }} item-{{ block.id }}" style="background-color: {{ block.settings.bg_block }};">
+                      <div class="content_item_wrap">
+                         <div class="mb-4">
+                            <h4>{{ block.settings.item_info_title }}</h4>
+                            <p>{{ block.settings.item_info_text }}</p>
+                          </div>
+
+                          <ul class="row justify-content-between align-items-baseline flex-wrap">
+                          {% if block.settings.phone_title.size > 0 and block.settings.phone_text.size > 0 %}
+                           <li class="col-12 col-xsm-6  mb-4">
+                              <div class="contact_phone contact_element">
+                                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <path d="M12.488 14.2427C13.7391 16.4406 15.5594 18.2609 17.7573 19.512L18.936 17.8613C19.1255 17.5959 19.4058 17.4092 19.7237 17.3364C20.0417 17.2637 20.3752 17.31 20.6613 17.4667C22.5471 18.4972 24.6296 19.117 26.772 19.2853C27.1064 19.3118 27.4185 19.4634 27.6461 19.7098C27.8737 19.9561 28 20.2792 28 20.6147V26.564C28.0001 26.8941 27.8777 27.2125 27.6565 27.4576C27.4353 27.7027 27.1311 27.857 26.8027 27.8907C26.093 27.9639 25.3801 28.0004 24.6667 28C13.2533 28 4 18.7467 4 7.33333C4 6.616 4.036 5.904 4.10933 5.19733C4.14301 4.86893 4.29731 4.56469 4.54239 4.34351C4.78746 4.12233 5.10587 3.99993 5.436 4H11.3853C11.7207 3.99996 12.0439 4.12634 12.2902 4.35393C12.5366 4.58153 12.6882 4.89363 12.7147 5.228C12.883 7.37039 13.5028 9.45291 14.5333 11.3387C14.69 11.6248 14.7363 11.9583 14.6636 12.2763C14.5908 12.5942 14.4041 12.8745 14.1387 13.064L12.488 14.2427ZM9.12533 13.3667L11.6587 11.5573C10.9397 10.0055 10.4471 8.35845 10.196 6.66667H6.68C6.672 6.888 6.668 7.11067 6.668 7.33333C6.66667 17.2747 14.7253 25.3333 24.6667 25.3333C24.8893 25.3333 25.112 25.3293 25.3333 25.32V21.804C23.6415 21.5529 21.9945 21.0603 20.4427 20.3413L18.6333 22.8747C17.9049 22.5916 17.1973 22.2575 16.516 21.8747L16.4387 21.8307C13.8234 20.3423 11.6577 18.1766 10.1693 15.5613L10.1253 15.484C9.74254 14.8027 9.40838 14.0951 9.12533 13.3667Z" fill="#121212"/>
+                                  </svg>
+                                  <h6 class="subtitle_lg ttc">{{ block.settings.phone_title }}</h6>
+                                  <div class="number d-flex justify-content-start align-items-baseline">
+                                      <div class="mr-1">{{ block.settings.phone_text_info }}</div><a class="tel_ltr" href="tel:{{ block.settings.phone_text | replace: ' ', '' }}">{{ block.settings.phone_text }}</a>
+                                  </div>
+                              </div>
+                           </li>
+                          {% endif %}
+
+                          {% if block.settings.email_title.size > 0 and block.settings.email_text.size > 0 %}
+                              <li class="col-12 col-xsm-6 mb-4">
+                                  <div class="contact_phone contact_element">
+                                      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                          <path d="M3.99935 4H27.9993C28.353 4 28.6921 4.14048 28.9422 4.39052C29.1922 4.64057 29.3327 4.97971 29.3327 5.33333V26.6667C29.3327 27.0203 29.1922 27.3594 28.9422 27.6095C28.6921 27.8595 28.353 28 27.9993 28H3.99935C3.64573 28 3.30659 27.8595 3.05654 27.6095C2.80649 27.3594 2.66602 27.0203 2.66602 26.6667V5.33333C2.66602 4.97971 2.80649 4.64057 3.05654 4.39052C3.30659 4.14048 3.64573 4 3.99935 4ZM26.666 9.65067L16.0953 19.1173L5.33268 9.62133V25.3333H26.666V9.65067ZM6.01402 6.66667L16.0807 15.5493L26.002 6.66667H6.01402Z" fill="#121212"/>
+                                      </svg>
+                                      <h6 class="subtitle_lg ttc">{{ block.settings.email_title }}</h6>
+                                      <p class="number mb-0">
+                                          <a class="tel_ltr" href="mailto:{{ block.settings.email_text | replace: ' ', '' }}">{{ block.settings.email_text }}</a>
+                                      </p>
+                                  </div>
+                              </li>
+                          {% endif %}
+
+                          {% if block.settings.location_title.size > 0 and block.settings.location_text.size > 0 %}
+                              <li class="col-12 col-xsm-6 mb-4">
+                                  <div class="contact_element">
+                                      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                          <path d="M16 31.6376L7.51467 23.1522C5.83646 21.474 4.69358 19.3358 4.23057 17.008C3.76756 14.6803 4.00521 12.2675 4.91346 10.0748C5.82172 7.88205 7.35979 6.00792 9.33318 4.68935C11.3066 3.37078 13.6266 2.66699 16 2.66699C18.3734 2.66699 20.6934 3.37078 22.6668 4.68935C24.6402 6.00792 26.1783 7.88205 27.0865 10.0748C27.9948 12.2675 28.2324 14.6803 27.7694 17.008C27.3064 19.3358 26.1636 21.474 24.4853 23.1522L16 31.6376ZM22.6 21.2669C23.9052 19.9616 24.794 18.2985 25.1541 16.4881C25.5141 14.6776 25.3292 12.801 24.6228 11.0956C23.9163 9.39024 22.7201 7.93263 21.1852 6.90711C19.6504 5.88159 17.8459 5.33423 16 5.33423C14.1541 5.33423 12.3496 5.88159 10.8148 6.90711C9.27994 7.93263 8.08367 9.39024 7.37722 11.0956C6.67077 12.801 6.48589 14.6776 6.84594 16.4881C7.20599 18.2985 8.09481 19.9616 9.4 21.2669L16 27.8669L22.6 21.2669ZM16 17.3336C15.2928 17.3336 14.6145 17.0526 14.1144 16.5525C13.6143 16.0524 13.3333 15.3741 13.3333 14.6669C13.3333 13.9596 13.6143 13.2814 14.1144 12.7813C14.6145 12.2812 15.2928 12.0002 16 12.0002C16.7072 12.0002 17.3855 12.2812 17.8856 12.7813C18.3857 13.2814 18.6667 13.9596 18.6667 14.6669C18.6667 15.3741 18.3857 16.0524 17.8856 16.5525C17.3855 17.0526 16.7072 17.3336 16 17.3336Z" fill="#121212"/>
+                                      </svg>
+                                      <h6 class="subtitle_lg ttc">{{ block.settings.location_title }}</h6>
+                                      <p class="mb-0">{{ block.settings.location_text }}</p>
+                                  </div>
+                              </li>
+                          {% endif %}
+
+                          {% if block.settings.time_title.size > 0 and block.settings.time_text.size > 0 %}
+                              <li class="col-12 col-xsm-6  mb-4">
+                                  <div class="contact_element">
+                                      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                          <path d="M15.9993 29.3337C8.63535 29.3337 2.66602 23.3643 2.66602 16.0003C2.66602 8.63633 8.63535 2.66699 15.9993 2.66699C23.3633 2.66699 29.3327 8.63633 29.3327 16.0003C29.3327 23.3643 23.3633 29.3337 15.9993 29.3337ZM15.9993 26.667C18.8283 26.667 21.5414 25.5432 23.5418 23.5428C25.5422 21.5424 26.666 18.8293 26.666 16.0003C26.666 13.1713 25.5422 10.4582 23.5418 8.45785C21.5414 6.45747 18.8283 5.33366 15.9993 5.33366C13.1704 5.33366 10.4573 6.45747 8.45688 8.45785C6.45649 10.4582 5.33268 13.1713 5.33268 16.0003C5.33268 18.8293 6.45649 21.5424 8.45688 23.5428C10.4573 25.5432 13.1704 26.667 15.9993 26.667ZM17.3327 16.0003H22.666V18.667H14.666V9.33366H17.3327V16.0003Z" fill="#121212"/>
+                                      </svg>
+                                      <h6 class="subtitle_lg ttc">{{ block.settings.time_title }}</h6>
+                                      <p class="mb-0">{{ block.settings.time_text }}</p>
+                                  </div>
+                              </li>
+                          {% endif %}
+                      </ul>
+                      </div>
+                  </div>
+			  	{% when 'form'  %}
+			  		
+				<div class="contact_item item_form col-md-{{ block.settings.width }} item-{{ block.id }}" style="background-color: {{ block.settings.bg_block }};">
+  				 <div class="content_item_wrap">
+                    <div>
+                        <h4>{{ block.settings.item_form_title }}</h4>
+                        <p>{{ block.settings.item_form_text }}</p>
+                    </div>
+                    {% form 'contact' %}
+                        {% if form.posted_successfully? %}
+                            <p class="alert alert-success">{{ 'pages.contact_page_form.submit_success' | t }}</p>
+                        {% endif %}
+
+                        {{ form.errors | default_errors }}
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <div class="form-group row">
+                                    <div class="col-12 text-left">
+                                        <label for="contact_form__name">{{ 'pages.contact_page_form.name' | t }}</label>
+                                    </div>
+                                    <div class="form-control-content col-12">
+                                        <input required type="text" id="contact_form__name" name="contact[name]" class="form-control" value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer.name }}{% endif %}" placeholder="{{ 'pages.contact_page_form.name' | t }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group row">
+                                    <div class="col-12 text-left">
+                                        <label for="contact_form__email">{{ 'pages.contact_page_form.email' | t }}</label>
+                                    </div>
+                                    <div class="form-control-content col-12">
+                                        <input required type="email" id="contact_form__email" name="contact[email]" class="form-control" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ csustomer.email }}{% endif %}" placeholder="{{ 'pages.contact_page_form.email' | t }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group row">
+                                    <div class="col-12 text-left">
+                                        <label for="contact_form__message">{{ 'pages.contact_page_form.message' | t }}</label>
+                                    </div>
+                                    <div class="form-control-content col-12">
+                                        <textarea required id="contact_form__message" name="contact[body]" class="form-control" placeholder="{{ 'pages.contact_page_form.message' | t }}">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group-btn">
+                            <button class="btn btn-primary {% if settings.use_lg %} btn-gradient {% endif %} w-100" type="submit">{{ 'pages.contact_page_form.submit' | t }}</button>
+                        </div>
+                    {% endform %}
+                  </div>
+              	</div>
+			  {% endcase %}
+          {%endfor%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Contact us",
+	"tag": "section",
+	"class": "section section_homepage section_contact template_contact",
+	"max_blocks": 2,
+    "settings": [
+		{
+			"type":      "select",
+			"id":        "container_width",
+			"label":     "Container width",
+			"options": [
+				 {
+                  "value": "container",
+                  "label": "Box"
+       			 },
+                 {
+                   "value": "container-fluid",
+                   "label": "Container Fluid"
+                 },
+                 {
+                   "value": "full-width",
+                   "label": "Full"
+                 }
+			],
+			"default":   "container"
+		},
+		{
+			"type": "checkbox",
+			"id": "reset_indent",
+			"label": "Remove indent",
+			"default":   false
+		},
+ 		{
+            "type": "color",
+            "id": "bg_section",
+            "label": "Background Section",
+            "default": "#ffffff"
+   		},
+		{
+            "type": "text",
+            "id": "inset_section",
+            "label": "Inset Section",
+            "default": "0px 0px 0px 0px",
+            "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+   		},
+		{
+            "type": "text",
+            "id": "offset_section",
+            "label": "Offset Section",
+            "default": "0px 0px 0px 0px",
+            "info": "offset: Top Right Bottom Left"
+   		}
+	], 
+	"blocks": [
+		{ 
+			"type": "info",
+			"name": "Info",
+			"settings": [
+			{
+                  "type": "select",
+                  "id": "width",
+                  "label": "Width Block",
+                  "default": "6",
+                   "options": [
+                      {
+                          "value": "2",
+                          "label": "16.67%"
+                      },
+                      {
+                        "value": "3",
+                        "label": "25%"
+                      },
+                      {
+                        "value": "4",
+                        "label": "33.33%"
+                      },
+                      {
+                        "value": "5",
+                        "label": "41.67%"
+                      },
+                      {
+                        "value": "6",
+                        "label": "50%"
+                      },
+                      {
+                        "value": "7",
+                        "label": "58.33%"
+                      },
+                      {
+                        "value": "8",
+                        "label": "66.67%"
+                      },
+                      {
+                        "value": "9",
+                        "label": "75%"
+                      },
+                      {
+                        "value": "10",
+                        "label": "83.33%"
+                      },
+                      {
+                        "value": "12",
+                        "label": "100%"
+                      }
+              		]
+      			},
+		{
+            "type": "color",
+            "id": "bg_block",
+            "label": "Background Block",
+            "default": "#ffffff"
+   		},
+		{
+            "type": "text",
+            "id": "inset_block_desktop",
+            "label": "Inset Block Desktop",
+            "default": "0px 0px 0px 0px",
+            "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+   		},
+
+		{
+            "type": "text",
+            "id": "inset_block_mobile",
+            "label": "Inset Block Mobile",
+            "default": "0px 0px 0px 0px",
+            "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+   		},
+
+			{
+					"type": "checkbox",
+					"id": "use_separatorline_desktop",
+					"label": "Use separator line (only desktop)",
+					"default": true
+				},
+		
+                {
+                    "type": "text",
+                    "id": "item_info_title",
+                    "label": "Contact info title",
+                    "default": "We’re here to help you!"
+                },
+                {
+                    "type": "textarea",
+                    "id": "item_info_text",
+                    "label": "Contact info text",
+                    "default": "Have a question, comment, or brilliant idea you'd like to share? Send us a little note below - we love to hear from you and will always reply!"
+                },
+
+                {
+                    "type": "text",
+                    "id": "phone_title",
+                    "label": "Phone title"
+                },
+                {
+                    "type": "text",
+                    "id": "phone_text",
+                    "label": "Phone text"
+                },
+                {
+                    "type": "richtext",
+                    "id": "phone_text_info",
+                    "label": "Phone info text"
+                },
+                {
+                    "type": "text",
+                    "id": "email_title",
+                    "label": "Email title"
+                },
+                {
+                    "type": "text",
+                    "id": "email_text",
+                    "label": "Email text"
+                },
+
+                {
+                    "type": "text",
+                    "id": "location_title",
+                    "label": "Location title"
+                },
+                {
+                    "type": "textarea",
+                    "id": "location_text",
+                    "label": "Location text"
+                },
+                {
+                    "type": "text",
+                    "id": "time_title",
+                    "label": "Location title"
+                },
+                {
+                    "type": "textarea",
+                    "id": "time_text",
+                    "label": "Location text"
+                }
+
+			]
+		},
+		{ 
+			"type": "form",
+			"name": "Form",
+			"settings": [
+
+				{
+                  "type": "select",
+                  "id": "width",
+                  "label": "Width Block",
+                  "default": "6",
+                   "options": [
+                      {
+                          "value": "2",
+                          "label": "16.67%"
+                      },
+                      {
+                        "value": "3",
+                        "label": "25%"
+                      },
+                      {
+                        "value": "4",
+                        "label": "33.33%"
+                      },
+                      {
+                        "value": "5",
+                        "label": "41.67%"
+                      },
+                      {
+                        "value": "6",
+                        "label": "50%"
+                      },
+                      {
+                        "value": "7",
+                        "label": "58.33%"
+                      },
+                      {
+                        "value": "8",
+                        "label": "66.67%"
+                      },
+                      {
+                        "value": "9",
+                        "label": "75%"
+                      },
+                      {
+                        "value": "10",
+                        "label": "83.33%"
+                      },
+                      {
+                        "value": "12",
+                        "label": "100%"
+                      }
+              		]
+      			},
+
+				{
+					"type": "checkbox",
+					"id": "use_separatorline_desktop",
+					"label": "Use separator line (only desktop)",
+					"default": true
+				},
+		{
+            "type": "color",
+            "id": "bg_block",
+            "label": "Background Block",
+            "default": "#ffffff"
+   		},
+		{
+            "type": "text",
+            "id": "inset_block_desktop",
+            "label": "Inset Block Desktop",
+            "default": "0px 0px 0px 0px",
+             "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+   		},
+
+		{
+            "type": "text",
+            "id": "inset_block_mobile",
+            "label": "Inset Block Mobile",
+            "default": "0px 0px 0px 0px",
+            "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+   		},
+				{
+					"type": "text",
+					"id": "item_form_title",
+					"label": "Contact form title"
+				},
+                {
+                    "type": "textarea",
+                    "id": "item_form_text",
+                    "label": "Contact form text"
+                }
+			]
+		}
+		
+	],
+	"presets": [
+		{
+			"name": "Contact",
+			"category": "Form",
+			"blocks": [
+				{
+					"type": "info"
+				},
+				{
+					"type": "form"
+				}
+			]
+		}
+	]
+  }
+{% endschema %}
+

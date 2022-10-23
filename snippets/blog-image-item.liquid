@@ -1,0 +1,32 @@
+{%- liquid
+  assign blog_media_size = item.blog_image_ratio
+  assign blogcard_media_aspect_ratio = article.image.src.aspect_ratio
+  
+  if blog_card.src.aspect_ratio == nil
+  assign blogcard_media_aspect_ratio = 1
+  endif
+  if blog_media_size == 'adapt'
+  assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.'
+  endif
+-%}
+
+<div class="article-card__image media media--{{ blog_media_size }}"
+    {% if blog_media_size == 'adapt' %} style="padding-top:{{ 1 | divided_by: article.image.aspect_ratio | times: 100 }}%;"{% endif %}
+>
+  
+  <img srcset="
+       {%- if article.image.src.width >= 165 -%}{{ article.image.src | img_url: '165x' }} 165w,{%- endif -%}
+       {%- if article.image.src.width >= 360 -%}{{ article.image.src | img_url: '360x' }} 360w,{%- endif -%}
+       {%- if article.image.src.width >= 533 -%}{{ article.image.src | img_url: '533x' }} 533w,{%- endif -%}
+       {%- if article.image.src.width >= 720 -%}{{ article.image.src | img_url: '720x' }} 720w,{%- endif -%}
+       {%- if article.image.src.width >= 940 -%}{{ article.image.src | img_url: '940x' }} 940w,{%- endif -%}
+       {%- if article.image.src.width >= 1066 -%}{{ article.image.src | img_url: '1066x' }} 1066w{%- endif -%}"
+       src="{{ article.image.src | img_url: '533x' }}"
+       sizes="(min-width: 1100px) 535px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
+       alt="{{ article.image.src.alt | escape }}"
+       width="{{ article.image.width }}"
+       height="{{ article.image.height }}"
+       loading="lazy"
+       class="motion-reduce"
+  >
+</div>

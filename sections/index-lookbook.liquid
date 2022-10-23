@@ -1,0 +1,1025 @@
+{{ 'section-lookbook.css' | asset_url | stylesheet_tag }}
+
+  {%- assign item = section.settings -%}
+
+{%- if section.blocks.size > 0 -%}
+  
+  {%- assign itemsView = item.items_view | plus: 0 -%}
+  
+  {%- assign useC = false -%}
+  {% if item.carousel_view %}
+	{%- assign useC = true -%}
+  {% endif %}
+  
+  <style>
+	{%- for block in section.blocks -%}
+    .section_lookbook .section-style-{{ section.id }} .item-{{ block.id }} {
+        margin-top: {{ block.settings.offset_block_top | append: "px" }};
+    }
+	
+	{%- endfor -%}
+  </style>
+{%- endif -%}
+
+<div class="section-style-{{ section.id }} section--lookbook" id="section-{{ section.id }}" data-section-id="{{ section.id }}">
+  {%- include 'section-style' -%}
+  <div class="{{ item.container_width }}">
+	{% if item.section_title.size > 0 or item.text_title.size > 0 %}
+		<div class="text-center container-md mb-4">
+			<h2 class="section_heading mb-0">
+				{% if item.section_title.size > 0 %}
+					<span>{{ item.section_title }}</span>
+				{% endif %}
+			</h2>
+			{% if item.text_title.size > 0 %}
+				<div class="text text-default mt-1"><span>{{ item.text_title }}</span></div>
+			{% endif %}	
+		</div>
+	{% endif %}
+	
+	{% if useC and section.blocks.size > itemsView %}
+	  <div id="zmz-carousel-{{ section.id }}" data-slider-id="{{ section.id }}" class="swiper-container--lookbook swiper-container {% if item.items_view == '1' %} large-elements{% endif %} zmz-swiper-container {% if item.show_product_list != blank %} showed_product_list{% endif %}"
+		   data-options='{
+						"observer": true,
+						"observeParents": true,
+						"loop": true,
+						"speed": 400,
+						{% if item.show_product_list != blank and item.items_view == '1' %}
+						  "autoHeight": true,
+						{% endif %}
+						{% if item.items_view == '1' %}
+						  "effect": "fade",
+						  "fadeEffect": { "crossFade": true },
+						{% endif %}
+						"slidesPerGroup": 1,
+						"pagination": {"el": "#pagination_{{ section.id }}", "clickable": true},
+                        "navigation": {"nextEl": "#next_{{ section.id }}", "prevEl": "#prev_{{ section.id }}"},
+						"spaceBetween": {% if item.reset_indent == true %}0{% else %}{{ settings.spacer }}{% endif %},
+						"slidesPerView": 1,
+						"breakpoints": {
+							{% unless item.items_view == '1' %}
+								"640": { "slidesPerView": 2 },
+							{% endunless %}
+							"1024": {"slidesPerView": {{ itemsView }}}
+						}
+					}'>
+		<div class="swiper-wrapper">
+		  {%- if section.blocks.size > 0 -%}
+			{%- for block in section.blocks -%}
+			  {%- assign bl_it = block.settings -%}
+			  <div class="swiper-slide item-{{ block.id }}"
+				   data-block-id="{{ block.id }}"
+				  {{ block.shopify_attributes }}
+				   data-slide="{{ forloop.index0 }}"
+			  >
+				<div class="lookbook_item_wrap">
+				  <div class="lookbook_img">
+					
+					{% case block.type %}
+					{% when 'image' %}
+					  {%- if bl_it.image != blank -%}
+						<div class="image-item-wrapper" style="padding-top:{{ 1 | divided_by: bl_it.image.aspect_ratio | times: 100 }}%;">
+						  {% assign img_url = bl_it.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+						  <img loading="lazy" class="image-content__image lazyload"
+							   src="{{ bl_it.image | img_url: '300x300' }}"
+							   data-src="{{ img_url }}"
+							   data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 1944, 2048]"
+							   data-aspectratio="{{ bl_it.image.aspect_ratio }}"
+							   data-sizes="auto"
+							   data-parent-fit="cover"
+							   alt="{{ bl_it.image.alt | escape }}"/>
+						</div>
+					  {%- else -%}
+						<div class="img_placeholder__wrap" style="padding-top: 52.6%;">
+						  {{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+						</div>
+					  {%- endif -%}
+					{% when 'video' %}
+					  {%- style -%}
+						
+						.section-style-{{ section.id }} .item-{{ block.id }} .bgvideo-{{ block.id }} {
+						padding: {{ bl_it.padding_desktop | append: 'vw' }} 0;
+						}
+						
+						.section-style-{{ section.id }} .item-{{ block.id }} .bgvideo-{{ block.id }}.bg-zmzvideo .zmz-video video {
+						object-position: {{ bl_it.bgvideo_position_x | append: "%" }} center;
+						}
+						
+						@media (max-width: 991px) {
+						.section-style-{{ section.id }} .item-{{ block.id }} .bgvideo-{{ block.id }} {
+						padding: {{ bl_it.padding_mobile | append: 'px' }} 0;
+						}
+						}
+					  
+					  {%- endstyle -%}
+					  <div class="bgvideo-{{ block.id }} bg-zmzvideo" data-block-id="{{ block.id }}" data-block-type="background-video">
+						{% if bl_it.link_video != blank %}
+						  <div class="zmz-video">
+							<video id="Mp4{{ block.id }}" src="{{ bl_it.link_video }}" loop="" muted="" playsinline="" autoplay=""></video>
+						  </div>
+						{% else if %}
+						  <div class="zmz-video">
+							{{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+						  </div>
+						{% endif %}
+					  </div>
+					{% endcase %}
+				  </div>
+				  {%- for i in (1..4) -%}
+					{%- assign spotX = 'item_x_' | append: i -%}{%- assign spotX = bl_it[spotX] -%}
+					{%- assign spotY = 'item_y_' | append: i -%}{%- assign spotY = bl_it[spotY] -%}
+					{%- assign spotV = 'item_vertical_align_' | append: i -%}{%- assign spotV = bl_it[spotV] -%}
+					{%- assign spotH = 'item_horizontal_align_' | append: i -%}{%- assign spotH = bl_it[spotH] -%}
+					{%- assign spotProduct = 'item_product_' | append: i -%}{%- assign spotProduct = bl_it[spotProduct] -%}
+					{%- unless spotProduct == blank -%}
+					{%- assign itemProduct = all_products[spotProduct] -%}
+					  <div class="lookbook_container">
+						<div class="lookbook_item" style="left: {{ spotX }}%;top: {{ spotY }}%;">
+						  {%- if itemProduct.id.size > 0 -%}
+							<button aria-label="click for show product" onclick="openPopover(event, 'popover-id-{{ block.id }}_{{ i }}')" class="lookbook_item__bullet" style="position:absolute; left: {{ spotX }}%;top: {{ spotY }}%;" data-popover="{{ block.id }}_{{ i }}" data-toggle='popover'>
+							  <i aria-hidden="true">
+								{% render 'icon-plus' %} 
+							  </i>
+							</button>
+						  {%- else -%}
+							<div class="lookbook_item__bullet">
+							  <i aria-hidden="true"> 
+								{% render 'icon-plus' %}
+							  </i>
+							</div>
+						  {%- endif -%}
+						</div>
+					  </div>
+					{%- endunless -%}
+				  {%- endfor -%}
+				</div>
+				{%- if item.show_product_list != blank -%}
+				  <div class="container">
+					<div class="row justify-content-center flex-wrap lookbook-products-list">
+					  {%- for i in (1..4) -%}
+						{%- assign elProduct = 'item_product_' | append: i -%}
+						{%- assign elProduct = bl_it[elProduct] -%}
+						{%- unless elProduct == blank -%}
+						{%- assign itemsElProduct = all_products[elProduct] -%}
+						  {%- if itemsElProduct.id.size > 0 -%}
+							<div class="lookbook_item__product col-lg-3 col-6 mt-2">
+							  <div class="product_item_wrap list_products product_listing__list">
+								{% render 'product-item-simple',
+								  product_card_product: itemsElProduct,
+								  media_size: settings.image_ratio %}
+							  </div>
+							</div>
+						  {%- endif -%}
+						{%- endunless -%}
+					  {%- endfor -%}
+					
+					</div>
+				  </div>
+				
+				{%- endif -%}
+			  </div>
+			{%- endfor -%}
+		  {%- else -%}
+			<span style="display: flex; justify-content: center;">This section doesn’t currently include any content. Add block to this section using the sidebar.</span>
+		  {%- endif -%}
+		</div>
+		
+		<div id="pagination_{{ section.id }}" class="swiper-pagination {% if item.off_carousel_pag %} visibility-h {% endif %}"></div>
+		
+		{% unless item.off_carousel_nav and item.out_nav %}
+		  {% if item.out_nav == blank %}
+			<div id="prev_{{ section.id }}" class="swiper-button-prev slider-button">
+			  <svg width="26" height="16" viewBox="0 0 26 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M4.4875 7.03574L10.075 1.86346L8.60208 0.5L0.5 8L8.60208 15.5L10.075 14.1365L4.4875 8.96426H25.5V7.03574H4.4875Z" fill="#797B7E"/>
+			  </svg>
+			</div>
+			<div id="next_{{ section.id }}" class="swiper-button-next slider-button">
+			  <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M23.5125 14.0357L17.925 8.86346L19.3979 7.5L27.5 15L19.3979 22.5L17.925 21.1365L23.5125 15.9643H2.5V14.0357H23.5125Z" fill="#797B7E"/>
+			  </svg>
+			</div>
+		  {% endif %}
+		{% endunless %}
+	  
+	  </div>
+	  
+	  {% unless item.off_carousel_nav %}
+		{% if item.out_nav != blank %}
+		  <div id="prev_{{ section.id }}" class="swiper-button-prev out-swiper-button-prev slider-button">
+			<svg width="26" height="16" viewBox="0 0 26 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+			  <path d="M4.4875 7.03574L10.075 1.86346L8.60208 0.5L0.5 8L8.60208 15.5L10.075 14.1365L4.4875 8.96426H25.5V7.03574H4.4875Z" fill="#797B7E"/>
+			</svg>
+		  </div>
+		  <div id="next_{{ section.id }}" class="swiper-button-next out-swiper-button-next slider-button">
+			<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+			  <path d="M23.5125 14.0357L17.925 8.86346L19.3979 7.5L27.5 15L19.3979 22.5L17.925 21.1365L23.5125 15.9643H2.5V14.0357H23.5125Z" fill="#797B7E"/>
+			</svg>
+		  </div>
+		{% endif %}
+	  {% endunless %}
+	
+	{% else %}
+	  <div class="row {% if item.reset_indent %}gx-0{% endif %}">
+		{%- if section.blocks.size > 0 -%}
+		  {%- for block in section.blocks -%}
+			{%- assign bl_it = block.settings -%}
+			
+			{% case bl_it.image_column %}
+			{% when '1' %}
+			{%- assign item_width = 'col-12 col-md-6 col-lg-4 col-xl-2' -%}
+			{% when '2' %}
+			{%- assign item_width = 'col-12 col-md-6 col-lg-4 col-xl-2-5' -%}
+			{% when '3' %}
+			{%- assign item_width = 'col-6 col-md-3' -%}
+			{% when '4' %}
+			{%- assign item_width = 'col-12 col-lg-4' -%}
+			{% when '5' %}
+			{%- assign item_width = 'col-12 col-lg-5' -%}
+			{% when '6' %}
+			{%- assign item_width = 'col-12 col-lg-6' -%}
+			{% when '7' %}
+			{%- assign item_width = 'col-12 col-lg-7' -%}
+			{% when '8' %}
+			{%- assign item_width = 'col-12 col-lg-8' -%}
+			{% when '9' %}
+			{%- assign item_width = 'col-12 col-lg-9' -%}
+			{% when '10' %}
+			{%- assign item_width = 'col-12 col-lg-10' -%}
+			{% when '11' %}
+			{%- assign item_width = 'col-12 col-lg-11' -%}
+			{% when '12' %}
+			{%- assign item_width = 'col-lg-12' -%}
+			{% endcase %}
+			
+			
+			<div class="{{ item_width }} item-{{ block.id }} {% if bl_it.image_column == '12' %} large-elements{% endif %}">
+			  <div class="lookbook_item_wrap my-md-0 my-2">
+				<div class="lookbook_img">
+				  
+				  {% case block.type %}
+				  {% when 'image' %}
+					{%- if bl_it.image != blank -%}
+					  <div class="image-item-wrapper" style="padding-top:{{ 1 | divided_by: bl_it.image.aspect_ratio | times: 100 }}%;">
+						{% assign img_url = bl_it.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+						<img loading="lazy" class="image-content__image lazyload"
+							 src="{{ bl_it.image | img_url: '300x300' }}" 
+							 data-src="{{ img_url }}"
+							 data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 1944, 2048]"
+							 data-aspectratio="{{ bl_it.image.aspect_ratio }}"
+							 data-sizes="auto"
+							 data-parent-fit="cover"
+							 alt="{{ bl_it.image.alt | escape }}"/>
+					  </div>
+					{%- else -%}
+					  <div class="img_placeholder__wrap" style="padding-top: 52.6%;">
+						{{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+					  </div>
+					{%- endif -%}
+				  {% when 'video' %}
+					{%- style -%}
+					  
+					  .section-style-{{ section.id }} .item-{{ block.id }} .bgvideo-{{ block.id }} {
+					  padding: {{ bl_it.padding_desktop | append: 'vw' }} 0;
+					  }
+					  
+					  .section-style-{{ section.id }} .item-{{ block.id }} .bgvideo-{{ block.id }}.bg-zmzvideo .zmz-video video {
+					  object-position: {{ bl_it.bgvideo_position_x | append: "%" }} center;
+					  }
+					  
+					  @media (max-width: 991px) {
+					  .section-style-{{ section.id }} .item-{{ block.id }} .bgvideo-{{ block.id }} {
+					  padding: {{ bl_it.padding_mobile | append: 'px' }} 0;
+					  }
+					  }
+					
+					{%- endstyle -%}
+					<div class="bgvideo-{{ block.id }} bg-zmzvideo" data-block-id="{{ block.id }}" data-block-type="background-video">
+					  {% if bl_it.link_video != blank %}
+						<div class="zmz-video">
+						  <video id="Mp4{{ block.id }}" src="{{ bl_it.link_video }}" loop="" muted="" playsinline="" autoplay=""></video>
+						</div>
+					  {% else if %}
+						<div class="zmz-video">
+						  {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+						</div>
+					  {% endif %}
+					</div>
+				  {% endcase %}
+				</div>
+				{%- for i in (1..4) -%}
+				  {%- assign spotX = 'item_x_' | append: i -%}{%- assign spotX = bl_it[spotX] -%}
+				  {%- assign spotY = 'item_y_' | append: i -%}{%- assign spotY = bl_it[spotY] -%}
+				  {%- assign spotV = 'item_vertical_align_' | append: i -%}{%- assign spotV = bl_it[spotV] -%}
+				  {%- assign spotH = 'item_horizontal_align_' | append: i -%}{%- assign spotH = bl_it[spotH] -%}
+				  {%- assign spotProduct = 'item_product_' | append: i -%}{%- assign spotProduct = bl_it[spotProduct] -%}
+				  {%- unless spotProduct == blank -%}
+				  {%- assign itemProduct = all_products[spotProduct] -%}
+					<div class="lookbook_container">
+					  <div class="lookbook_item" style="left: {{ spotX }}%;top: {{ spotY }}%;">
+						{%- if itemProduct.id.size > 0 -%}
+						  <button aria-label="click for show product" onclick="openPopover(event, 'popover-id-{{ block.id }}_{{ i }}')" class="lookbook_item__bullet" style="position:absolute; left: {{ spotX }}%;top: {{ spotY }}%;" data-popover="{{ block.id }}_{{ i }}" data-toggle='popover'>
+							<i aria-hidden="true">
+							  {% render 'icon-plus' %}
+							</i>
+						  </button>
+						{%- else -%}
+						  <div class="lookbook_item__bullet">
+							<i aria-hidden="true">
+							  {% render 'icon-plus' %}
+							</i>
+						  </div>
+						{%- endif -%}
+					  </div>
+					</div>
+				  {%- endunless -%}
+				{%- endfor -%}
+			  </div>
+			</div>
+		  {%- endfor -%}
+		{%- else -%}
+		  <span style="display: flex; justify-content: center;">This section doesn’t currently include any content. Add block to this section using the sidebar.</span>
+		{%- endif -%}
+	  </div>
+	{% endif %}
+  </div>
+  {%- if section.blocks.size > 0 -%}
+	{%- for block in section.blocks -%}
+	  {%- assign bls_it = block.settings -%}
+	  {%- for i in (1..4) -%}
+		{%- assign spotPopProduct = 'item_product_' | append: i -%}
+		{%- assign spotPopProduct = bls_it[spotPopProduct] -%}
+		{%- unless spotPopProduct == blank -%}
+		{%- assign itemPopProduct = all_products[spotPopProduct] -%}
+		  
+		  {%- if itemPopProduct.id.size > 0 -%}
+			<div id="popover-id-{{ block.id }}_{{ i }}" role="tooltip" data-popover="{{ block.id }}_{{ i }}" class="lookbook_item__caption hidden {{ item.product_style }}">
+			  {% if item.product_style == "style_1" %}
+				<div class="product_listing__main product_listing__grid mx-0">
+				  <div class="product_item_wrap">
+					{% render 'product-listing-item',
+					  product_card_product: itemPopProduct,
+					  pc_grid_style: "grid_style_1",
+					  media_size: settings.image_ratio %}
+				  </div>
+				</div>
+			  {% else %}
+				<div class="product_item_wrap list_products product_listing__list">
+				  {% render 'product-item-simple',
+					product_card_product: itemPopProduct,
+					media_size: settings.image_ratio %}
+				</div>
+			  {% endif %}
+			</div>
+		  {%- endif -%}
+		{%- endunless -%}
+	  {%- endfor -%}
+	{%- endfor -%}
+  {%- endif -%}
+</div>
+
+<script src="{{ 'popover.js' | asset_url }}" defer></script> 
+
+{% schema %}
+{
+  "name": "Lookbook Section",
+  "class": "section section_homepage section_lookbook section_lookbook_slider",
+  "max_blocks": 7,
+  "settings": [
+	{
+	  "type": "select",
+	  "id": "container_width",
+	  "label": "Container width",
+	  "options": [
+		{
+		  "value": "container",
+		  "label": "Box"
+		},
+		{
+		  "value": "container-fluid",
+		  "label": "Container Fluid"
+		},
+		{
+		  "value": "full-width",
+		  "label": "Full"
+		}
+	  ],
+	  "default": "container"
+	},
+	{
+	  "type": "checkbox",
+	  "id": "reset_indent",
+	  "label": "Remove indent",
+	  "default": false
+	},
+	{
+	  "type": "text",
+	  "id": "section_title",
+	  "label": "Section Title"
+	},
+	{
+	  "type": "text",
+	  "id": "text_title",
+	  "label": "Text Title"
+	},
+	{
+	  "type": "text",
+	  "id": "inset_section",
+	  "label": "Inset Section",
+	  "default": "0px 0px 0px 0px",
+	  "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+	},
+	{
+	  "type": "text",
+	  "id": "offset_section",
+	  "label": "Offset Section",
+	  "default": "0px 0px 0px 0px",
+	  "info": "offset: Top Right Bottom Left"
+	},
+	{
+	  "type": "color",
+	  "id": "bg_section",
+	  "label": "Background Section",
+	  "default": "#ffffff"
+	},
+	{
+	  "type": "header",
+	  "content": "Carousel settings"
+	},
+	{
+	  "type": "checkbox",
+	  "id": "carousel_view",
+	  "label": "Use carousel",
+	  "default": false
+	},
+	{
+	  "type": "select",
+	  "id": "items_view",
+	  "label": "Carousel counts of slide",
+	  "info": "Count of blocks in section must be more choosing 'count of slides'",
+	  "options": [
+		{
+		  "value": "1",
+		  "label": "1"
+		},
+		{
+		  "value": "2",
+		  "label": "2"
+		},
+		{
+		  "value": "3",
+		  "label": "3"
+		},
+		{
+		  "value": "4",
+		  "label": "4"
+		},
+		{
+		  "value": "5",
+		  "label": "5"
+		},
+		{
+		  "value": "6",
+		  "label": "6"
+		}
+	  ],
+	  "default": "1"
+	},
+	{
+	  "type": "checkbox",
+	  "id": "show_product_list",
+	  "label": "Show list of products",
+	  "info": "Recommending use if 'counts of slide' is 1",
+	  "default": false
+	},
+	{
+	  "type": "checkbox",
+	  "id": "off_carousel_nav",
+	  "label": "Disable carousel navigation",
+	  "default": false
+	},
+	{
+	  "type": "checkbox",
+	  "id": "out_nav",
+	  "label": "Carousel navigation out container",
+	  "default": false
+	},
+	{
+	  "type": "checkbox",
+	  "id": "off_carousel_pag",
+	  "label": "Disable carousel pagination",
+	  "default": false
+	},
+	{
+	  "type": "select",
+	  "id": "product_style",
+	  "label": "Popup product style",
+	  "options": [
+		{
+		  "value": "style_1",
+		  "label": "Grid Style"
+		},
+		{
+		  "value": "style_2",
+		  "label": "List Style"
+		}
+	  ],
+	  "default": "style_1"
+	}
+  ],
+  "blocks": [
+	{
+	  "type": "image",
+	  "name": "Image lookbook",
+	  "settings": [
+		{
+		  "type": "select",
+		  "id": "image_column",
+		  "label": "Image Column width",
+		  "info": "Options not carousel",
+		  "default": "6",
+		  "options": [
+			{
+			  "value": "1",
+			  "label": "16.67%"
+			},
+			{
+			  "value": "2",
+			  "label": "20%"
+			},
+			{
+			  "value": "3",
+			  "label": "25%"
+			},
+			{
+			  "value": "4",
+			  "label": "33.33%"
+			},
+			{
+			  "value": "5",
+			  "label": "41.67%"
+			},
+			{
+			  "value": "6",
+			  "label": "50%"
+			},
+			{
+			  "value": "7",
+			  "label": "58.33%"
+			},
+			{
+			  "value": "8",
+			  "label": "66.67%"
+			},
+			{
+			  "value": "9",
+			  "label": "75%"
+			},
+			{
+			  "value": "10",
+			  "label": "83.33%"
+			},
+			{
+			  "value": "11",
+			  "label": "91.66%"
+			},
+			{
+			  "value": "12",
+			  "label": "100%"
+			}
+		  ]
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block_top",
+		  "label": "Top Offset block",
+		  "default": "0",
+		  "info": "Default 0"
+		},
+		{
+		  "type": "image_picker",
+		  "id": "image",
+		  "label": "Image"
+		},
+		{
+		  "type": "header",
+		  "content": "Product 1"
+		},
+		{
+		  "type": "product",
+		  "id": "item_product_1",
+		  "label": "Select Product"
+		},
+		{
+		  "type": "range",
+		  "id": "item_x_1",
+		  "min": 1,
+		  "max": 100,
+		  "step": 1,
+		  "unit": "%",
+		  "label": "Horizontal position",
+		  "default": 50
+		},
+		{
+		  "type": "range",
+		  "id": "item_y_1",
+		  "min": 1,
+		  "max": 100,
+		  "step": 1,
+		  "unit": "%",
+		  "label": "Vertical position",
+		  "default": 50
+		},
+		{
+		  "type": "header",
+		  "content": "Product 2"
+		},
+		{
+		  "type": "product",
+		  "id": "item_product_2",
+		  "label": "Select Product"
+		},
+		{
+		  "type": "range",
+		  "id": "item_x_2",
+		  "min": 1,
+		  "max": 100,
+		  "step": 1,
+		  "unit": "%",
+		  "label": "Horizontal position",
+		  "default": 50
+		},
+		{
+		  "type": "range",
+		  "id": "item_y_2",
+		  "min": 1,
+		  "max": 100,
+		  "step": 1,
+		  "unit": "%",
+		  "label": "Vertical position",
+		  "default": 50
+		},
+		{
+		  "type": "header",
+		  "content": "Product 3"
+		},
+		{
+		  "type": "product",
+		  "id": "item_product_3",
+		  "label": "Select Product"
+		},
+		{
+		  "type": "range",
+		  "id": "item_x_3",
+		  "min": 1,
+		  "max": 100,
+		  "step": 1,
+		  "unit": "%",
+		  "label": "Horizontal position",
+		  "default": 50
+		},
+		{
+		  "type": "range",
+		  "id": "item_y_3",
+		  "min": 1,
+		  "max": 100,
+		  "step": 1,
+		  "unit": "%",
+		  "label": "Vertical position",
+		  "default": 50
+		},
+		{
+		  "type": "header",
+		  "content": "Product 4"
+		},
+		{
+		  "type": "product",
+		  "id": "item_product_4",
+		  "label": "Select Product"
+		},
+		{
+		  "type": "range",
+		  "id": "item_x_4",
+		  "min": 1,
+		  "max": 100,
+		  "step": 1,
+		  "unit": "%",
+		  "label": "Horizontal position",
+		  "default": 50
+		},
+		{
+		  "type": "range",
+		  "id": "item_y_4",
+		  "min": 1,
+		  "max": 100,
+		  "step": 1,
+		  "unit": "%",
+		  "label": "Vertical position",
+		  "default": 50
+		}
+	  ]
+	},
+	{
+	  "type": "video",
+	  "name": "Video lookbook",
+	  "settings": [
+		{
+		  "type": "select",
+		  "id": "image_column",
+		  "label": "Image Column width",
+		  "info": "Options not carousel",
+		  "default": "6",
+		  "options": [
+			{
+			  "value": "2",
+			  "label": "16.67%"
+			},
+			{
+			  "value": "3",
+			  "label": "25%"
+			},
+			{
+			  "value": "4",
+			  "label": "33.33%"
+			},
+			{
+			  "value": "5",
+			  "label": "41.67%"
+			},
+			{
+			  "value": "6",
+			  "label": "50%"
+			},
+			{
+			  "value": "7",
+			  "label": "58.33%"
+			},
+			{
+			  "value": "8",
+			  "label": "66.67%"
+			},
+			{
+			  "value": "9",
+			  "label": "75%"
+			},
+			{
+			  "value": "10",
+			  "label": "83.33%"
+			},
+			{
+			  "value": "12",
+			  "label": "100%"
+			}
+		  ]
+		},
+		{
+		  "type": "text",
+		  "id": "offset_block_top",
+		  "label": "Top Offset block",
+		  "default": "0",
+		  "info": "Default 0"
+		},
+		{
+		  "type": "range",
+		  "id": "padding_desktop",
+		  "min": 0,
+		  "max": 50,
+		  "step": 0.5,
+		  "unit": "vw",
+		  "label": "Padding desktop",
+		  "default": 41.5
+		},
+		{
+		  "type": "range",
+		  "id": "padding_mobile",
+		  "min": 0,
+		  "max": 300,
+		  "step": 10,
+		  "unit": "px",
+		  "label": "Padding mobile",
+		  "default": 80
+		},
+		{
+		  "type": "textarea",
+		  "id": "link_video",
+		  "label": "Link Video",
+		  "info": "Upload video in your host"
+		},
+		{
+		  "type": "range",
+		  "id": "bgvideo_position_x",
+		  "label": "Background position by horizontal",
+		  "min": 0,
+		  "max": 100,
+		  "step": 1,
+		  "unit": "%",
+		  "default": 50
+		},
+		{
+		  "type": "header",
+		  "content": "Product 1"
+		},
+		{
+		  "type": "product",
+		  "id": "item_product_1",
+		  "label": "Select Product"
+		},
+		{
+		  "type": "range",
+		  "id": "item_x_1",
+		  "min": 1,
+		  "max": 100,
+		  "step": 1,
+		  "unit": "%",
+		  "label": "Horizontal position",
+		  "default": 50
+		},
+		{
+		  "type": "range",
+		  "id": "item_y_1",
+		  "min": 1,
+		  "max": 100,
+		  "step": 1,
+		  "unit": "%",
+		  "label": "Vertical position",
+		  "default": 50
+		},
+		{
+		  "type": "header",
+		  "content": "Product 2"
+		},
+		{
+		  "type": "product",
+		  "id": "item_product_2",
+		  "label": "Select Product"
+		},
+		{
+		  "type": "range",
+		  "id": "item_x_2",
+		  "min": 1,
+		  "max": 100,
+		  "step": 1,
+		  "unit": "%",
+		  "label": "Horizontal position",
+		  "default": 50
+		},
+		{
+		  "type": "range",
+		  "id": "item_y_2",
+		  "min": 1,
+		  "max": 100,
+		  "step": 1,
+		  "unit": "%",
+		  "label": "Vertical position",
+		  "default": 50
+		},
+		{
+		  "type": "header",
+		  "content": "Product 3"
+		},
+		{
+		  "type": "product",
+		  "id": "item_product_3",
+		  "label": "Select Product"
+		},
+		{
+		  "type": "range",
+		  "id": "item_x_3",
+		  "min": 1,
+		  "max": 100,
+		  "step": 1,
+		  "unit": "%",
+		  "label": "Horizontal position",
+		  "default": 50
+		},
+		{
+		  "type": "range",
+		  "id": "item_y_3",
+		  "min": 1,
+		  "max": 100,
+		  "step": 1,
+		  "unit": "%",
+		  "label": "Vertical position",
+		  "default": 50
+		},
+		{
+		  "type": "header",
+		  "content": "Product 4"
+		},
+		{
+		  "type": "product",
+		  "id": "item_product_4",
+		  "label": "Select Product"
+		},
+		{
+		  "type": "range",
+		  "id": "item_x_4",
+		  "min": 1,
+		  "max": 100,
+		  "step": 1,
+		  "unit": "%",
+		  "label": "Horizontal position",
+		  "default": 50
+		},
+		{
+		  "type": "range",
+		  "id": "item_y_4",
+		  "min": 1,
+		  "max": 100,
+		  "step": 1,
+		  "unit": "%",
+		  "label": "Vertical position",
+		  "default": 50
+		}
+	  ]
+	}
+  ],
+  "presets": [
+	{
+	  "name": "Lookbook Section",
+	  "category": "Products",
+	  "blocks": [
+		{
+		  "type": "image"
+		},
+		{
+		  "type": "image"
+		}
+	  ]
+	}
+  ]
+}
+{% endschema %}
+
+{% javascript %}
+	(function ($) {
+	  // button popover clicked
+	  window.openPopover = function openPopover(event, popoverID) {
+        let element = event.target;
+        while (element.nodeName !== "BUTTON") {
+            element = element.parentNode;
+        }
+        Popper.createPopper(element, document.getElementById(popoverID), {
+            placement: "auto",
+            modifiers: [
+                {
+                    name: "offset",
+                    options: {
+                        offset: [0, 6]
+                    }
+                },
+                {
+                    name: "flip",
+                    options: {
+                        allowedAutoPlacements: ["left", "right", "top", "bottom"],
+                        rootBoundary: "viewport"
+                    }
+                }
+            ]
+        });
+        element.classList.toggle("is-active");
+        document.getElementById(popoverID).classList.toggle("hidden");
+        document.getElementById(popoverID).classList.toggle("is-open");
+    }
+
+
+	  // Hide content popup after clicked outside target
+	  $('body').on('click', function (e) {
+            let elBul = $("[data-toggle='popover']");
+            let elActiveBul = $("[data-toggle='popover'].is-active");
+            elActiveBul.each(function () {
+                let elemThis = $(this);
+                // hide any open popovers when the anywhere else in the body is clicked
+                if (!elemThis.is(e.target) && !elBul.is(e.target) && elemThis.has(e.target).length === 0 && $('.lookbook_item__caption.is-open').has(e.target).length === 0) {
+                    elemThis.click();
+                    elemThis.removeClass('is-active');
+                }
+            });
+        });
+
+        // Behavior slide in custom panel (slide is dependence from block)
+        if (Shopify.designMode) {
+            $(document)
+                .on('shopify:section:unload', change_slide_event)
+                .on('shopify:section:select', change_slide_event)
+                .on('shopify:section:deselect', change_slide_event)
+                .on('shopify:section:reorder', change_slide_event)
+                .on('shopify:block:select', change_slide_event)
+                .on('shopify:block:deselect', change_slide_event);
+
+            function change_slide_event(evt) {
+                const block = evt.target;
+                const index = Number(block.dataset.slide);
+                const blockSelectedIsSwiperSlide = block.classList.contains('swiper-slide');
+                if (!blockSelectedIsSwiperSlide) return;
+
+                var selectedSlideId = $(block).attr("data-block-id");
+                var sliderLbSectionID = $(block).closest('.zmz-swiper-container').data('slider-id');
+
+                if (evt.detail.blockId === selectedSlideId) {
+                    $("#zmz-carousel-" + sliderLbSectionID + " .swiper-pagination :eq(" + index + ")").click();
+                }
+            }
+        }
+   })(jQuery);
+{% endjavascript %}
+

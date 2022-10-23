@@ -1,0 +1,837 @@
+{{ 'section-custom-content.css' | asset_url | stylesheet_tag }}
+
+
+<div class="section-style-{{ section.id }}">
+  {%- include 'section-style' -%}
+  <div class="{{ section.settings.container_width }} {% if settings.use_lg and section.settings.use_bg_grad2 and section.settings.container_width == 'full-with' %} bg_grad2{% endif %}">
+	<div class="index_custom_content {% if section.settings.custom_class.size > 0 %}{{ section.settings.custom_class }}{% endif %}{% if section.settings.inverted %} inverted{% endif %}">
+	  {% if section.settings.title.size > 0 %}
+		<div class="col-12">
+		  <h2 class="section_heading">{{ section.settings.title }}</h2>
+		</div>
+	  {% endif %}
+	  
+	  <div class="{% if settings.use_lg and section.settings.use_bg_grad2 and section.settings.container_width != 'full-with' %} mx-0 bg_grad2{% endif %} row{% if section.settings.reset_indent %} gx-0{% endif %}">
+		
+		{% for block in section.blocks %}
+		  {%- assign block_width = 'col-12' -%}
+		  {% case block.settings.width %}
+		  {% when '25%' %}
+		  {%- assign block_width = 'col-3' -%}
+		  {% when '33%' %}
+		  {%- assign block_width = 'col-12 col-lg-4' -%}
+		  {% when '50%' %}
+		  {%- assign block_width = 'col-12 col-lg-6' -%}
+		  {% when '66%' %}
+		  {%- assign block_width = 'col-8' -%}
+		  {% when '75%' %}
+		  {%- assign block_width = 'col-9' -%}
+		  {% when '100%' %}
+			{% comment %}{%- assign block_width = 'col-12' -%}{% endcomment %}
+		  {% endcase %}
+		  
+		  <div class="{{ block_width }} col_item {% cycle 'step2': 'item_2_1', '' %}">
+			<div class="custom_content__item item_block_{{ block.type }} item-{{ block.id }} {% if block.settings.custom_class.size > 0 %}{{ block.settings.custom_class }}{% endif %}">
+			  {% case block.type %}
+			  {% when 'image' %}
+				{% if block.settings.image != blank %}
+				  <div class="image-item-container">
+					<div class="image-item-wrapper" style="padding-top:{{ 1 | divided_by: block.settings.image.aspect_ratio | times: 100 }}%;">
+					  {% assign img_url = block.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+					  <img loading="lazy" class="image-content__image lazyload"
+						   src="{{ block.settings.image | img_url: '300x300' }}"
+						   data-src="{{ img_url }}"
+						   data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 1944, 2048]"
+						   data-aspectratio="{{ block.settings.image.aspect_ratio }}"
+						   data-sizes="auto"
+						   alt="{{ block.settings.image.alt | escape }}">
+					</div>
+				  </div>
+				
+				{% else %}
+				  <div class="image-item-container">
+					<div class="img_placeholder__wrap" style="padding-top: 52.6%;">
+					  {{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+					</div>
+				  </div>
+				{% endif %}
+			  
+			  {% when 'text' %}
+				<div class="item_text text-{{ block.settings.align_text }} h-100 d-flex flex-column justify-content-md-{{ block.settings.v_cpos }} align-items-md-{{ block.settings.h_cpos }}">
+				  <style>
+                      .section-style-{{ section.id }} .item-{{ block.id }} .item_text:not(.inverted) .block-title {
+                          color: {{ block.settings.color_title }};
+                      }
+
+                      .section-style-{{ section.id }} .item-{{ block.id }} .item_text:not(.inverted) .block-text {
+                          color: {{ block.settings.color_text }};
+                      }
+
+                      .section-style-{{ section.id }} .item-{{ block.id }} .item_text:not(.inverted) .block-subtitle {
+                          color: {{ block.settings.color_subtitle }};
+                      }
+				  </style>
+				  {% case block.settings.caption_size %}
+				  {% when 'large' %}
+				  {%- assign subtitle_class = 'h6' -%}
+				  {%- assign title_class = 'h1' -%}
+				  {%- assign text_class = 'text-large' -%}
+				  {%- assign offset_class = 'mt-3' -%}
+				  {% when 'medium' %}
+				  {%- assign subtitle_class = 'subtitle_lg' -%}
+				  {%- assign title_class = 'h2' -%}
+				  {%- assign text_class = 'text-medium' -%}
+				  {%- assign offset_class = 'mt-2' -%}
+					{% else %}
+				  {%- assign subtitle_class = 'h6' -%}
+				  {%- assign title_class = 'h4 ttu' -%}
+				  {%- assign text_class = 'text-default' -%}
+				  {%- assign offset_class = 'mt-1' -%}
+				  {% endcase %}
+				  
+				  {% if block.settings.item_subtitle.size > 0 %}
+					<div class="{{ subtitle_class }} {{ offset_class }} block-subtitle">
+					  <span class="caption-item">{{ block.settings.item_subtitle }}</span>
+					</div>
+				  {% endif %}
+				  {% if block.settings.item_title.size > 0 %}
+					<h2 class="{{ title_class }} {{ offset_class }} block-title">
+					  <span class="caption-item">{{ block.settings.item_title }}</span>
+					</h2>
+				  {% endif %}
+				  {% if block.settings.item_text.size > 0 %}
+					<div class="{{ text_class }} {{ offset_class }} block-text">
+					  <div class="caption-item"> {{ block.settings.item_text }}</div> 
+					</div>
+				  {% endif %}
+				  {% if block.settings.block_link.size > 0 and block.settings.url_text.size > 0 %}
+					<a class="btn {{ offset_class }} {{ block.settings.btn_style }} {{ block.settings.btn_size }}" href="{{ block.settings.slide_link }}">{{ block.settings.url_text }}</a>
+				  {% endif %}
+				</div>
+			  
+			  {% when 'video' %}
+				<div class="item_video">
+				  {% if block.settings.video_url.size > 0 %}
+					<div class="item_video__wrap">
+					  <iframe class="item_video__player" src="//www.youtube.com/embed/{{ block.settings.video_url | slice: -11, 11 }}?vq=720" width="1920" height="1080" allowfullscreen></iframe>
+					</div>
+				  {% endif %}
+				</div>
+			  
+			  {% when 'product' %}
+			  {%- assign product = all_products[block.settings.product] -%}
+				
+				<div class="product_listing__main">
+				  {% if product.id.size > 0 %}
+					{% render 'product-listing-item',
+					  product_card_product: product,
+					  pc_grid_style: 'grid_style_1',
+					  media_size: settings.image_ratio,
+					  show_secondary_image: settings.show_secondary_image,
+					  add_image_padding: settings.image_padding,
+					  add_wrapper_image_bg: settings.bg_wrap_img_color,
+					  add_image_bg: settings.bg_img_color,
+					  badge_card_toggle: settings.badge_card_toggle,
+					  product_card_vendor: settings.product_card_vendor,
+					  product_card_options: settings.product_card_options,
+					  product_card_reviews: settings.product_card_reviews,
+					  product_card_col: settings.product_card_col,
+					  product_card_sku: settings.product_card_sku %}
+				  {% else %}
+					<div class="product_item">
+					  <div class="product_wrapper">
+						{% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+						<div class="product_img">
+						  <div class="img_placeholder__wrap">
+							{{ 'product-' | append: current | placeholder_svg_tag: 'img_placeholder' }}
+						  </div>
+						</div>
+						
+						<p class="product_name">Product name</p>
+						
+						<p class="product_price">
+						  $99.00
+						</p>
+					  </div>
+					</div>
+				  {% endif %}
+				</div>
+			  
+			  {% when 'collection' %}
+			  {%- assign collection = collections[block.settings.collection] -%}
+				
+				<div class="collection_listing__main">
+				  <div class="collection_item">
+					{% if collection.id.size > 0 %}
+					  <a href="{{ collection.url }}">
+						<div class="layer_1 collection_img">
+						  {% if collection.image %}
+							<img loading="lazy" src="{{ collection | img_url: img_size, crop: 'center' }}" alt="{{ collection.title }}">
+							
+							{% elsif collection.products.first %}
+							<img loading="lazy" src="{{ collection.products.first | img_url: img_size, crop: 'center' }}" alt="{{ collection.title }}">
+						  
+						  {% else %}
+							<div class="img_placeholder__wrap">
+							  {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+							  {{ 'collection-' | append: current | placeholder_svg_tag: 'img_placeholder' }}
+							</div>
+						  {% endif %}
+						</div>
+						
+						<div class="layer_2">
+						  <h2 class="collection_title">{{ collection.title }}</h2>
+						  
+						  <span class="collection_products">{{ collection.products_count }} {{ collection.products_count | pluralize: ' product', ' products' }}</span>
+						</div>
+					  </a>
+					{% else %}
+					  <div class="layer_1 collection_img">
+						<div class="img_placeholder__wrap">
+						  {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+						  {{ 'collection-' | append: current | placeholder_svg_tag: 'img_placeholder' }}
+						</div>
+					  </div>
+					  
+					  <div class="layer_2">
+						<span class="collection_title">Collection</span>
+						
+						<span class="collection_products">100 products</span>
+					  </div>
+					{% endif %}
+				  </div>
+				</div>
+			  
+			  {% when 'html' %}
+				<div class="custom_html">
+				  {% if block.settings.code.size > 0 %}
+					{{ block.settings.code }}
+				  {% endif %}
+				</div>
+				
+				
+			  {% when 'custom_liquid' %}
+				<div class="custom_liquid">
+				  {{ block.section.custom_liquid }}
+				</div>
+			  {% endcase %}
+			</div>
+		  </div>
+		
+		{% endfor %}
+	  </div>
+	</div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Custom content",
+  "class": "section section_homepage section_custom-content",
+  "settings": [
+	{
+	  "type": "text",
+	  "id": "custom_class",
+	  "label": "Custom class"
+	},
+	{
+	  "type": "select",
+	  "id": "container_width",
+	  "label": "Container width",
+	  "options": [
+		{
+		  "value": "container",
+		  "label": "Box"
+		},
+		{
+		  "value": "container-fluid",
+		  "label": "Container Fluid"
+		},
+		{
+		  "value": "full-width",
+		  "label": "Full"
+		}
+	  ],
+	  "default": "container"
+	},
+	{
+	  "type": "checkbox",
+	  "id": "reset_indent",
+	  "label": "Remove indent",
+	  "default": false
+	},
+	{
+	  "type": "text",
+	  "id": "inset_section",
+	  "label": "Inset Section",
+	  "default": "0px 0px 0px 0px",
+	  "info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+	},
+	{
+	  "type": "text",
+	  "id": "offset_section",
+	  "label": "Offset Section",
+	  "default": "0px 0px 0px 0px",
+	  "info": "offset: Top Right Bottom Left"
+	},
+	{
+	  "type": "color",
+	  "id": "bg_section",
+	  "label": "Background Section",
+	  "default": "#ffffff"
+	},
+	
+	{
+	  "type": "text",
+	  "id": "title",
+	  "label": "Heading",
+	  "default": "Custom content"
+	},
+	{
+	  "type": "checkbox",
+	  "id": "inverted",
+	  "label": "Inverted style",
+	  "default": false
+	},
+	{
+	  "type": "header",
+	  "content": {
+		"de": "BENÖTIGEN SIE WEITERE HILFE",
+		"en": "NEED MORE HELP?",
+		"es": "NECESITAS MÁS AYUDA?",
+		"fr": "BESOIN D'AIDE?",
+		"it": "SERVE ANCORA AIUTO?",
+		"ru": "НУЖНА ДОПОЛНИТЕЛЬНАЯ ПОМОЩЬ?",
+		"pt-BR": "NEED MORE HELP?"
+	  },
+	  "info": {
+		"de": "[Bei weiteren Fragen oder Problemen sowie bei der Anpassung der Vorlage wenden Sie sich bitte an shopify@zemez.io](mailto:shopify@zemez.io)",
+		"en": "[In case of additional questions or problems, as well as requests to customize the template, please contact shopify@zemez.io](mailto:shopify@zemez.io)",
+		"es": "[En caso de preguntas o problemas adicionales, así como solicitudes para personalizar la plantilla, comuníquese con shopify@zemez.io](mailto:shopify@zemez.io)",
+		"fr": "[En cas de questions ou de problèmes supplémentaires, ainsi que de demandes de personnalisation du modèle, veuillez contacter shopify@zemez.io](mailto:shopify@zemez.io)",
+		"it": "[In caso di ulteriori domande o problemi, nonché richieste di personalizzazione del modello, si prega di contattare shopify@zemez.io](mailto:shopify@zemez.io)",
+		"ru": "[В случае возникновения дополнительных вопросов или проблем, а также запросов на настройку шаблона, пожалуйста, свяжитесь с нами shopify@zemez.io](mailto:shopify@zemez.io)",
+		"pt-BR": "[In case of additional questions or problems, as well as requests to customize the template, please contact shopify@zemez.io](mailto:shopify@zemez.io)"
+	  }
+	}
+  ],
+  "blocks": [
+	// IMAGE //////////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "image",
+	  "name": "Image",
+	  "settings": [
+		{
+		  "type": "image_picker",
+		  "id": "image",
+		  "label": "Image"
+		},
+		{
+		  "type": "select",
+		  "id": "width",
+		  "label": "Container width",
+		  "default": "50%",
+		  "options": [
+			{
+			  "value": "25%",
+			  "label": "25%"
+			},
+			{
+			  "value": "33%",
+			  "label": "33%"
+			},
+			{
+			  "value": "50%",
+			  "label": "50%"
+			},
+			{
+			  "value": "66%",
+			  "label": "66%"
+			},
+			{
+			  "value": "75%",
+			  "label": "75%"
+			},
+			{
+			  "value": "100%",
+			  "label": "100%"
+			}
+		  ]
+		}
+	  ]
+	},
+	// TEXT ///////////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "text",
+	  "name": "Text",
+	  "settings": [
+		{
+		  "type": "text",
+		  "id": "custom_class",
+		  "label": "Custom class"
+		},
+		{
+		  "type": "select",
+		  "id": "caption_size",
+		  "label": "caption size",
+		  "default": "medium",
+		  "options": [
+			{
+			  "label": "Small",
+			  "value": "small"
+			},
+			{
+			  "label": "Medium",
+			  "value": "medium"
+			},
+			{
+			  "label": "Large",
+			  "value": "large"
+			}
+		  ]
+		},
+		{
+		  "type": "select",
+		  "id": "h_cpos",
+		  "label": "Caption horizontal position",
+		  "default": "start",
+		  "options": [
+			{
+			  "label": "Left position",
+			  "value": "start"
+			},
+			{
+			  "label": "Center position",
+			  "value": "center"
+			},
+			{
+			  "label": "Right position",
+			  "value": "end"
+			}
+		  ]
+		},
+		{
+		  "type": "select",
+		  "id": "v_cpos",
+		  "label": "Caption vertical position",
+		  "default": "start",
+		  "info": "Only overlay type",
+		  "options": [
+			{
+			  "label": "Top position",
+			  "value": "start"
+			},
+			{
+			  "label": "Center position",
+			  "value": "center"
+			},
+			{
+			  "label": "Bottom position",
+			  "value": "end"
+			}
+		  ]
+		},
+		{
+		  "type": "text",
+		  "id": "item_title",
+		  "label": "Caption title",
+		  "default": "Caption title"
+		},
+		{
+		  "type": "color",
+		  "id": "color_title",
+		  "label": "Color",
+		  "default": "#121212"
+		},
+		{
+		  "type": "text",
+		  "id": "item_subtitle",
+		  "label": "Caption subtitle",
+		  "default": "Caption text"
+		},
+		{
+		  "type": "color",
+		  "id": "color_subtitle",
+		  "label": "Color",
+		  "default": "#121212"
+		},
+		{
+		  "type": "richtext",
+		  "id": "item_text",
+		  "label": "Caption text",
+		  "default": "<p>Caption text</p>"
+		},
+		{
+		  "type": "color",
+		  "id": "color_text",
+		  "label": "Color",
+		  "default": "#797B7E"
+		},
+		{
+		  "type": "text",
+		  "id": "url_text",
+		  "label": "Button text",
+		  "default": "Shop now"
+		},
+		{
+		  "type": "url",
+		  "id": "block_link",
+		  "label": "Block link"
+		},
+		{
+		  "type": "paragraph",
+		  "content": "> Button style"
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_style",
+		  "label": "Button color",
+		  "default": "btn-primary",
+		  "options": [
+			{
+			  "value": "btn-default",
+			  "label": "Default"
+			},
+			{
+			  "value": "btn-primary",
+			  "label": "Primary"
+			},
+			{
+			  "value": "btn-secondary",
+			  "label": "Secondary"
+			},
+			{
+			  "value": "btn-alternate",
+			  "label": "Alternate"
+			},
+			{
+			  "value": "btn-gradient",
+			  "label": "Gradient 1"
+			}
+		  ]
+		},
+		{
+		  "type": "radio",
+		  "id": "btn_size",
+		  "label": "Button size",
+		  "default": "btn-md",
+		  "options": [
+			{
+			  "value": "btn-sm",
+			  "label": "Small"
+			},
+			{
+			  "value": "btn-md",
+			  "label": "Medium"
+			},
+			{
+			  "value": "btn-lg",
+			  "label": "Large"
+			}
+		  ]
+		},
+		{
+		  "type": "select",
+		  "id": "width",
+		  "label": "Container width",
+		  "default": "50%",
+		  "options": [
+			{
+			  "value": "25%",
+			  "label": "25%"
+			},
+			{
+			  "value": "33%",
+			  "label": "33%"
+			},
+			{
+			  "value": "50%",
+			  "label": "50%"
+			},
+			{
+			  "value": "66%",
+			  "label": "66%"
+			},
+			{
+			  "value": "75%",
+			  "label": "75%"
+			},
+			{
+			  "value": "100%",
+			  "label": "100%"
+			}
+		  ]
+		},
+		{
+		  "type": "select",
+		  "id": "align_text",
+		  "label": "Text alignment",
+		  "default": "left",
+		  "options": [
+			{
+			  "value": "left",
+			  "label": "Left"
+			},
+			{
+			  "value": "center",
+			  "label": "Centered"
+			},
+			{
+			  "value": "right",
+			  "label": "Right"
+			}
+		  ]
+		}
+	  ]
+	},
+	// VIDEO //////////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "video",
+	  "name": "Video",
+	  "settings": [
+		{
+		  "type": "text",
+		  "id": "video_url",
+		  "label": "YouTube video url",
+		  "default": "//www.youtube.com/watch?v=LGb3j1CyH0k"
+		},
+		{
+		  "type": "select",
+		  "id": "width",
+		  "label": "Container width",
+		  "default": "100%",
+		  "options": [
+			{
+			  "value": "25%",
+			  "label": "25%"
+			},
+			{
+			  "value": "33%",
+			  "label": "33%"
+			},
+			{
+			  "value": "50%",
+			  "label": "50%"
+			},
+			{
+			  "value": "66%",
+			  "label": "66%"
+			},
+			{
+			  "value": "75%",
+			  "label": "75%"
+			},
+			{
+			  "value": "100%",
+			  "label": "100%"
+			}
+		  ]
+		}
+	  ]
+	},
+	// PRODUCT ////////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "product",
+	  "name": "Product",
+	  "settings": [
+		{
+		  "type": "product",
+		  "id": "product",
+		  "label": "Product"
+		},
+		{
+		  "type": "select",
+		  "id": "width",
+		  "label": "Container width",
+		  "default": "50%",
+		  "options": [
+			{
+			  "value": "25%",
+			  "label": "25%"
+			},
+			{
+			  "value": "33%",
+			  "label": "33%"
+			},
+			{
+			  "value": "50%",
+			  "label": "50%"
+			},
+			{
+			  "value": "66%",
+			  "label": "66%"
+			},
+			{
+			  "value": "75%",
+			  "label": "75%"
+			},
+			{
+			  "value": "100%",
+			  "label": "100%"
+			}
+		  ]
+		}
+	  ]
+	},
+	// COLLECTION /////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "collection",
+	  "name": "Collection",
+	  "settings": [
+		{
+		  "type": "collection",
+		  "id": "collection",
+		  "label": "Collection"
+		},
+		{
+		  "type": "select",
+		  "id": "width",
+		  "label": "Container width",
+		  "default": "50%",
+		  "options": [
+			{
+			  "value": "25%",
+			  "label": "25%"
+			},
+			{
+			  "value": "33%",
+			  "label": "33%"
+			},
+			{
+			  "value": "50%",
+			  "label": "50%"
+			},
+			{
+			  "value": "66%",
+			  "label": "66%"
+			},
+			{
+			  "value": "75%",
+			  "label": "75%"
+			},
+			{
+			  "value": "100%",
+			  "label": "100%"
+			}
+		  ]
+		}
+	  ]
+	},
+	// CUSTOM HTML ////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "html",
+	  "name": "Custom HTML",
+	  "settings": [
+		{
+		  "type": "text",
+		  "id": "custom_class",
+		  "label": "Custom class"
+		},
+		{
+		  "type": "textarea",
+		  "id": "code",
+		  "label": "HTML"
+		},
+		{
+		  "type": "select",
+		  "id": "width",
+		  "label": "Container width",
+		  "default": "50%",
+		  "options": [
+			{
+			  "value": "25%",
+			  "label": "25%"
+			},
+			{
+			  "value": "33%",
+			  "label": "33%"
+			},
+			{
+			  "value": "50%",
+			  "label": "50%"
+			},
+			{
+			  "value": "66%",
+			  "label": "66%"
+			},
+			{
+			  "value": "75%",
+			  "label": "75%"
+			},
+			{
+			  "value": "100%",
+			  "label": "100%"
+			}
+		  ]
+		}
+	  ]
+	},
+	// CUSTOM HTML ////////////////////////////////////////////////////////////////////////////////////
+	{
+	  "type": "custom_liquid",
+	  "name": "Custom Liquid",
+	  "settings": [
+		{
+		  "type": "text",
+		  "id": "custom_class",
+		  "label": "Custom class"
+		},
+		{
+		  "type": "liquid",
+		  "id": "custom_liquid",
+		  "label": "Custom Liquid",
+		  "info": "Add app snippets or other Liquid code to create advanced customizations"
+		},
+		{
+		  "type": "select",
+		  "id": "width",
+		  "label": "Container width",
+		  "default": "50%",
+		  "options": [
+			{
+			  "value": "25%",
+			  "label": "25%"
+			},
+			{
+			  "value": "33%",
+			  "label": "33%"
+			},
+			{
+			  "value": "50%",
+			  "label": "50%"
+			},
+			{
+			  "value": "66%",
+			  "label": "66%"
+			},
+			{
+			  "value": "75%",
+			  "label": "75%"
+			},
+			{
+			  "value": "100%",
+			  "label": "100%"
+			}
+		  ]
+		}
+	  ]
+	}
+  ],
+  "presets": [
+	{
+	  "name": "Custom content",
+	  "category": "Advanced layout",
+	  "blocks": [
+		{
+		  "type": "image"
+		},
+		{
+		  "type": "text"
+		}
+	  ]
+	}
+  ]
+}
+{% endschema %}
+
+

@@ -1,0 +1,804 @@
+{{ 'section-banners.css' | asset_url | stylesheet_tag }}
+
+{% if section.blocks.size > 0 %}
+	<style>
+	{% for block in section.blocks %}
+
+		{% if block.settings.use_bgo %}
+		/* Style background block */
+			.section-style-{{ section.id }} .item-{{ block.id }} .caption::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				display: block;
+				z-index: 1;
+				background-color: {{ block.settings.bg_color | color_modify: 'alpha', block.settings.bg_color_opacity }};
+				transition: .3s;
+			}
+			.section-style-{{ section.id }} .item-{{ block.id }}:hover .caption:before,
+			.section-style-{{ section.id }} .item-{{ block.id }}:focus .caption:before {
+				opacity: .5; }
+		{% endif %}
+	
+	{% if block.settings.use_bottom_offset_mobile %}
+		@media (max-width: 767px) {
+			.section-style-{{ section.id }} .item-{{ block.id }}{
+				margin-bottom: {{ block.settings.margin_bottom | append: 'px' }};
+			}
+		}
+	{% endif %}
+	
+	/* Style block overlay */
+	{% if block.settings.off_overlay_mobile %}
+	@media (min-width: 768px) {
+	{% endif %}
+		.section-style-{{ section.id }} .item-{{ block.id }}.style-overlay .banner-caption {
+			position: absolute;
+			left: 0;
+			top: 0;
+			bottom: 0;
+			right: 0;
+		}
+	{% if block.settings.off_overlay_mobile %}
+	}
+	{% endif %}
+	
+	/* Style indent for elements */
+    	@media (min-width:1200px){
+        	.section-style-{{ section.id }} .item-{{ block.id }} .caption *:not(.btn) + .btn,
+        	.section-style-{{ section.id }} .item-{{ block.id }} .caption *:not(.btn) + .link {
+				margin-top: {{ block.settings.margin_btn | append: 'px' }};
+			}
+			
+			.section-style-{{ section.id }} .item-{{ block.id }} .caption * + .block-title {
+				margin-top: {{ block.settings.margin_title | append: 'px' }};
+			}
+			
+			.section-style-{{ section.id }} .item-{{ block.id }} .caption * + .block-text{
+				margin-top: {{ block.settings.margin_text | append: 'px' }};
+			}
+		}
+	
+	.section-style-{{ section.id }} .item-{{ block.id }} .banner-caption:not(.inverted) .block-title {
+		color: {{ block.settings.color_title }};
+	}
+	
+	.section-style-{{ section.id }} .item-{{ block.id }} .banner-caption:not(.inverted) .custom_large_title.block-title {
+		color: {{ block.settings.color_ch }};
+	}
+	
+	.section-style-{{ section.id }} .item-{{ block.id }} .banner-caption:not(.inverted) .block-text{
+		color: {{ block.settings.color_text }};
+	}
+	
+	.section-style-{{ section.id }} .item-{{ block.id }} .banner-caption:not(.inverted) .block-subtitle{
+		color: {{ block.settings.color_subtitle }};
+	}
+	
+	{% endfor %}
+	</style>
+{% endif %}
+
+
+<div class="section-style-{{ section.id }}">
+   {%- include 'section-style' -%}
+	
+    <div class="{{ section.settings.container_width }}">
+
+      {% if section.settings.section_title != blank %}
+          <h2 class="section_heading">{{ section.settings.section_title }}</h2>
+      {% endif %} 
+      
+      {% if section.settings.section_title != blank %}
+          <div class="text text-default">{{ section.settings.desc }}</div>
+      {% endif %}
+
+      <div class="row {% if section.settings.reset_indent %}gx-0{% endif %}">
+          {% for block in section.blocks %}
+			{% case block.settings.width %}
+				{% when '1' %}
+				{%- assign item_width = 'col-md-6 col-lg-4 col-xl-2' -%}
+				{% when '2' %}
+				{%- assign item_width = 'col-md-6 col-lg-4 col-xl-2-5' -%}
+				{% when '3' %}
+				{%- assign item_width = 'col-md-6 col-lg-3' -%}
+				{% when '4' %}
+				{%- assign item_width = 'col-lg-4' -%}
+				{% when '5' %}
+				{%- assign item_width = 'col-lg-5' -%}
+				{% when '6' %}
+				{%- assign item_width = 'col-lg-6' -%}
+				{% when '7' %}
+				{%- assign item_width = 'col-lg-7' -%}
+				{% when '8' %}
+				{%- assign item_width = 'col-lg-8' -%}
+				{% when '9' %}
+				{%- assign item_width = 'col-lg-9' -%}
+				{% when '10' %}
+				{%- assign item_width = 'col-lg-10' -%}
+				{% when '11' %}
+				{%- assign item_width = 'col-lg-11' -%}
+				{% when '12' %}
+				{%- assign item_width = 'col-lg-12' -%}
+			{% endcase %}
+		
+			  {% case block.settings.caption_size %}
+			  	{% when 'large'  %}
+			  		{%- assign subtitle_class = 'h6' -%}
+			  		{%- assign title_class = 'h1' -%}
+			  		{%- assign text_class = 'text-medium' -%}
+			  	{% when 'medium'  %}
+			  		{%- assign subtitle_class = 'h6' -%}
+			  		{%- assign title_class = 'h2' -%}
+			  		{%- assign text_class = 'text-medium' -%}
+				 {% when 'xsmall' %}
+					  {%- assign title_class = 'h4' -%}
+			  		  {%- assign text_class = 'text-medium' -%}
+				{% else %}
+			  		{%- assign subtitle_class = 'h6' -%}
+			  		{%- assign title_class = 'h3' -%}
+			  		{%- assign text_class = 'text-medium' -%}
+			  {% endcase %}
+              <div class="col-12 {{ item_width }} {{ block.settings.custom_class }}" {{ block.shopify_attributes }}>
+                  <div class="banner-item item-{{ block.id }} style-{{ block.settings.banner_style }} d-flex flex-column {% if block.settings.reverse_cpos == 'flex-column-reverse' %} flex-md-column-reverse {% endif %}" style="padding: {{ block.settings.inset_block }}; {% if block.settings.use_bgb %}background-color: {{ block.settings.bgb_color | color_modify: 'alpha', block.settings.bgb_color_opacity }};{% endif %}">
+					
+					  {% if block.settings.image != blank %}
+                  		  {%- if block.settings.item_link != blank -%}
+							  <a class="image-item-container link_hover" href="{{ block.settings.item_link }}">
+							  {% else %}
+								  <div class="image-item-container">
+						  {%- endif -%}
+						 	<div class="image-item-wrapper" style="padding-top:{{ 1 | divided_by: block.settings.image.aspect_ratio | times: 100 }}%;">
+								  {% assign img_url = block.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+								  <img loading="lazy" class="image-content__image lazyload"
+									   src="{{ block.settings.image | img_url: '300x300' }}"
+									   data-src="{{ img_url }}"
+									   data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 1944, 2048]"
+									   data-aspectratio="{{ block.settings.image.aspect_ratio }}"
+									   data-sizes="auto"
+									   alt="{{ block.settings.image.alt | escape }}">
+						 	</div>
+								  {%- if block.settings.item_link != blank -%}</a>   {% else %} </div> {%- endif -%}
+                         {% else %}
+					 	<div class="image-item-container">
+                     	    <div class="img_placeholder__wrap" style="padding-top: 52.6%;">
+                     	        {{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+                     	    </div>
+                     	</div>
+                      {% endif %}
+                      {% if block.settings.item_subtitle != blank or block.settings.item_title != blank or block.settings.item_text != blank or block.settings.link_text != blank %}
+                          <div class="banner-caption {% if block.settings.width == '12' %} container {% endif %} caption caption-{{ block.settings.caption_size }} d-flex flex-column text-md-{{ block.settings.textalign_pos }} justify-content-md-{{ block.settings.v_cpos }} align-items-md-{{ block.settings.h_cpos }} {% if block.settings.inverted %} inverted{% endif %}"  style="padding: {{ block.settings.inset_caption }};{% if block.settings.link_type_banner and block.settings.item_link != blank and block.settings.banner_style == 'overlay' %} pointer-events: none;{% endif %}">
+							{% if block.settings.code.size > 0 %}
+							  <div class="custom_html">
+								{{ block.settings.code }}
+							  </div>
+							{% endif %}
+                               <div class="caption_text">
+                                   {% if block.settings.item_subtitle != blank %}
+                                       <div class="{{ subtitle_class }} block-subtitle"><span class="caption-item">{{ block.settings.item_subtitle }}</span></div>
+                                   {% endif %}
+								 
+								   {% if block.settings.custom_heading != blank %}
+								     <div class="custom_large_title block-title"><div class="caption-item">{{ block.settings.custom_heading }}</div></div>
+							       {% endif %}
+								
+                                   {% if block.settings.item_title != blank %}
+                                       <h2 class="{{ title_class }} block-title"><span class="caption-item">{{ block.settings.item_title }}</span></h2>
+                                   {% endif %}
+                                 
+                                   {% if block.settings.item_text != blank %}
+                                       <div class="{{ text_class }} block-text"><div class="caption-item">{{ block.settings.item_text }}</div></div>
+                                   {% endif %}
+                                   
+                                   {% if block.settings.link_text != blank and block.settings.item_link != blank %}
+									 {% if block.settings.btn_style == 'link-default' or block.settings.btn_style == 'link-primary' %}
+									   <a href="{{ block.settings.item_link }}" class="link{% if block.settings.btn_style == 'link-primary' %} link-primary{% else %} link-dark{% endif %}">{{ block.settings.link_text }}</a>
+									 {% else %}
+									   <a href="{{ block.settings.item_link }}" class="btn {{ block.settings.btn_style }} {{ block.settings.btn_size }}">{{ block.settings.link_text }}</a>
+									 {% endif %}
+								   {% endif %}
+                               </div>
+                          </div>
+                      {% endif %}
+                  </div>
+              </div>
+          {% endfor %}
+      </div>
+    </div>
+</div>
+
+{% schema %}
+
+{
+	"name": "Banners",
+	"tag": "section",
+	"class": "section section_homepage section_banners",
+	"max_blocks": 6,
+	"settings": [
+		{
+			"type": "header",
+			"content": "Banners"
+		},
+		{
+			"type": "text",
+			"id": "section_title",
+			"label": "Section Title",
+			"default": "Block banners"
+		},
+		{
+            "type": "html",
+            "id": "desc",
+            "label": "HTML / Description"
+    	},
+		
+		{
+			"type":      "select",
+			"id":        "container_width",
+			"label":     "Container width",
+			"options": [
+				 {
+                  "value": "container",
+                  "label": "Box"
+       			 },
+                 {
+                   "value": "container-fluid",
+                   "label": "Container Fluid"
+                 },
+                 {
+                   "value": "full-width",
+                   "label": "Full"
+                 }
+			],
+			"default":   "container"
+		},
+		{
+			"type": "checkbox",
+			"id": "reset_indent",
+			"label": "Remove indent",
+			"default":   false
+		},
+ 		{
+            "type": "color",
+            "id": "bg_section",
+            "label": "Background Section",
+            "default": "#ffffff"
+   		},
+		{
+            "type": "text",
+            "id": "inset_section",
+            "label": "Inset Section",
+            "default": "0px 0px 0px 0px",
+			"info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+   		},
+		{
+            "type": "text",
+            "id": "offset_section",
+            "label": "Offset Section",
+            "default": "0px 0px 0px 0px",
+            "info": "offset: Top Right Bottom Left"
+   		}
+	],
+	"blocks": [
+		{ 
+			"type": "banner",
+			"name": "Banner",
+			"settings": [
+	
+				{
+					"type": "header",
+					"content": "Block settings"
+				},
+	
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Banner image"
+				},
+
+                {
+                  "type": "select",
+                  "id": "width",
+                  "label": "Width",
+                  "default": "6",
+                   "options": [
+  					  {
+  					  	"value": "1",
+  					  	"label": "16.67%"
+  					  },
+                      {
+                          "value": "2",
+                          "label": "20%"
+                      },
+                      {
+                        "value": "3",
+                        "label": "25%"
+                      },
+                      {
+                        "value": "4",
+                        "label": "33.33%"
+                      },
+                      {
+                        "value": "5",
+                        "label": "41.67%"
+                      },
+                      {
+                        "value": "6",
+                        "label": "50%"
+                      },
+                      {
+                        "value": "7",
+                        "label": "58.33%"
+                      },
+                      {
+                        "value": "8",
+                        "label": "66.67%"
+                      },
+                      {
+                        "value": "9",
+                        "label": "75%"
+                      },
+                      {
+                        "value": "10",
+                        "label": "83.33%"
+                      },
+  					  {
+  					  	"value": "11",
+  					  	"label": "91.66%"
+  					  },
+                      {
+                        "value": "12",
+                        "label": "100%"
+                      }
+              		]
+      			},
+
+				{
+					"type": "select",
+					"id": "banner_style",
+					"label": "Banner style",
+					"default": "standard",
+					"options": [
+						{
+							"label": "Standard",
+							"value": "standard"
+						},
+						{
+							"label": "Overlay",
+							"value": "overlay"
+						}
+					]
+				},
+	
+				{
+					"type": "checkbox",
+					"id": "off_overlay_mobile",
+					"label": "Disable overlay on mobile",
+					"default": false
+				},
+	
+				{
+					"type": "checkbox",
+					"id": "use_bgb",
+					"label": "Use block background",
+					"default": false
+				},
+				
+				{
+					"type": "color",
+					"id": "bgb_color",
+					"label": "Color block background"
+				},
+				{
+					"type":      "range",
+					"id":        "bgb_color_opacity",
+					"min":       0,
+					"max":        1,
+					"step":       0.1,
+					"label":     "Background block opacity",
+					"default":   0.5
+				},
+	
+				{
+					"type": "text",
+					"id": "inset_block",
+					"label": "Inset Block",
+					"default": "0 0 0 0",
+					"info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+				},
+	
+				{
+					"type": "checkbox",
+					"id": "use_bottom_offset_mobile",
+					"label": "Use bottom offset on mobile",
+					"default": true
+				},
+	
+				{
+					"type": "range",
+					"id": "margin_bottom",
+					"min": 15,
+					"max": 60,
+					"step": 1,
+					"unit": "px",
+					"label": "Bottom offset on mobile",
+					"default": 30
+				},
+	
+	
+				{
+					"type": "header",
+					"content": "Caption settings"
+				},
+	
+				{
+					"type": "checkbox",
+					"id": "use_bgo",
+					"label": "Use background",
+					"default": false
+				},
+	
+				{
+					"type": "color",
+					"id": "bg_color",
+					"label": "Color background"
+				},
+				{
+					"type":      "range",
+					"id":        "bg_color_opacity",
+					"min":       0,
+					"max":        1,
+					"step":       0.1,
+					"label":     "Background opacity",
+					"default":   0.5
+				},
+	
+	
+				{
+					"type": "checkbox",
+					"id": "inverted",
+					"label": "Inverted",
+					"default": false
+				},
+	
+				{
+					"type": "select",
+					"id": "h_cpos",
+					"label": "Caption horizontal position",
+					"default": "start",
+					"options": [
+						{
+							"label": "Left position",
+							"value": "start"
+						},
+						{
+							"label": "Center position",
+							"value": "center"
+						},
+						{
+							"label": "Right position",
+							"value": "end"
+						}
+						
+					]
+				},
+
+				{
+					"type": "select",
+					"id": "v_cpos",
+					"label": "Caption vertical position",
+					"default": "start",
+					"info": "Only overlay type",
+					"options": [
+						{
+							"label": "Top position",
+							"value": "start"
+						},
+						{
+							"label": "Center position",
+							"value": "center"
+						},
+						{
+							"label": "Bottom position",
+							"value": "end"
+						}
+					]
+				},
+				
+
+				{
+					"type": "select",
+					"id": "reverse_cpos",
+					"label": "Caption reverse position",
+					"default": "flex-column",
+					"info": "Only standard type",
+                      "options": [
+                        {
+                          "value": "flex-column",
+                          "label": "Normal"
+                        },
+                        {
+                          "value": "flex-column-reverse",
+                          "label": "Reverse"
+                        }
+					]
+				},
+
+				{
+					"type": "select",
+					"id": "textalign_pos",
+					"label": "Caption text align",
+					"default": "left",
+					"options": [
+						{
+							"label": "Left align",
+							"value": "left"
+						},
+						{
+							"label": "Center align",
+							"value": "center"
+						},
+						{
+							"label": "Right align",
+							"value": "right"
+						}
+					]
+				},
+			  {
+				"type": "header",
+				"content": "Title Settings"
+			  },
+	
+				{
+					"type": "text",
+					"id": "item_title",
+					"label": "Caption title",
+					"default": "Caption title"
+				},
+				{
+					"type": "color",
+					"id": "color_title",
+					"label": "Color",
+					"default": "#121212"
+				},
+			  {
+				"type": "header",
+				"content": "Subtitle Settings"
+			  },
+				{
+					"type": "text",
+					"id": "item_subtitle",
+					"label": "Caption subtitle",
+					"default": "Caption subtitle"
+				},
+				{
+					"type": "color",
+					"id": "color_subtitle",
+					"label": "Color",
+					"default": "#121212"
+				},
+			  
+			  {
+				"type": "header",
+				"content": "Text Settings"
+			  },
+				{
+					"type": "richtext",
+					"id": "item_text",
+					"label": "Caption text",
+					"default": "<p>Caption text</p>"
+				},
+  
+ 				 {
+ 					"type": "color",
+ 					"id": "color_text",
+ 					"label": "Color",
+ 					"default": "#797B7E"
+ 				 },
+			  
+			  {
+				"type": "header",
+				"content": "Custom heading Settings"
+			  },
+  				{
+  					"type": "richtext",
+  					"id": "custom_heading",
+  					"label": "Custom size heading"
+  				},
+	
+				{
+					"type": "color",
+					"id": "color_ch",
+					"label": "Color",
+					"default": "#797B7E"
+				},
+			  
+			  {
+				"type": "header",
+				"content": "Сustom HTML Settings"
+			  },
+			  {
+				"type": "textarea",
+				"id": "code",
+				"label": "Custom HTML"
+			  },
+			  
+
+				{
+					"type": "select",
+					"id": "caption_size",
+					"label": "Banner caption size",
+					"default": "medium",
+					"options": [
+						{
+							"label": "Exta Small",
+							"value": "xsmall"
+						},
+						{
+							"label": "Small",
+							"value": "small"
+						},
+						{
+							"label": "Medium",
+							"value": "medium"
+						},
+						{
+							"label": "Large",
+							"value": "large"
+						}
+					]
+				},
+	
+				{
+					"type": "text",
+					"id": "inset_caption",
+					"label": "Inset Caption",
+					"default": "6% 7% 6% 7%",
+					"info": "inset: Top Right Bottom Left (px/em/%/). Or use one value if all insets are equal"
+				},
+
+				{
+					"type": "url",
+					"id": "item_link",
+					"label": "Link banner",
+					"info": "Optional"
+				},
+
+				{
+					"type": "text",
+					"id": "link_text",
+					"label": "Link text",
+					"default": "Shop now"
+				},
+
+				{
+					"type": "checkbox",
+					"id": "link_type_banner",
+					"label": "Link banner",
+					"default": false,
+					"info": "Only overlay type. If enable - click on all banner, else - click only button"
+				},
+
+				{
+					"type": "paragraph",
+					"content": "Button settings"
+				},
+
+				{
+					"type": "radio",
+					"id": "btn_style",
+					"label": "Button style",
+					"default": "btn-primary",
+					"options": [
+						{
+							"value": "btn-default",
+							"label": "Default"
+						},
+						{
+							"value": "btn-primary",
+							"label": "Primary"
+						},
+						{
+							"value": "btn-secondary",
+							"label": "Secondary"
+						},
+						{
+							"value": "btn-alternate",
+							"label": "Alternate"
+						},
+  						{
+  							"value": "btn-gradient",
+  							"label": "Gradient 1"
+  						},
+  						{
+  							"value": "link-default",
+  							"label": "Link default"
+  						},
+  						{
+  							"value": "link-primary",
+  							"label": "Link primary"
+  						}
+					]
+				},
+				{
+					"type": "radio",
+					"id": "btn_size",
+					"label": "Button size",
+					"default": "btn-md",
+					"options": [
+						{
+							"value": "btn-sm",
+							"label": "Small"
+						},
+						{
+							"value": "btn-md",
+							"label": "Medium"
+						},
+						{
+							"value": "btn-lg",
+							"label": "Large"
+						}
+					]
+				},
+				{
+					"type": "range",
+					"id": "margin_title",
+					"min": 15,
+					"max": 60,
+					"step": 1,
+					"unit": "px",
+					"label": "Margin (something + title)",
+					"default": 22
+				},
+				
+				{
+					"type": "range",
+					"id": "margin_text",
+					"min": 15,
+					"max": 60,
+					"step": 1,
+					"unit": "px",
+					"label": "Margin (something + text)",
+					"default": 15
+				},
+				
+				{
+					"type": "range",
+					"id": "margin_btn",
+					"min": 15,
+					"max": 80,
+					"step": 1,
+					"unit": "px",
+					"label": "Margin (* + button)",
+					"default": 35
+				},
+				{
+					"type": "text",
+					"id": "custom_class",
+					"label": "Custom class"
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "Banners",
+			"category": "Image",
+			"blocks": [
+				{
+					"type": "banner"
+				},
+				{
+					"type": "banner"
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+
+
+

@@ -1,0 +1,23 @@
+<img class="w-100 lazyload lazypreload"
+	{% if is_zoom %}
+	  data-zoom-image="{{ image | img_url: product_image_zoom_size, scale: product_image_scale }}"
+	{% endif %}
+	{% if use_filter_color_thumbs %}
+	  data-thumbnail-color="{{ image.alt }}"
+	{% endif %}
+	data-id="{{ imageId }}"
+	src="{{ image | img_url: pr_img_min_size }}"
+	srcset="{% if image.width >= 288 %}{{ image | img_url: '288x' }} 288w,{% endif %}
+        	{% if image.width >= 576 %}{{ image | img_url: '576x' }} 576w,{% endif %}
+        	{% if image.width >= 750 %}{{ image | img_url: '750x' }} 750w,{% endif %}
+			{% if image.width >= 900 %}{{ image | img_url: '900x' }} 900w,{% endif %}
+			{% if image.width >= 1080 %}{{ image | img_url: '1080x' }} 1080w,{% endif %}
+			{% if image.width >= 1100 %}{{ image | img_url: '1100x' }} 1100w,{% endif %}
+			{% if image.width > 1296 %}{{ image | img_url: '1296x' }} 1296w,{% endif %}	
+			{% if image.width >= 1500 %}{{ image | img_url: '1500x' }} 1500w{% endif %}"
+	sizes="(min-width: 1640px) 765px, (min-width: 1100px) 535px, (min-width: 765px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
+	loading="lazy"
+	width="{{ image.width }}"
+	height="{{ image.height }}" 
+	alt="{{ image.alt }}"
+/> 
