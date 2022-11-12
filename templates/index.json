@@ -235,88 +235,6 @@
         "tablet_margin_bottom": 0
       }
     },
-    "162945910130dbf1bc": {
-      "type": "index-featured-products",
-      "blocks": {
-        "162945910130dbf1bc-0": {
-          "type": "collection_tab",
-          "settings": {
-            "show_view_all": false,
-            "view_all_link_text": "Explore Collections",
-            "section_title": "",
-            "block_collection_title": "",
-            "block_collection": "womens",
-            "product_card_reviews": false,
-            "product_card_vendor": false,
-            "badge_card_toggle": true,
-            "product_card_variants": false,
-            "variants_type_url": "only_color",
-            "product_card_variants_limit": "5",
-            "product_card_options": true,
-            "current_text_product_option": "Color",
-            "opt_type": "image",
-            "image_ratio": "portrait-thumb",
-            "show_secondary_image": false,
-            "image_padding": 0,
-            "bg_wrap_img_color": "",
-            "bg_img_color": "#f2f3f5"
-          }
-        },
-        "ccaa3b20-0e07-4dfc-a9d5-12d969e34bce": {
-          "type": "collection_tab",
-          "settings": {
-            "show_view_all": false,
-            "view_all_link_text": "Explore Collections",
-            "section_title": "",
-            "block_collection_title": "",
-            "block_collection": "custom-gi",
-            "product_card_reviews": false,
-            "product_card_vendor": false,
-            "badge_card_toggle": true,
-            "product_card_variants": false,
-            "variants_type_url": "only_color",
-            "product_card_variants_limit": "5",
-            "product_card_options": false,
-            "current_text_product_option": "Color",
-            "opt_type": "btn",
-            "image_ratio": "adapt",
-            "show_secondary_image": false,
-            "image_padding": 0,
-            "bg_wrap_img_color": "",
-            "bg_img_color": "#F2F3F5"
-          }
-        }
-      },
-      "block_order": [
-        "162945910130dbf1bc-0",
-        "ccaa3b20-0e07-4dfc-a9d5-12d969e34bce"
-      ],
-      "settings": {
-        "section_title": "Personal GI's",
-        "section_subtitle": "Top sale in this week",
-        "textalign_pos": "center",
-        "container_width": "container-fluid",
-        "bg_section": "#ffffff",
-        "inverted": false,
-        "inset_section": "0px 0px 0px 0px",
-        "offset_section": "0px 0px 0px 0px",
-        "reset_indent": false,
-        "use_tabs": false,
-        "pc_grid_style": "grid_style_2",
-        "use_border_card": false,
-        "use_border_grid": false,
-        "all_view": true,
-        "products_count": "8",
-        "column_item": "xl-4",
-        "use_mobile_scroll": false,
-        "carousel_view": true,
-        "products_view": "4",
-        "off_carousel_nav": false,
-        "off_carousel_pag": false,
-        "carousel_control_type": "pagination",
-        "design_type": "type_1"
-      }
-    },
     "162789991534a793f2": {
       "type": "index-divider",
       "settings": {
@@ -554,7 +472,7 @@
     "162789999412c565b2": {
       "type": "index-divider",
       "settings": {
-        "section_view": "container",
+        "section_view": "container-fluid",
         "type_value": "vw",
         "padding_top": 0,
         "padding_bottom": 0,
@@ -562,9 +480,9 @@
         "padding_bottom_vw": 4.5,
         "margin_top": 0,
         "margin_bottom": 0,
-        "background_color": "",
-        "tablet_padding_top": 26,
-        "tablet_padding_bottom": 26,
+        "background_color": "#ffffff",
+        "tablet_padding_top": 0,
+        "tablet_padding_bottom": 0,
         "tablet_margin_top": 0,
         "tablet_margin_bottom": 0
       }
@@ -631,6 +549,7 @@
         "quote_color": "#121212",
         "caption_text": "",
         "text_align": "center",
+        "header_logo": "shopify:\/\/shop_images\/logo_1_97c9aa9f-b394-4700-ac44-332a68ff0a7e.jpg",
         "offset_quote_img": "0px 0px 0px 0px",
         "off_carousel_nav": false,
         "off_carousel_pag": false,
@@ -868,7 +787,6 @@
     "1627899736175f45d2",
     "1627899769a3469f06",
     "162789983429f786d4",
-    "162945910130dbf1bc",
     "162789991534a793f2",
     "162789992544addad0",
     "16278999588811e107",

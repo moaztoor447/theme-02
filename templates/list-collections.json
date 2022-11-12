@@ -1,1 +1,20 @@
-{"sections":{"main":{"type":"main-list-collection","settings":{"page_description":"","size":"4","style":"type_2","caption_bg_color":"#121212","image_ratio":"portrait","caption_bg_color_opacity":0.4,"inverted":true,"img_alignment":"center"}}},"order":["main"]}
+{
+  "sections": {
+    "main": {
+      "type": "main-list-collection",
+      "settings": {
+        "page_description": "",
+        "size": "6",
+        "style": "type_2",
+        "caption_bg_color": "#ffffff",
+        "image_ratio": "square",
+        "caption_bg_color_opacity": 0.4,
+        "inverted": true,
+        "img_alignment": "top"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
