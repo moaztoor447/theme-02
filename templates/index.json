@@ -6,11 +6,12 @@
         "162766312376154f68-0": {
           "type": "image",
           "settings": {
-            "bg_animation": "none",
+            "image": "shopify:\/\/shop_images\/WhatsApp_Image_2022-10-25_at_10.06.03_PM_1.jpg",
+            "bg_animation": "bg-pan-br",
             "img_alignment": "top",
             "bg_pos_mobile": 50,
             "use_bgo": false,
-            "bg_color": "",
+            "bg_color": "#ffffff",
             "bg_color_opacity": 0.5,
             "caption_animation": "slide-in-left",
             "inverted": false,
@@ -23,18 +24,18 @@
             "bgc_color_opacity": 0.5,
             "item_large_title_1": "",
             "large_title_animation": "none",
-            "color_large_title": "#121212",
-            "item_title_1": "New Arrivals",
+            "color_large_title": "#ffffff",
+            "item_title_1": "",
             "title_animation": "none",
             "color_title": "#121212",
-            "item_subtitle_1": "2021 collection",
+            "item_subtitle_1": "",
             "subtitle_animation": "none",
             "color_subtitle": "#121212",
             "item_text_1": "<p>Shop the latest clothing, shoes, and handbags from top <\/p><p>fashion brands, style icons, and celebrities.<\/p>",
             "color_text": "#797b7e",
             "code": "",
             "custom_html_animation": "none",
-            "url_text": "Discover now",
+            "url_text": "",
             "slide_link": "shopify:\/\/collections\/accessories",
             "slide_as_link": false,
             "btn_style": "btn-primary",
@@ -155,16 +156,34 @@
       "type": "index-divider",
       "settings": {
         "section_view": "container",
-        "type_value": "vw",
+        "type_value": "px",
         "padding_top": 0,
         "padding_bottom": 0,
-        "padding_top_vw": 4.5,
-        "padding_bottom_vw": 4.5,
+        "padding_top_vw": 0,
+        "padding_bottom_vw": 0,
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "background_color": "#fcfcfc",
+        "tablet_padding_top": 0,
+        "tablet_padding_bottom": 0,
+        "tablet_margin_top": 0,
+        "tablet_margin_bottom": 0
+      }
+    },
+    "3ce6f1fb-69f7-4f6f-a2ef-c99ef3100fd6": {
+      "type": "index-divider",
+      "settings": {
+        "section_view": "container",
+        "type_value": "px",
+        "padding_top": 14,
+        "padding_bottom": 19,
+        "padding_top_vw": 1.5,
+        "padding_bottom_vw": 1.5,
         "margin_top": 0,
         "margin_bottom": 0,
         "background_color": "",
-        "tablet_padding_top": 26,
-        "tablet_padding_bottom": 24,
+        "tablet_padding_top": 7,
+        "tablet_padding_bottom": 4,
         "tablet_margin_top": 0,
         "tablet_margin_bottom": 0
       }
@@ -174,6 +193,7 @@
       "blocks": {
         "1627899769a3469f06-0": {
           "type": "featured_collection",
+          "disabled": true,
           "settings": {
             "item_collection": "womens",
             "position-caption": "bottom",
@@ -185,8 +205,31 @@
         },
         "1627899769a3469f06-1": {
           "type": "featured_collection",
+          "disabled": true,
           "settings": {
             "item_collection": "mens",
+            "position-caption": "bottom",
+            "position-caption-h": "center",
+            "caption_bg_color": "#ffffff",
+            "caption_bg_color_opacity": 0,
+            "custom_collection_class": ""
+          }
+        },
+        "a23ab7a6-4181-4b60-9dd5-64bf153f8ff7": {
+          "type": "featured_collection",
+          "settings": {
+            "item_collection": "custom-gi",
+            "position-caption": "bottom",
+            "position-caption-h": "center",
+            "caption_bg_color": "#ffffff",
+            "caption_bg_color_opacity": 0,
+            "custom_collection_class": ""
+          }
+        },
+        "ba0dd052-e610-48fb-9ec8-f46280b26ea9": {
+          "type": "featured_collection",
+          "settings": {
+            "item_collection": "trending",
             "position-caption": "bottom",
             "position-caption-h": "center",
             "caption_bg_color": "#ffffff",
@@ -197,38 +240,40 @@
       },
       "block_order": [
         "1627899769a3469f06-0",
-        "1627899769a3469f06-1"
+        "1627899769a3469f06-1",
+        "a23ab7a6-4181-4b60-9dd5-64bf153f8ff7",
+        "ba0dd052-e610-48fb-9ec8-f46280b26ea9"
       ],
       "settings": {
-        "container_width": "container",
-        "reset_indent": false,
+        "container_width": "full-width",
+        "reset_indent": true,
         "inset_section": "0px 0px 0px 0px",
         "offset_section": "0px 0px 0px 0px",
         "bg_section": "#ffffff",
         "item_heading": "<p>Get your Fashion style<\/p>",
         "item_text": "You’ll always be in fashion with our collection of clothing",
-        "show_items_count": false,
-        "column_item": "4",
+        "show_items_count": true,
+        "column_item": "2",
         "style": "type_h_1",
-        "image_ratio": "portrait",
-        "img_alignment": "top",
+        "image_ratio": "landscape",
+        "img_alignment": "center",
         "caption_overlay": true,
         "show_view_all": true,
-        "show_carousel": false
+        "show_carousel": true
       }
     },
     "162789983429f786d4": {
       "type": "index-divider",
       "settings": {
-        "section_view": "container",
+        "section_view": "full-width",
         "type_value": "vw",
-        "padding_top": 0,
-        "padding_bottom": 0,
-        "padding_top_vw": 2.3,
-        "padding_bottom_vw": 2.3,
+        "padding_top": 25,
+        "padding_bottom": 33,
+        "padding_top_vw": 3.3,
+        "padding_bottom_vw": 0.7,
         "margin_top": 0,
         "margin_bottom": 0,
-        "background_color": "",
+        "background_color": "#090909",
         "tablet_padding_top": 35,
         "tablet_padding_bottom": 35,
         "tablet_margin_top": 0,
@@ -238,12 +283,12 @@
     "162789991534a793f2": {
       "type": "index-divider",
       "settings": {
-        "section_view": "container",
+        "section_view": "full-width",
         "type_value": "vw",
         "padding_top": 0,
         "padding_bottom": 0,
-        "padding_top_vw": 4.5,
-        "padding_bottom_vw": 4.5,
+        "padding_top_vw": 0,
+        "padding_bottom_vw": 0,
         "margin_top": 0,
         "margin_bottom": 0,
         "background_color": "",
@@ -319,7 +364,7 @@
         "162789992544addad0-3"
       ],
       "settings": {
-        "container_width": "container",
+        "container_width": "full-width",
         "inset_section": "0px 0px 0px 0px",
         "offset_section": "0px 0px 0px 0px",
         "bg_section": "#ffffff",
@@ -367,6 +412,7 @@
       "blocks": {
         "16299027269cc3c2cd-0": {
           "type": "collection_tab",
+          "disabled": true,
           "settings": {
             "show_view_all": false,
             "view_all_link_text": "Explore Collections",
@@ -391,6 +437,7 @@
         },
         "9224bbed-511a-467c-940c-08edbf8e5d50": {
           "type": "collection_tab",
+          "disabled": true,
           "settings": {
             "show_view_all": false,
             "view_all_link_text": "Explore Collections",
@@ -415,6 +462,7 @@
         },
         "37e467e5-ea94-456d-9ee1-5577873d8970": {
           "type": "collection_tab",
+          "disabled": true,
           "settings": {
             "show_view_all": false,
             "view_all_link_text": "Explore Collections",
@@ -436,12 +484,37 @@
             "bg_wrap_img_color": "",
             "bg_img_color": "#f2f3f5"
           }
+        },
+        "287b92c1-39bc-497a-a7c4-8ccfa3e6dd0b": {
+          "type": "collection_tab",
+          "settings": {
+            "show_view_all": true,
+            "view_all_link_text": "Explore Collections",
+            "section_title": "",
+            "block_collection_title": "",
+            "block_collection": "custom-gi",
+            "product_card_reviews": false,
+            "product_card_vendor": false,
+            "badge_card_toggle": true,
+            "product_card_variants": false,
+            "variants_type_url": "only_color",
+            "product_card_variants_limit": "5",
+            "product_card_options": false,
+            "current_text_product_option": "Color",
+            "opt_type": "btn",
+            "image_ratio": "adapt",
+            "show_secondary_image": false,
+            "image_padding": 0,
+            "bg_wrap_img_color": "",
+            "bg_img_color": "#F2F3F5"
+          }
         }
       },
       "block_order": [
         "16299027269cc3c2cd-0",
         "9224bbed-511a-467c-940c-08edbf8e5d50",
-        "37e467e5-ea94-456d-9ee1-5577873d8970"
+        "37e467e5-ea94-456d-9ee1-5577873d8970",
+        "287b92c1-39bc-497a-a7c4-8ccfa3e6dd0b"
       ],
       "settings": {
         "section_title": "On sale",
@@ -472,7 +545,7 @@
     "162789999412c565b2": {
       "type": "index-divider",
       "settings": {
-        "section_view": "container-fluid",
+        "section_view": "container",
         "type_value": "vw",
         "padding_top": 0,
         "padding_bottom": 0,
@@ -480,9 +553,9 @@
         "padding_bottom_vw": 4.5,
         "margin_top": 0,
         "margin_bottom": 0,
-        "background_color": "#ffffff",
-        "tablet_padding_top": 0,
-        "tablet_padding_bottom": 0,
+        "background_color": "",
+        "tablet_padding_top": 26,
+        "tablet_padding_bottom": 26,
         "tablet_margin_top": 0,
         "tablet_margin_bottom": 0
       }
@@ -785,6 +858,7 @@
   "order": [
     "162766312376154f68",
     "1627899736175f45d2",
+    "3ce6f1fb-69f7-4f6f-a2ef-c99ef3100fd6",
     "1627899769a3469f06",
     "162789983429f786d4",
     "162789991534a793f2",
